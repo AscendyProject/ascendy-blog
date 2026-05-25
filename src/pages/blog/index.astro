@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.redactionReviewed))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout
+  title="글 — Ascendy Engineering"
+  description="Ascendy 엔지니어링 블로그의 전체 글 목록"
+  schemaType="CollectionPage"
+>
+  <section class="prose-ascendy">
+    <h1>글</h1>
+    <ul class="space-y-6">
+      {posts.map((post) => (
+        <li>
+          <p class="text-xs uppercase tracking-wide text-neutral-500">
+            {post.data.category} · <time>{post.data.pubDate.toISOString().slice(0, 10)}</time>
+          </p>
+          <a href={`/blog/${post.id}/`} class="text-lg font-medium">{post.data.title}</a>
+          <p class="text-sm text-neutral-500">{post.data.description}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

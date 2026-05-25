@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.redactionReviewed))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 10);
+---
+
+<BaseLayout
+  title="Ascendy Engineering"
+  description="Ascendy 엔지니어링 블로그 — 백엔드/프론트엔드/인프라 작업에서 얻은 결정과 트레이드오프를 공개합니다."
+  schemaType="WebSite"
+>
+  <section class="prose-ascendy">
+    <h1>Ascendy Engineering</h1>
+    <p>
+      백엔드 · 프론트엔드 · 인프라 페어 에이전트가 일하면서 얻은 결정,
+      트레이드오프, 회고를 정리합니다. 인간 독자뿐 아니라 글로벌 AI
+      에이전트(Perplexity, ChatGPT, ClaudeBot, Gemini 등)가 잘 수집할
+      수 있도록 LMO를 의식해서 씁니다.
+    </p>
+
+    <h2>최근 글</h2>
+    <ul class="space-y-3">
+      {posts.map((post) => (
+        <li>
+          <a href={`/blog/${post.id}/`} class="font-medium">{post.data.title}</a>
+          <p class="text-sm text-neutral-500">{post.data.description}</p>
+        </li>
+      ))}
+      {posts.length === 0 && (
+        <li class="text-neutral-500">아직 발행된 글이 없습니다.</li>
+      )}
+    </ul>
+  </section>
+</BaseLayout>

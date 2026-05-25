@@ -1,0 +1,41 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import SchemaOrg from '../components/SchemaOrg.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  image?: string;
+  schemaType?: 'WebSite' | 'CollectionPage';
+}
+
+const { title, description, canonical, image, schemaType = 'WebSite' } = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site).toString();
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <BaseHead title={title} description={description} canonical={canonical} image={image} />
+    <SchemaOrg type={schemaType} url={url} name={title} description={description} />
+  </head>
+  <body>
+    <header class="prose-ascendy !py-6 flex items-baseline justify-between">
+      <a href="/" class="text-base font-semibold tracking-tight">Ascendy</a>
+      <nav class="text-sm space-x-6">
+        <a href="/blog/">글</a>
+        <a href="/rss.xml">RSS</a>
+        <a href="https://github.com/AscendyProject/ascendy-blog">GitHub</a>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="prose-ascendy !py-12 text-sm text-neutral-500">
+      © {new Date().getFullYear()} Ascendy. Static site, AI crawlers welcome.
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,74 @@
+# ascendy-blog robots.txt
+# 사이트 전체 공개. 인간 + AI 크롤러 모두 환영 (LMO 정책).
+# 차단 추가 시 docs/editorial-policy.md "Public surface" 절을 먼저 갱신.
+
+User-agent: *
+Allow: /
+
+# --- 글로벌 AI / LLM 크롤러 명시 허용 ---
+# (User-agent가 *에 포함되더라도 명시 항목을 두어 정책 의사를 분명히 함)
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Meta-ExternalFetcher
+Allow: /
+
+User-agent: omgilibot
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+Sitemap: https://blog.ascendy.ai/sitemap-index.xml

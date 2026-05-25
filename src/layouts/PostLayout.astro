@@ -1,0 +1,70 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import SchemaOrg from '../components/SchemaOrg.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  author: string;
+  tags: string[];
+  category: string;
+  heroImage?: string;
+  canonical?: string;
+}
+
+const props = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site).toString();
+const siteName = 'Ascendy Engineering';
+const siteUrl = Astro.site?.toString() ?? 'https://blog.ascendy.ai';
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <BaseHead
+      title={props.title}
+      description={props.description}
+      canonical={props.canonical}
+      image={props.heroImage}
+      ogType="article"
+    />
+    <SchemaOrg
+      type="BlogPosting"
+      url={url}
+      title={props.title}
+      description={props.description}
+      author={props.author}
+      pubDate={props.pubDate}
+      updatedDate={props.updatedDate}
+      image={props.heroImage}
+      tags={props.tags}
+      category={props.category}
+      siteName={siteName}
+      siteUrl={siteUrl}
+    />
+  </head>
+  <body>
+    <header class="prose-ascendy !py-6">
+      <a href="/" class="text-sm text-neutral-500 hover:text-neutral-900">← Ascendy</a>
+    </header>
+
+    <article class="prose-ascendy">
+      <p class="text-xs uppercase tracking-wide text-neutral-500">{props.category}</p>
+      <h1>{props.title}</h1>
+      <p class="text-sm text-neutral-500">
+        <time datetime={props.pubDate.toISOString()}>
+          {props.pubDate.toISOString().slice(0, 10)}
+        </time>
+        · {props.author}
+      </p>
+      <hr />
+      <slot />
+      <hr />
+      <p class="text-xs text-neutral-500">
+        Tags: {props.tags.join(', ')}
+      </p>
+    </article>
+  </body>
+</html>
