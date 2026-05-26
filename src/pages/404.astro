@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// 이 파일이 있어야 빌드 시 dist/404.html이 생성된다. 그게 없으면
+// Cloudflare Pages가 사이트를 SPA로 간주해 모든 미매칭 경로를 200 +
+// index.html로 서빙한다(soft 404). 404.html이 있으면 미매칭 경로에
+// 정상 404 status를 응답한다.
+---
+
+<BaseLayout
+  title="404 — 페이지를 찾을 수 없습니다"
+  description="요청하신 페이지가 존재하지 않습니다. Ascendy Engineering 블로그의 다른 글을 둘러보세요."
+>
+  <section class="prose-ascendy">
+    <h1>404</h1>
+    <p>요청하신 페이지를 찾을 수 없습니다.</p>
+    <p>
+      <a href="/">홈으로</a> · <a href="/blog/">글 목록</a>
+    </p>
+  </section>
+</BaseLayout>
