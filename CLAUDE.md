@@ -201,13 +201,22 @@ merge는 사용자만. `gh pr merge`는 어떤 에이전트도 실행하지 않�
 
 ## Cross-repo / 인테이크 워크플로
 
-인테이크가 들어오는 경로:
+인테이크는 **두 단계 경로**를 거친다 (블로그는 public, 3팀 repo는 private
+이므로 raw 소스가 public에 닿지 않게 하기 위함 — 자세한 근거는
+`docs/editorial-policy.md` "인테이크의 공개 경계", `docs/intake-template.md`):
 
 ```text
+# 1) raw 원본 — 제안 팀의 private repo에 (블로그팀은 읽기 전용 열람):
+<팀 private repo>/docs/blog-intake/<YYYY-MM-DD>-<topic>.md
+
+# 2) 정제본 — 블로그팀이 redaction 통과 후 이 public repo에 커밋:
 docs/intake/from-backend/<YYYY-MM-DD>-<topic>.md
 docs/intake/from-frontend/<YYYY-MM-DD>-<topic>.md
 docs/intake/from-infra/<YYYY-MM-DD>-<topic>.md
 ```
+
+`sourceIntake:`는 2)의 정제본 경로를 가리킨다. 일일 주기·통지는
+`docs/intake-standing-order.md` 참조.
 
 블로그팀이 3팀에 응답/질의가 필요할 때:
 

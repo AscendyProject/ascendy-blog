@@ -70,28 +70,28 @@
   path, 사내 IP, 고객/파트너 식별 정보, 미공개 비즈니스 결정 → **금지**.
 - 의심스러우면 redaction. "이거 공개해도 되나?"가 떠오르면 답은 No.
 
-## 인테이크 저장소의 공개성
+## 인테이크의 공개 경계
 
-`ascendy-blog`는 GitHub public repo다. 따라서 `docs/intake/from-*/`에
-들어가는 인테이크 마크다운도 **그 순간부터 공개 자료**다. 이 사실은
-세 단계 책임으로 다룬다:
+`ascendy-blog`는 GitHub public repo이고, 제안 팀 repo(backend / frontend /
+infra)는 모두 private다. 이 비대칭을 네 원칙으로 다룬다:
 
-1. **제안 팀 (backend / frontend / infra)**의 1차 redaction.
-   `docs/intake-template.md`의 "외부에 공유하면 안 되는 부분" 단락에
-   금지 항목을 적되, **본문에 그대로 노출하지 말 것** — "이런 카테고리의
-   정보가 있었다"는 메타 설명만. 실제 시크릿/사내 호스트명/실 IP는
-   인테이크 단계에서 이미 삭제·일반화되어야 한다.
-2. **블로그팀**의 2차 검증. 인테이크가 commit 되기 전에
-   `docs/redaction-checklist.md`를 인테이크에도 한 번 돌린다. 통과 못
-   하면 제안 팀에 되돌려 보낸다 (수정 요청). 인테이크가 일단 public
-   repo에 push 되면 git history에 남으므로 사후 삭제로는 정보 회수가
-   불가능하다.
-3. **사용자**의 최종 머지. 머지 = 공개. draft/redactionReviewed 게이트가
-   포스트에만 걸려 있고 인테이크 자체에는 빌드 게이트가 없으므로,
-   인테이크 PR은 사람이 추가로 검토해서 머지.
+1. **raw 인테이크는 제안 팀의 private repo에만.** 원본 소스는
+   `<팀 repo>/docs/blog-intake/`에 쓴다. redaction 전 raw를 블로그 public
+   repo에 커밋하지 않는다 — 한 번 push 되면 git history에 남아 사후 삭제로
+   정보 회수가 불가능하다.
+2. **블로그팀이 유일한 공개 게이트키퍼.** 팀 private repo의 인테이크를
+   읽기 전용으로 열람 → `docs/redaction-checklist.md`를 한 항목씩 통과 →
+   **정제된 기록만** 블로그 public repo의 `docs/intake/from-<team>/`에
+   커밋한다. public에 들어가는 인테이크 기록은 이미 redaction을 거친 것이다.
+3. **제안 팀은 민감 항목을 숨기지 말고 표시.** private repo이므로 원본을
+   그대로 적되, `docs/intake-template.md`의 "외부에 공유하면 안 되는 부분"에
+   무엇이 들어있는지 명시한다 — 블로그팀이 그걸 보고 제거·일반화한다.
+4. **사용자의 최종 머지 = 공개.** draft/redactionReviewed 게이트는 포스트에만
+   걸리고 인테이크 기록 자체에는 빌드 게이트가 없으므로, 인테이크 기록 PR도
+   사람이 추가로 검토해서 머지한다.
 
-요약: 인테이크는 "내부 메모"가 아니라 "1차 공개 자료"다. 익숙해질
-때까지는 인테이크 PR도 블로그 포스트 PR과 동일한 강도로 검토.
+요약: public repo에 올라온 인테이크 기록은 "정제 완료된 1차 공개 자료"다.
+raw는 절대 public에 닿지 않는다.
 
 ## 게시 / 배포
 

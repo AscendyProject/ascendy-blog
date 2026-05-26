@@ -3,12 +3,28 @@
 3개 페어 팀(backend / frontend / infra)이 블로그팀에게 글감을 넘길 때 쓰는
 표준 양식. 이 양식 없이 들어온 인테이크는 블로그팀이 되돌려 보낸다.
 
-저장 위치: `docs/intake/from-<team>/YYYY-MM-DD-<kebab-topic>.md`
-(예: `docs/intake/from-infra/2026-05-24-vcr-secret-phase1.md`)
+## 어디에 쓰나 — raw 소스는 비공개 팀 repo에
 
-블로그팀은 이 파일을 1차 소스로 보고 `src/content/blog/`에 게시물을
-만든다. 게시물 frontmatter의 `sourceIntake:`에 이 파일 경로가
-**반드시** 들어가야 한다.
+`ascendy-blog`는 **public** repo이고 backend / frontend / infra는 모두
+**private**다. 따라서 redaction 전 raw 소스를 블로그 public repo에 직접
+커밋하면, 정제되기도 전에 git history로 영구 공개된다 (사후 삭제로는 회수
+불가).
+
+→ **인테이크 원본은 제안 팀 자신의 private repo에 쓴다:**
+
+```text
+<팀 private repo>/docs/blog-intake/YYYY-MM-DD-<kebab-topic>.md
+예: ascendy-infra/docs/blog-intake/2026-05-24-vcr-secret-phase1.md
+```
+
+블로그팀은 이 파일을 sibling repo에서 **읽기 전용**으로 열람해 1차 소스로
+삼는다 (sibling repo의 파일은 편집하지 않는다). redaction을 통과시킨 뒤,
+**정제된 인테이크 기록만** 블로그 public repo의
+`docs/intake/from-<team>/YYYY-MM-DD-<topic>.md`에 커밋한다. 게시물
+frontmatter의 `sourceIntake:`는 이 **정제본** 경로를 가리킨다.
+
+요컨대: raw는 private repo에 머물고, public repo엔 redaction 끝난 것만
+들어간다. 일일 주기·통지 방법은 [`intake-standing-order.md`](./intake-standing-order.md) 참조.
 
 ---
 
@@ -65,11 +81,13 @@ externalMaterials: []
 - (미공개 비즈니스 결정)
 - (고객/파트너 식별 정보)
 
-## 코드 / 설정 스니펫 (게시 가능한 형태로)
+## 코드 / 설정 스니펫
 
 \`\`\`yaml
-# 이미 일반화·redaction된 버전을 여기 붙여주세요.
-# 원본을 붙이면 블로그팀이 정제 후 사용합니다.
+# 이 파일은 비공개 repo에 머무니 원본을 그대로 붙여도 된다.
+# 단, 민감한 값(시크릿/호스트명/IP/내부 식별자)이 들어 있으면 위
+# "외부에 공유하면 안 되는 부분"에 무엇이 포함됐는지 표시해 둘 것 —
+# 블로그팀이 그걸 보고 정제한다.
 \`\`\`
 
 ## 참고 링크
@@ -88,10 +106,13 @@ externalMaterials: []
 
 ## 블로그팀이 인테이크를 처리하는 방식
 
-1. 인테이크 파일을 `docs/intake/from-<team>/`에서 읽는다.
-2. `docs/redaction-checklist.md`를 한 항목씩 통과시킨다.
-3. `src/content/blog/<slug>.md`를 `_template.md` 기반으로 만든다.
-4. `sourceIntake:` frontmatter에 인테이크 파일 경로를 적는다.
+1. 제안 팀의 private repo `<팀 repo>/docs/blog-intake/`에서 인테이크
+   원본을 읽는다 (읽기 전용 — sibling repo의 파일은 편집하지 않는다).
+2. `docs/redaction-checklist.md`를 한 항목씩 통과시키며 정제한다.
+3. 정제된 인테이크 기록을 블로그 public repo의 `docs/intake/from-<team>/`에
+   쓴다 (raw가 아니라 정제본만 public에 들어간다).
+4. `src/content/blog/<slug>.md`를 `_template.md` 기반으로 만들고,
+   `sourceIntake:`에 3의 정제본 경로를 적는다.
 5. `draft: true`, `redactionReviewed: false`로 PR을 연다.
 6. Codex 리뷰 → redaction 재확인 → `redactionReviewed: true`, `draft: false` → 사람이 머지.
 7. 머지되면 Cloudflare Pages가 자동 빌드·배포.
