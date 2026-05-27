@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { defaultLang, localeTag, type Lang } from '../i18n/ui';
+import { defaultLang, localeTag, localizePath, type Lang } from '../i18n/ui';
 
 interface Props {
   title: string;
@@ -48,4 +48,4 @@ const xDefault = alternates.find((a) => a.lang === defaultLang);
 <meta name="twitter:image" content={ogImage} />
 
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="alternate" type="application/rss+xml" title="Ascendy Blog" href="/rss.xml" />
+<link rel="alternate" type="application/rss+xml" title="Ascendy Blog" href={localizePath('/rss.xml', lang)} />

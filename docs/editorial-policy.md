@@ -82,6 +82,11 @@
 - 번역본의 `redactionReviewed`는 그 언어판을 직접 검수한 결과여야 한다.
 - AI로 초벌 번역하더라도, 게시 전 redaction 재확인은 동일 강도로.
 
+**`translationKey` 규칙(hreflang 무결성):** 같은 글의 ko/en 판은 동일한
+`translationKey`를 단다. **한 `translationKey`당 한 언어에 정확히 한 글** —
+같은 lang에서 key를 중복하면(또는 번역인데 한쪽이 key를 빠뜨리면) hreflang
+짝이 깨진다. 스키마가 강제하지 못하므로 리뷰에서 확인한다(중복/누락 금지).
+
 ## 인테이크의 공개 경계
 
 `ascendy-blog`는 GitHub public repo이고, 제안 팀 repo(backend / frontend /
