@@ -44,8 +44,8 @@ Codex는 코드/콘텐츠를 직접 생산하지 않는다 — 단, Claude가 �
 2. **동의/반대/유보 3분할**. 동의는 마지막. 반대와 유보를 먼저 적는다.
    동의만 적힌 리뷰는 가짜 리뷰.
 3. **material finding은 file:line 인용**. "redaction 미흡"이 아니라
-   "`src/content/blog/vcr-secret.md:42` 에 사내 클러스터명 `vke-prod-1`이
-   남아있음 — `docs/redaction-checklist.md §2` 위반".
+   "`src/content/blog/vcr-secret.md:42` 에 사내 클러스터명(`vke-prod-<env>-N`
+   형태의 실명)이 남아있음 — `docs/redaction-checklist.md §2` 위반".
 4. **Claude의 untested assumption을 들춰낸다**. Claude가 "AI 크롤러가
    이걸 잘 인용할 것"이라고 단정하면 — 무엇을 근거로? 측정 가능한가?
 5. **자기 scope 확장 자제**. PR이 콘텐츠 추가인데 리뷰하면서 `editorial-

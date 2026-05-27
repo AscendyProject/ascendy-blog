@@ -24,15 +24,19 @@
 
 ## 2. 사내 식별자 (호스트/네트워크/리소스)
 
+> 이 문서는 **public repo**에 있다. 따라서 여기 예시로 **실제 내부 식별자**
+> (클러스터 실명·R2 버킷 실명·레지스트리 네임스페이스 등)를 박지 말 것 —
+> placeholder만 쓴다. 검수자가 grep할 **실명 canonical 목록은 비공개 infra
+> repo**에 둔다(블로그 public repo에 두지 않는다).
+
 - [ ] 사내 도메인(`*.ascendy.internal` 류, 비공개 prod 호스트명) 없음 — 공개
       서비스 도메인(`api.ascendy.ai`, `blog.ascendy.ai`)은 OK
 - [ ] 클러스터 이름, namespace 이름이 그대로 노출되어 곤란한 경우 일반화
-      (예: `vke-prod-ascendy-1` → "프로덕션 VKE 클러스터")
+      (예: `vke-prod-<env>-N` 형태의 실 클러스터명 → "프로덕션 VKE 클러스터")
 - [ ] 사내 IP (10/8, 172.16/12, 192.168/16) 노출 없음
-- [ ] VCR(`ewr.vultrcr.com/ascendy/*`) 경로의 비공개 이미지 태그가 코드
-      블록에 그대로 박혀있으면 일반화
-- [ ] R2 bucket 이름(`ascendy-storage`, `ascendy-storage-dev`) 노출이
-      필요한지 재고
+- [ ] VCR 레지스트리 경로(`<registry-host>/<namespace>/*`)의 비공개 이미지
+      태그가 코드 블록에 그대로 박혀있으면 일반화
+- [ ] R2 bucket 실명(prod/dev) 노출이 필요한지 재고 — 필요 없으면 일반화
 - [ ] 인시던트 티켓 번호, 사내 Slack URL, 사내 Jira/Linear URL 없음
 
 ## 3. 비즈니스 / 사람
