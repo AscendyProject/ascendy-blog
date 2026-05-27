@@ -1,12 +1,12 @@
 ---
 import { getCollection, render } from 'astro:content';
-import PostLayout from '../../layouts/PostLayout.astro';
-import { buildPostAlternates } from '../../i18n/ui';
+import PostLayout from '../../../layouts/PostLayout.astro';
+import { buildPostAlternates } from '../../../i18n/ui';
 
 export async function getStaticPaths() {
   const published = await getCollection('blog', ({ data }) => !data.draft && data.redactionReviewed);
   return published
-    .filter((p) => p.data.lang === 'ko')
+    .filter((p) => p.data.lang === 'en')
     .map((post) => {
       const versions = post.data.translationKey
         ? published

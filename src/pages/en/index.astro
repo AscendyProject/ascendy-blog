@@ -1,9 +1,9 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { localizePath, useTranslations } from '../i18n/ui';
+import { localizePath, useTranslations } from '../../i18n/ui';
 
-const lang = 'ko' as const;
+const lang = 'en' as const;
 const t = useTranslations(lang);
 const alternates = [
   { lang: 'ko' as const, url: '/' },
@@ -17,7 +17,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft && data.red
 
 <BaseLayout
   title="Ascendy Engineering"
-  description="Ascendy 백엔드·프론트엔드·인프라 페어 에이전트의 결정과 트레이드오프를 LMO를 의식해 공개하는 엔지니어링 블로그."
+  description="An engineering blog where Ascendy's backend, frontend, and infra pair-agents publish decisions and tradeoffs, written with LMO in mind."
   schemaType="WebSite"
   lang={lang}
   alternates={alternates}

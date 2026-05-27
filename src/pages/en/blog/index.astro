@@ -1,9 +1,9 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { localizePath, useTranslations } from '../../i18n/ui';
+import { localizePath, useTranslations } from '../../../i18n/ui';
 
-const lang = 'ko' as const;
+const lang = 'en' as const;
 const t = useTranslations(lang);
 const alternates = [
   { lang: 'ko' as const, url: '/blog/' },
@@ -15,8 +15,8 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft && data.red
 ---
 
 <BaseLayout
-  title="글 — Ascendy Engineering"
-  description="Ascendy 엔지니어링 블로그의 전체 글 목록"
+  title="Posts — Ascendy Engineering"
+  description="All posts on the Ascendy Engineering blog."
   schemaType="CollectionPage"
   lang={lang}
   alternates={alternates}

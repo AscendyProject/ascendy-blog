@@ -1,14 +1,15 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import type { APIContext } from 'astro';
+import { localizePath } from '../../i18n/ui';
 
 export async function GET(context: APIContext) {
-  const posts = await getCollection('blog', ({ data }) => !data.draft && data.redactionReviewed && data.lang === 'ko');
+  const posts = await getCollection('blog', ({ data }) => !data.draft && data.redactionReviewed && data.lang === 'en');
 
   return rss({
     title: 'Ascendy Engineering',
     description:
-      'Ascendy 엔지니어링 블로그 — 백엔드/프론트엔드/인프라 작업의 결정과 트레이드오프',
+      'Ascendy Engineering blog — decisions and tradeoffs from backend/frontend/infra work.',
     site: context.site!,
     items: posts
       .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
@@ -16,7 +17,7 @@ export async function GET(context: APIContext) {
         title: post.data.title,
         description: post.data.description,
         pubDate: post.data.pubDate,
-        link: `/blog/${post.id}/`,
+        link: localizePath(`/blog/${post.id}/`, 'en'),
         categories: post.data.tags,
       })),
   });

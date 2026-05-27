@@ -70,6 +70,23 @@
   path, 사내 IP, 고객/파트너 식별 정보, 미공개 비즈니스 결정 → **금지**.
 - 의심스러우면 redaction. "이거 공개해도 되나?"가 떠오르면 답은 No.
 
+### 번역본도 독립 redaction
+
+블로그는 ko/en 다국어를 지원한다(`src/i18n/`, `astro.config.mjs`의 `i18n`).
+번역본은 **파생물이지 자동 안전물이 아니다.** 번역 과정에서 원문의 일반화가
+풀리거나(예: "프로덕션 클러스터" → 실명으로 되돌림), 한국어 기준 체크리스트가
+놓친 표현이 영어로 노출될 수 있다.
+
+- 각 언어판(ko/en)은 `redaction-checklist.md`를 **독립적으로** 통과해야 한다.
+  한쪽이 통과했다고 다른 쪽이 자동 통과되지 않는다.
+- 번역본의 `redactionReviewed`는 그 언어판을 직접 검수한 결과여야 한다.
+- AI로 초벌 번역하더라도, 게시 전 redaction 재확인은 동일 강도로.
+
+**`translationKey` 규칙(hreflang 무결성):** 같은 글의 ko/en 판은 동일한
+`translationKey`를 단다. **한 `translationKey`당 한 언어에 정확히 한 글** —
+같은 lang에서 key를 중복하면(또는 번역인데 한쪽이 key를 빠뜨리면) hreflang
+짝이 깨진다. 스키마가 강제하지 못하므로 리뷰에서 확인한다(중복/누락 금지).
+
 ## 인테이크의 공개 경계
 
 `ascendy-blog`는 GitHub public repo이고, 제안 팀 repo(backend / frontend /

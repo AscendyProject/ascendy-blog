@@ -1,6 +1,7 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
 import SchemaOrg from '../components/SchemaOrg.astro';
+import { defaultLang, localeTag, localizePath, useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
   title: string;
@@ -8,25 +9,30 @@ interface Props {
   canonical?: string;
   image?: string;
   schemaType?: 'WebSite' | 'CollectionPage';
+  lang?: Lang;
+  alternates?: { lang: Lang; url: string }[];
 }
 
-const { title, description, canonical, image, schemaType = 'WebSite' } = Astro.props;
+const { title, description, canonical, image, schemaType = 'WebSite', lang = defaultLang, alternates = [] } = Astro.props;
 const url = new URL(Astro.url.pathname, Astro.site).toString();
+const t = useTranslations(lang);
+const other = alternates.find((a) => a.lang !== lang);
 ---
 
 <!doctype html>
-<html lang="ko">
+<html lang={lang}>
   <head>
-    <BaseHead title={title} description={description} canonical={canonical} image={image} />
-    <SchemaOrg type={schemaType} url={url} name={title} description={description} />
+    <BaseHead title={title} description={description} canonical={canonical} image={image} lang={lang} alternates={alternates} />
+    <SchemaOrg type={schemaType} url={url} name={title} description={description} lang={localeTag[lang]} />
   </head>
   <body>
     <header class="prose-ascendy !py-6 flex items-baseline justify-between">
-      <a href="/" class="text-base font-semibold tracking-tight">Ascendy</a>
+      <a href={localizePath('/', lang)} class="text-base font-semibold tracking-tight">Ascendy</a>
       <nav class="text-sm space-x-6">
-        <a href="/blog/">글</a>
-        <a href="/rss.xml">RSS</a>
+        <a href={localizePath('/blog/', lang)}>{t('navPosts')}</a>
+        <a href={localizePath('/rss.xml', lang)}>{t('navRss')}</a>
         <a href="https://github.com/AscendyProject/ascendy-blog">GitHub</a>
+        {other && <a href={other.url}>{t('switchLabel')}</a>}
       </nav>
     </header>
 
@@ -35,7 +41,7 @@ const url = new URL(Astro.url.pathname, Astro.site).toString();
     </main>
 
     <footer class="prose-ascendy !py-12 text-sm text-neutral-500">
-      © {new Date().getFullYear()} Ascendy. Static site, AI crawlers welcome.
+      © {new Date().getFullYear()} Ascendy. {t('footer')}
     </footer>
   </body>
 </html>
