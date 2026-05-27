@@ -1,6 +1,7 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
 import SchemaOrg from '../components/SchemaOrg.astro';
+import { defaultLang, localeTag, localizePath, useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
   title: string;
@@ -12,16 +13,22 @@ interface Props {
   category: string;
   heroImage?: string;
   canonical?: string;
+  lang?: Lang;
+  alternates?: { lang: Lang; url: string }[];
 }
 
 const props = Astro.props;
+const lang = props.lang ?? defaultLang;
+const alternates = props.alternates ?? [];
+const t = useTranslations(lang);
+const other = alternates.find((a) => a.lang !== lang);
 const url = new URL(Astro.url.pathname, Astro.site).toString();
 const siteName = 'Ascendy Engineering';
 const siteUrl = Astro.site?.toString() ?? 'https://blog.ascendy.ai';
 ---
 
 <!doctype html>
-<html lang="ko">
+<html lang={lang}>
   <head>
     <BaseHead
       title={props.title}
@@ -29,6 +36,8 @@ const siteUrl = Astro.site?.toString() ?? 'https://blog.ascendy.ai';
       canonical={props.canonical}
       image={props.heroImage}
       ogType="article"
+      lang={lang}
+      alternates={alternates}
     />
     <SchemaOrg
       type="BlogPosting"
@@ -43,11 +52,13 @@ const siteUrl = Astro.site?.toString() ?? 'https://blog.ascendy.ai';
       category={props.category}
       siteName={siteName}
       siteUrl={siteUrl}
+      lang={localeTag[lang]}
     />
   </head>
   <body>
-    <header class="prose-ascendy !py-6">
-      <a href="/" class="text-sm text-neutral-500 hover:text-neutral-900">← Ascendy</a>
+    <header class="prose-ascendy !py-6 flex items-baseline justify-between">
+      <a href={localizePath('/', lang)} class="text-sm text-neutral-500 hover:text-neutral-900">← Ascendy</a>
+      {other && <a href={other.url} class="text-sm text-neutral-500 hover:text-neutral-900">{t('switchLabel')}</a>}
     </header>
 
     <article class="prose-ascendy">
@@ -63,7 +74,7 @@ const siteUrl = Astro.site?.toString() ?? 'https://blog.ascendy.ai';
       <slot />
       <hr />
       <p class="text-xs text-neutral-500">
-        Tags: {props.tags.join(', ')}
+        {t('tags')}: {props.tags.join(', ')}
       </p>
     </article>
   </body>

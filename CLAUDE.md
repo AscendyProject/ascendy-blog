@@ -40,6 +40,9 @@
 - **RSS** via `@astrojs/rss` (`src/pages/rss.xml.ts`)
 - **Schema.org JSON-LD** via `src/components/SchemaOrg.astro` (자동 주입)
 - **Cloudflare Pages** 정적 호스팅 — `dist/` 직접 서빙, adapter 없음
+- **i18n** — ko 기본(URL prefix 없음) + en(`/en`), Astro `i18n`
+  (`prefixDefaultLocale: false`). chrome 사전·헬퍼는 `src/i18n/ui.ts`,
+  글은 frontmatter `lang`/`translationKey`로 구분, hreflang/`inLanguage` 동적
 - **llms.txt / llms-full.txt** — TODO (build-time 생성기 추가 예정)
 
 루트 도메인: `blog.ascendy.ai` (Cloudflare DNS).

@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { defaultLang, localeTag, type Lang } from '../i18n/ui';
 
 interface Props {
   title: string;
@@ -7,13 +8,18 @@ interface Props {
   canonical?: string;
   image?: string;
   ogType?: 'website' | 'article';
+  lang?: Lang;
+  // 이 페이지의 모든 언어판 (자기 자신 포함). hreflang 상호 링크용.
+  alternates?: { lang: Lang; url: string }[];
 }
 
-const { title, description, canonical, image, ogType = 'website' } = Astro.props;
+const { title, description, canonical, image, ogType = 'website', lang = defaultLang, alternates = [] } = Astro.props;
 const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).toString();
 const ogImage = image
   ? new URL(image, Astro.site).toString()
   : new URL('/og-default.png', Astro.site).toString();
+const ogLocale = localeTag[lang].replace('-', '_');
+const xDefault = alternates.find((a) => a.lang === defaultLang);
 ---
 
 <meta charset="utf-8" />
@@ -29,6 +35,12 @@ const ogImage = image
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={ogImage} />
+<meta property="og:locale" content={ogLocale} />
+
+{alternates.map((alt) => (
+  <link rel="alternate" hreflang={alt.lang} href={alt.url} />
+))}
+{xDefault && <link rel="alternate" hreflang="x-default" href={xDefault.url} />}
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />

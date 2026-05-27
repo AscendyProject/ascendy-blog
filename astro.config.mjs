@@ -8,9 +8,21 @@ import tailwindcss from '@tailwindcss/vite';
 // @astrojs/cloudflare 추가.
 export default defineConfig({
   site: 'https://blog.ascendy.ai',
+  // ko 기본(URL prefix 없음) + en(/en). 기본 로케일 URL은 안 바뀌어
+  // 기존 한국어 글 링크가 깨지지 않는다.
+  i18n: {
+    defaultLocale: 'ko',
+    locales: ['ko', 'en'],
+    routing: { prefixDefaultLocale: false },
+  },
   integrations: [
     mdx(),
-    sitemap(),
+    sitemap({
+      i18n: {
+        defaultLocale: 'ko',
+        locales: { ko: 'ko-KR', en: 'en-US' },
+      },
+    }),
   ],
   vite: {
     plugins: [tailwindcss()],

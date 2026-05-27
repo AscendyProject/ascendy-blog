@@ -19,6 +19,12 @@ const blog = defineCollection({
       tags: z.array(z.string()).min(1),
       category: z.enum(['backend', 'frontend', 'infra', 'ml', 'meta']),
 
+      // i18n: 글의 언어. en은 /en/blog/<slug>로 라우팅된다.
+      lang: z.enum(['ko', 'en']).default('ko'),
+      // 같은 글의 ko/en 판을 짝짓는 키 (hreflang 상호 링크용).
+      // 예: ko와 en 모두 translationKey: "how-this-blog-is-written"
+      translationKey: z.string().optional(),
+
       // 인테이크 출처 (3팀 산출물 기반 게시물은 필수)
       // 예: "docs/intake/from-infra/2026-05-24-vcr-secret.md"
       sourceIntake: z.array(z.string()).optional(),
