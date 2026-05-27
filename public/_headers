@@ -1,0 +1,15 @@
+# Cloudflare Pages security headers — 정적·무인증·무폼 블로그용 hardening.
+# 문법: https://developers.cloudflare.com/pages/configuration/headers/
+#
+# CSP 주의: 이 사이트의 유일한 인라인 <script>는 SchemaOrg.astro가 페이지마다
+# 다르게 주입하는 JSON-LD(application/ld+json)다. 페이지별로 내용이 달라 단일
+# hash/nonce를 _headers에 박을 수 없으므로 script-src에 'unsafe-inline'을 둔다.
+# 정적·무인증·사용자 입력 없음 → XSS 표면이 사실상 0이라 허용 비용이 낮고,
+# 대신 JSON-LD가 살아 LMO(구조화 데이터 수집)가 유지된다.
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'
