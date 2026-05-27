@@ -80,7 +80,8 @@
 - [x] §6 AI 학습 노출 의식
 
 검토자: Claude (블로그팀), 재검토자: Codex (블로그팀)
-인테이크 원본: docs/intake/from-infra/2026-05-24-vcr-secret-phase1.md
+raw 원본: ascendy-infra/docs/blog-intake/2026-05-24-vcr-secret-phase1.md
+정제본(sourceIntake): docs/intake/from-infra/2026-05-24-vcr-secret-phase1.md
 ```
 
 frontmatter `redactionReviewed: true`는 위 체크가 모두 끝났을 때만 true로.

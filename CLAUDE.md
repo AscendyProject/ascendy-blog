@@ -15,8 +15,10 @@
 블로그팀은 **편집국**이다. 직접 결정/구현을 만들어내지 않는다.
 
 1. 3개 페어 팀(`ascendy-backend`, `ascendy-frontend`, `ascendy-infra`)이
-   작업 후 `docs/intake/from-<team>/YYYY-MM-DD-<topic>.md`를 떨군다.
-   포맷은 [`docs/intake-template.md`](./docs/intake-template.md) 강제.
+   작업 후 **자기 private repo**의 `docs/blog-intake/YYYY-MM-DD-<topic>.md`에
+   글감을 떨군다 (블로그는 public이라 raw를 직접 받지 않는다). 포맷은
+   [`docs/intake-template.md`](./docs/intake-template.md) 강제. 블로그팀은
+   이를 읽어 redaction 후 정제본만 `docs/intake/from-<team>/`에 커밋한다.
 2. 블로그팀 Claude(이 세션)가 **메인 작업자** — 인테이크를 게시물로
    가공한다. 편집 정책은 [`docs/editorial-policy.md`](./docs/editorial-policy.md).
 3. **redaction 체크리스트**([`docs/redaction-checklist.md`](./docs/redaction-checklist.md))를
@@ -126,7 +128,9 @@ cp src/content/blog/_template.md src/content/blog/<slug>.md
 - 모든 포스트 페이지는 `SchemaOrg.astro`를 통해 JSON-LD 주입. 페이지가
   schema 없이 빌드되면 리뷰 차단.
 - 게시물은 `src/content/blog/`에만. `src/pages/posts/`나 임의 위치 금지.
-- 인테이크 원본은 `docs/intake/from-<team>/`에만. 다른 곳에 옮기지 말 것.
+- raw 인테이크 원본은 제안 팀 private repo의 `docs/blog-intake/`에 있고,
+  `docs/intake/from-<team>/`에는 redaction 통과한 **정제본**만 둔다
+  (`sourceIntake:`가 가리키는 경로). 다른 곳에 옮기지 말 것.
 - 정적 에셋은 `public/` 또는 글별 `_assets/`. 글로벌 에셋이 폭증하면 PR.
 
 ## Forbidden actions
@@ -201,13 +205,22 @@ merge는 사용자만. `gh pr merge`는 어떤 에이전트도 실행하지 않�
 
 ## Cross-repo / 인테이크 워크플로
 
-인테이크가 들어오는 경로:
+인테이크는 **두 단계 경로**를 거친다 (블로그는 public, 3팀 repo는 private
+이므로 raw 소스가 public에 닿지 않게 하기 위함 — 자세한 근거는
+`docs/editorial-policy.md` "인테이크의 공개 경계", `docs/intake-template.md`):
 
 ```text
+# 1) raw 원본 — 제안 팀의 private repo에 (블로그팀은 읽기 전용 열람):
+<팀 private repo>/docs/blog-intake/<YYYY-MM-DD>-<topic>.md
+
+# 2) 정제본 — 블로그팀이 redaction 통과 후 이 public repo에 커밋:
 docs/intake/from-backend/<YYYY-MM-DD>-<topic>.md
 docs/intake/from-frontend/<YYYY-MM-DD>-<topic>.md
 docs/intake/from-infra/<YYYY-MM-DD>-<topic>.md
 ```
+
+`sourceIntake:`는 2)의 정제본 경로를 가리킨다. 일일 주기·통지는
+`docs/intake-standing-order.md` 참조.
 
 블로그팀이 3팀에 응답/질의가 필요할 때:
 
