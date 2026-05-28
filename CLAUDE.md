@@ -14,11 +14,17 @@
 
 블로그팀은 **편집국**이다. 직접 결정/구현을 만들어내지 않는다.
 
+**글감 소스는 세 가지** — ① 3팀 인테이크 ② 메타(블로그 자체 안내·회고)
+③ **사용자 직접 지정**(사용자가 채팅/문서로 주제·자료를 줌). ②·③은
+`sourceIntake` 면제이고, 어떤 소스든 redaction은 동일하게 적용된다.
+
 1. 3개 페어 팀(`ascendy-backend`, `ascendy-frontend`, `ascendy-infra`)이
    작업 후 **자기 private repo**의 `docs/blog-intake/YYYY-MM-DD-<topic>.md`에
    글감을 떨군다 (블로그는 public이라 raw를 직접 받지 않는다). 포맷은
    [`docs/intake-template.md`](./docs/intake-template.md) 강제. 블로그팀은
    이를 읽어 redaction 후 정제본만 `docs/intake/from-<team>/`에 커밋한다.
+   **사용자 직접 지정** 글감은 사용자가 준 주제/자료가 곧 소스다 — 채팅으로만
+   줘도 되고, 기록을 남기려면 `docs/intake/from-user/`에 redaction 후 둔다.
 2. 블로그팀 Claude(이 세션)가 **메인 작업자** — 인테이크를 게시물로
    가공한다. 편집 정책은 [`docs/editorial-policy.md`](./docs/editorial-policy.md).
 3. **redaction 체크리스트**([`docs/redaction-checklist.md`](./docs/redaction-checklist.md))를
@@ -81,7 +87,8 @@ cp src/content/blog/_template.md src/content/blog/<slug>.md
 
 1. **인테이크 없는 게시 금지**. 3팀 산출물 기반 글은 frontmatter
    `sourceIntake:`에 `docs/intake/from-<team>/<file>.md` 경로가 반드시
-   들어가야 한다. 메타 카테고리(블로그 자체 안내, 회고)는 예외.
+   들어가야 한다. **메타 카테고리(블로그 자체 안내·회고)와 사용자 직접 지정
+   글감은 예외** — sourceIntake 없이 게시 가능(단 redaction은 동일 통과).
 2. **redaction 체크리스트 미통과 머지 금지**. `redactionReviewed: true`는
    `docs/redaction-checklist.md`의 모든 항목을 사람/에이전트가 통과시킨
    결과여야 한다. 자동 통과 금지.
