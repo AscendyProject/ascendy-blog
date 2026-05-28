@@ -3,6 +3,11 @@
 3개 페어 팀(backend / frontend / infra)이 블로그팀에게 글감을 넘길 때 쓰는
 표준 양식. 이 양식 없이 들어온 인테이크는 블로그팀이 되돌려 보낸다.
 
+> **사용자 직접 지정 글감**도 가능하다 — 사용자가 채팅/문서로 주제·자료를
+> 주면 블로그팀이 글로 만든다(`sourceIntake` 면제). 이 양식을 선택적으로
+> 써도 되고, 기록은 `docs/intake/from-user/`에 redaction 후 남긴다.
+> 자세한 소스 구분은 [`editorial-policy.md`](./editorial-policy.md) "글감은 어디서 오나".
+
 ## 어디에 쓰나 — raw 소스는 비공개 팀 repo에
 
 `ascendy-blog`는 **public** repo이고 backend / frontend / infra는 모두
