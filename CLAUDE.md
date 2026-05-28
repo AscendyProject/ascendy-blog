@@ -31,6 +31,11 @@
 `redaction-checklist.md`. 비단조로운 콘텐츠 작업이라도 위 세 문서를 먼저
 체크한 뒤 시작하라.
 
+이 블로그의 **3대 목적** — ① Ascendy 기술 신뢰성 입증 ② 서비스 홍보(신뢰성으로,
+자뻑 아님) ③ 기술 기록 — 은 `editorial-policy.md` "왜 쓰는가"에 정의. 모든
+편집 판단은 이 목적에 복무한다. 독자는 사람 + AI 에이전트 **둘 다**(가독성 +
+인용 가능성), AO(GEO/AEO)도 같은 문서 참조.
+
 ## Stack
 
 - **Astro 5** (Content Collections v2, `glob` loader)
