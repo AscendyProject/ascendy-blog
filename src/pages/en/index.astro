@@ -27,15 +27,18 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft && data.red
     <p>{t('homeTagline')}</p>
 
     <h2>{t('homeRecent')}</h2>
-    <ul class="space-y-3">
+    <ul class="post-list space-y-2">
       {posts.map((post) => (
         <li>
-          <a href={localizePath(`/blog/${post.id}/`, lang)} class="font-medium">{post.data.title}</a>
-          <p class="text-sm text-neutral-500">{post.data.description}</p>
+          <a href={localizePath(`/blog/${post.id}/`, lang)} class="post-card">
+            <span class="pc-meta">{post.data.category} · {post.data.pubDate.toISOString().slice(0, 10)}</span>
+            <span class="pc-title">{post.data.title}</span>
+            <span class="pc-desc">{post.data.description}</span>
+          </a>
         </li>
       ))}
       {posts.length === 0 && (
-        <li class="text-neutral-500">{t('homeEmpty')}</li>
+        <li style="color:var(--muted)">{t('homeEmpty')}</li>
       )}
     </ul>
   </section>
