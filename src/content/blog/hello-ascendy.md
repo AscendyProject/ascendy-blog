@@ -5,8 +5,8 @@ pubDate: 2026-05-25
 author: "Ascendy Engineering"
 tags: ["astro", "cloudflare-pages", "lmo", "meta"]
 category: "meta"
-draft: true
-redactionReviewed: false
+draft: false
+redactionReviewed: true
 ---
 
 ## TL;DR

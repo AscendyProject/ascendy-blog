@@ -9,8 +9,8 @@ lang: "ko"
 translationKey: "k8s-helm-transition-decision"
 sourceIntake:
   - "docs/intake/from-infra/2026-05-27-k8s-helm-overlap-transition.md"
-draft: true
-redactionReviewed: false
+draft: false
+redactionReviewed: true
 ---
 
 ## TL;DR
