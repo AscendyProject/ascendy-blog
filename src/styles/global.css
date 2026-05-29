@@ -1,37 +1,104 @@
 @import "tailwindcss";
 
-/* 미니멀 라인 디자인의 베이스 */
+/* ── 디자인 토큰 ────────────────────────────────────────────────
+   미니멀하되 사람이 읽기 좋게. 외부 폰트/추적 없이 시스템 폰트 + 단일 악센트. */
 :root {
-  --content-max: 72ch;
+  --content-max: 70ch;
+  --accent: #4f46e5;        /* indigo-600 */
+  --accent-hover: #4338ca;  /* indigo-700 */
+  --rule: #e5e5e5;          /* neutral-200 */
+  --muted: #6b7280;         /* neutral-500 */
+  --code-bg: #f4f4f5;       /* zinc-100 */
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: #a5b4fc;        /* indigo-300 */
+    --accent-hover: #c7d2fe;  /* indigo-200 */
+    --rule: #27272a;          /* zinc-800 */
+    --muted: #9ca3af;         /* neutral-400 */
+    --code-bg: #1e1e22;
+  }
 }
 
 html {
   font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
 }
 
 body {
   @apply bg-white text-neutral-900 antialiased;
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     "Helvetica Neue", "Apple SD Gothic Neo", "Pretendard", sans-serif;
+  font-size: 1.0625rem;   /* 17px 본문 */
+  line-height: 1.7;
 }
-
 @media (prefers-color-scheme: dark) {
-  body {
-    @apply bg-neutral-950 text-neutral-100;
-  }
+  body { @apply bg-neutral-950 text-neutral-100; }
 }
 
+/* ── 본문 컨테이너 + 타이포 ─────────────────────────────────── */
 .prose-ascendy {
   max-width: var(--content-max);
-  @apply mx-auto px-6 py-12 leading-relaxed;
+  @apply mx-auto px-6 py-10;
 }
 
-.prose-ascendy h1 { @apply text-3xl font-semibold mt-10 mb-4 tracking-tight; }
-.prose-ascendy h2 { @apply text-xl  font-semibold mt-10 mb-3 tracking-tight; }
+.prose-ascendy h1 { @apply text-3xl font-bold mt-12 mb-4 tracking-tight; line-height: 1.25; }
+.prose-ascendy h2 { @apply text-2xl font-semibold mt-12 mb-3 tracking-tight; }
 .prose-ascendy h3 { @apply text-lg  font-semibold mt-8  mb-2; }
 .prose-ascendy p  { @apply my-4; }
-.prose-ascendy a  { @apply underline underline-offset-4 decoration-neutral-400 hover:decoration-neutral-900; }
-.prose-ascendy pre  { @apply my-6 p-4 rounded-md overflow-x-auto text-sm; }
-.prose-ascendy code { @apply text-[0.95em]; }
-.prose-ascendy hr   { @apply my-10 border-neutral-200 dark:border-neutral-800; }
+
+.prose-ascendy a {
+  color: var(--accent);
+  @apply underline underline-offset-4;
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  transition: color .15s, text-decoration-color .15s;
+}
+.prose-ascendy a:hover { color: var(--accent-hover); text-decoration-color: currentColor; }
+
+/* 리스트 — Tailwind preflight가 marker를 지우므로 명시 복원 */
+.prose-ascendy ul { @apply my-4 pl-6; list-style: disc; }
+.prose-ascendy ol { @apply my-4 pl-6; list-style: decimal; }
+.prose-ascendy li { @apply my-1.5; padding-left: .15rem; }
+.prose-ascendy li::marker { color: var(--muted); }
+.prose-ascendy ul ul, .prose-ascendy ol ol { @apply my-1; }
+
+/* 인용 */
+.prose-ascendy blockquote {
+  @apply my-6 pl-4 italic;
+  border-left: 3px solid var(--accent);
+  color: var(--muted);
+}
+.prose-ascendy blockquote p { @apply my-2; }
+
+/* 코드 */
+.prose-ascendy :not(pre) > code {
+  background: var(--code-bg);
+  @apply rounded px-1.5 py-0.5 text-[0.875em];
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}
+.prose-ascendy pre {
+  @apply my-6 p-4 rounded-lg overflow-x-auto text-sm;
+  border: 1px solid var(--rule);
+}
+.prose-ascendy pre code { @apply text-[0.95em]; background: none; padding: 0; }
+
+.prose-ascendy strong { @apply font-semibold; }
+.prose-ascendy hr   { @apply my-12; border: none; border-top: 1px solid var(--rule); }
+.prose-ascendy img  { @apply my-6 rounded-lg; }
+
+.prose-ascendy table { @apply my-6 w-full text-sm border-collapse; }
+.prose-ascendy th, .prose-ascendy td { @apply px-3 py-2 text-left; border: 1px solid var(--rule); }
+.prose-ascendy th { @apply font-semibold; background: var(--code-bg); }
+
+/* ── 포스트 목록/카드 ───────────────────────────────────────
+   목록 ul은 본문 disc 불릿을 쓰지 않으므로 marker 제거. */
+.post-list { list-style: none; padding-left: 0; }
+.post-card {
+  @apply block rounded-lg p-4 -mx-4 no-underline transition;
+  color: inherit;
+}
+.post-card:hover { background: var(--code-bg); }
+.post-card .pc-meta  { @apply block text-xs uppercase tracking-wide; color: var(--muted); }
+.post-card .pc-title { @apply block text-lg font-semibold mt-0.5; }
+.post-card .pc-desc  { @apply block text-sm mt-1; color: var(--muted); }
