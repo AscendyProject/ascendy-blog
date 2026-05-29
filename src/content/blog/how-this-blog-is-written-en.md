@@ -7,8 +7,8 @@ tags: ["lmo", "ai-agents", "editorial-workflow", "astro"]
 category: "meta"
 lang: "en"
 translationKey: "how-this-blog-is-written"
-draft: true
-redactionReviewed: false
+draft: false
+redactionReviewed: true
 ---
 
 ## TL;DR

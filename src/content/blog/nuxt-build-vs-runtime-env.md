@@ -9,8 +9,8 @@ lang: "ko"
 translationKey: "nuxt-build-vs-runtime-env"
 sourceIntake:
   - "docs/intake/from-frontend/2026-05-27-nuxt-build-vs-runtime-env.md"
-draft: true
-redactionReviewed: false
+draft: false
+redactionReviewed: true
 ---
 
 ## TL;DR
