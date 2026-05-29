@@ -1,0 +1,10 @@
+title = "ascendy-blog gitleaks config"
+
+# 기본 룰셋 사용 + 블로그 특화 false-positive allowlist.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "frontmatter translationKey는 kebab-case 슬러그지 시크릿이 아님 (generic-api-key 오탐)"
+regexTarget = "line"
+regexes = ['''translationKey:\s*["'][a-z0-9-]+["']''']
