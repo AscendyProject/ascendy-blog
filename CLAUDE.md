@@ -54,7 +54,8 @@
 - **i18n** — ko 기본(URL prefix 없음) + en(`/en`), Astro `i18n`
   (`prefixDefaultLocale: false`). chrome 사전·헬퍼는 `src/i18n/ui.ts`,
   글은 frontmatter `lang`/`translationKey`로 구분, hreflang/`inLanguage` 동적
-- **llms.txt / llms-full.txt** — TODO (build-time 생성기 추가 예정)
+- **llms.txt / llms-full.txt** — `src/pages/llms.txt.ts` + `llms-full.txt.ts`
+  (발행 글 자동 색인, AI 에이전트 수집용). 발행 게이트 동일 적용.
 
 루트 도메인: `blog.ascendy.ai` (Cloudflare DNS).
 
