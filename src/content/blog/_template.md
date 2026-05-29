@@ -37,7 +37,6 @@ redactionReviewed: false     # 게재 전 redaction-checklist.md 통과 후 true
 ## 본문
 
 - 코드 예시는 실제 동작하는 최소 단위로.
-- 다이어그램은 Mermaid 또는 SVG로 (텍스트 기반 → AI 친화적).
 - 내부 식별자(클러스터 이름, namespace, image tag, registry path 등)는
   일반화하거나 제거.
 
@@ -47,6 +46,21 @@ export function example() {
   return 'hello';
 }
 ```
+
+다이어그램은 ` ```mermaid ` 코드펜스로 쓴다. 빌드 시 SVG로 렌더돼 사람은 그림을
+보고(클라이언트 JS 0), AI는 llms-full.txt의 원문 + 그림 아래 접힌 소스로 텍스트를
+가져간다. 식별자는 다이어그램 안에서도 일반화할 것.
+
+```mermaid
+flowchart LR
+  A[입력] --> B{판단}
+  B -->|예| C[처리]
+  B -->|아니오| D[스킵]
+```
+
+> 다이어그램을 추가/수정하면 `pnpm build`를 로컬에서 한 번 돌려 `.mermaid-cache/`에
+> 렌더 결과가 생기게 한 뒤 **그 캐시까지 함께 커밋**한다. Cloudflare Pages 빌드는
+> 캐시만 읽으므로 브라우저를 띄우지 않는다(캐시에 없으면 빌드가 막힌다).
 
 ## 결정/트레이드오프
 
