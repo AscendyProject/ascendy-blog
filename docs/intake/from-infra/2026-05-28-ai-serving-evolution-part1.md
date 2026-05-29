@@ -4,7 +4,7 @@ date: 2026-05-28
 topic: "AI 이미지 전처리 추론 스택을 외부 멀티모달 API → 자체 GPU 서빙으로 옮겼다가, 단일 GPU multi-model OOM → CPU offload 지연 → GPU 2장 분리 → managed GPU 후퇴까지 간 삽질기 1부. '1-2장 데모에서 잘 되던 게 100장 배치에서 무너진다'의 구체 사례와 self-hosting GPU 추론의 숨은 비용."
 suggestedCategory: infra
 suggestedTags: ["gpu", "inference", "triton", "vllm", "cost-optimization", "oom", "self-hosting", "war-story"]
-redactionNote: "원본(infra private repo)의 내부 식별자(클라우드/GPU vendor명, GPU SKU, 컨테이너 레지스트리 경로, 클러스터/namespace/image tag, R2 버킷명, 모델 레포 파일명, vLLM 튜닝 실값)는 일반화 후 게재. 구체 비용 숫자는 원본에서부터 의도적으로 배제 — 복원 금지. raw는 비공개 repo에만 존재."
+redactionNote: "원본(infra private repo)의 내부 식별자(클라우드/GPU vendor명, GPU SKU, 컨테이너 레지스트리 경로, 클러스터/namespace/image tag, object storage 버킷명, 모델 레포 파일명, vLLM 튜닝 실값)는 일반화 후 게재. 구체 비용 숫자는 원본에서부터 의도적으로 배제 — 복원 금지. raw는 비공개 repo에만 존재."
 ---
 
 # (정제본) 클라우드 API → 자체 GPU 서빙 → managed GPU — AI 전처리 삽질기 1부
@@ -64,12 +64,12 @@ redactionNote: "원본(infra private repo)의 내부 식별자(클라우드/GPU 
 
 ## redaction 적용 (원본 → 일반화)
 
-- 클라우드/VKE vendor명, managed GPU 서비스명 → "클러스터 GPU 노드를 제공하는
+- 클라우드/관리형 쿠버네티스 vendor명, managed GPU 서비스명 → "클러스터 GPU 노드를 제공하는
   클라우드", "managed GPU 서비스"
 - 초기 외부 멀티모달 API vendor명 → "외부 멀티모달 LLM API"
 - GPU 인스턴스 타입/SKU → "상위 단일 GPU → 중급 GPU 2장 → managed 중급 GPU"
 - 구체 비용 숫자 → **추가 금지** (원본에서부터 배제, 정성적 "비용 압박"만)
-- 컨테이너 레지스트리 경로 / 클러스터명 / namespace / image tag / R2 버킷명 → 본문 미등장, 스니펫 추가 시 일반화
+- 컨테이너 레지스트리 경로 / 클러스터명 / namespace / image tag / object storage 버킷명 → 본문 미등장, 스니펫 추가 시 일반화
 - 모델 레포 디렉토리/파일명(예: TensorRT plan 파일명) → "모델 레포 디렉토리", "TensorRT plan 파일"
 - vLLM 런타임 튜닝 실값(`--gpu-memory-utilization`, `--max-model-len`,
   `--max-num-seqs`) → placeholder(`<high>`/`<lower>` 등). 방향(공격적→보수적)만 의미.

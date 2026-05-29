@@ -91,11 +91,15 @@ VLM만 따로 vLLM으로 뺀 이유는, Triton의 generic Python backend보다 v
 # (아래는 placeholder — 실제 값보다 방향이 핵심이다: 공격적 → 보수적.)
 python3 -m vllm.entrypoints.openai.api_server \
     --model <model-path> \
-    --gpu-memory-utilization <high→lower> \   # 점유율을 내려 OOM 여유 확보
-    --max-model-len <long→shorter> \          # 컨텍스트를 줄여 KV 캐시 상한 하향
+    --gpu-memory-utilization <high→lower> \
+    --max-model-len <long→shorter> \
     --dtype bfloat16 \
-    --max-num-seqs <seq-limit> \              # 동시 시퀀스 제한 (backpressure)
-    --enable-chunked-prefill                  # 긴 prefill을 쪼개 메모리 단편화 방어
+    --max-num-seqs <seq-limit> \
+    --enable-chunked-prefill
+# --gpu-memory-utilization : 점유율을 내려 OOM 여유 확보
+# --max-model-len          : 컨텍스트를 줄여 KV 캐시 상한 하향
+# --max-num-seqs           : 동시 시퀀스 제한 (backpressure)
+# --enable-chunked-prefill : 긴 prefill을 쪼개 메모리 단편화 방어
 ```
 
 > **코드 흔적.** 지금은 parked된 vLLM 설정에 이 튜닝의 흔적이 그대로 남아 있다. `--gpu-memory-utilization`과 `--max-model-len`이 스크립트 기본값(공격적)과 override(보수적) 사이에서 갈라져 있다 — 처음엔 공격적으로 잡았다가 OOM 때문에 보수적으로 내린 자국이다.
