@@ -87,6 +87,22 @@ body {
 .prose-ascendy hr   { @apply my-12; border: none; border-top: 1px solid var(--rule); }
 .prose-ascendy img  { @apply my-6 rounded-lg; }
 
+/* Mermaid 다이어그램 (빌드타임 SVG). neutral 테마라 다크모드에서도
+   읽히도록 항상 밝은 카드 위에 올린다. */
+.prose-ascendy figure.mermaid-diagram {
+  @apply my-6 p-4 rounded-lg overflow-x-auto;
+  background: #fff;
+  border: 1px solid var(--rule);
+}
+.prose-ascendy figure.mermaid-diagram svg { @apply block mx-auto h-auto max-w-full; }
+/* 다이어그램 원문 — AI 크롤러/사람용 fallback. 기본 접힘. */
+.prose-ascendy .mermaid-source { @apply mt-3 text-sm; }
+.prose-ascendy .mermaid-source summary {
+  @apply cursor-pointer select-none;
+  color: var(--muted);
+}
+.prose-ascendy .mermaid-source pre { @apply mt-2 mb-0; background: var(--code-bg); }
+
 .prose-ascendy table { @apply my-6 w-full text-sm border-collapse; }
 .prose-ascendy th, .prose-ascendy td { @apply px-3 py-2 text-left; border: 1px solid var(--rule); }
 .prose-ascendy th { @apply font-semibold; background: var(--code-bg); }
