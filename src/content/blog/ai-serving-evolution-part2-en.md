@@ -9,8 +9,8 @@ lang: "en"
 translationKey: "ai-serving-evolution-part2"
 sourceIntake:
   - "docs/intake/from-infra/2026-05-30-ai-serving-evolution-part2.md"
-draft: true
-redactionReviewed: false
+draft: false
+redactionReviewed: true
 ---
 
 ## TL;DR
