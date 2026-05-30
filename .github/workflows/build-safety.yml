@@ -1,0 +1,53 @@
+name: build-safety
+
+# 생성 산출물(빌드 결과) 레벨의 누출/안전 백스톱.
+#
+# secret-scan.yml(gitleaks)은 *소스* 디렉터리를 스캔한다. 하지만 llms-full.txt 같은
+# 산출물은 빌드 시 본문(p.body)을 무가공 덤프하므로, 소스 grep이 놓친 게 *렌더/집계
+# 결과*에서 샐 수 있다. 이 워크플로는 빌드 후 dist/를 다시 스캔해 그 갭을 막는다.
+#
+# 또한 빌드타임 SVG(Mermaid)의 능동 콘텐츠(script/이벤트핸들러/js-url)를 백스톱으로
+# 검사한다. 1차 방어는 src/lib/remark-mermaid-figure.mjs의 sanitizeSvg(빌드 단언)이고,
+# 여기서는 플러그인을 거치지 않고 커밋된 .svg(public/_assets 등)까지 잡는다.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-scan:
+    runs-on: ubuntu-latest
+    env:
+      # 캐시 미스 시 Playwright를 띄우지 않고 명확한 가드 에러로 멈추게 한다
+      # (다이어그램 추가 시 .mermaid-cache 커밋을 강제 — 플러그인의 CF_PAGES 가드).
+      CF_PAGES: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Active-content scan on committed SVGs (backstop)
+        run: |
+          if grep -rIlE '<script\b|[[:space:]]on[a-z]+[[:space:]]*=|javascript:|(xlink:href|href)[[:space:]]*=[[:space:]]*["'"'"']?data:' \
+              --include='*.svg' . ; then
+            echo "::error::Active content found in a committed SVG (script/handler/js-url/data-uri)."
+            exit 1
+          fi
+          echo "SVG active-content scan: clean"
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Secret scan on generated output (dist/)
+        run: |
+          docker run --rm -v "$GITHUB_WORKSPACE:/repo" \
+            ghcr.io/gitleaks/gitleaks:latest \
+            dir /repo/dist -c /repo/.gitleaks.toml --no-banner --redact -v
