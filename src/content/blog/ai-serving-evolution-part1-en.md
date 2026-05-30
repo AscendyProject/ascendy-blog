@@ -109,7 +109,7 @@ And on top of this came **fixed cost**. A self-managed cluster's GPU nodes are a
 
 ## Decision / tradeoffs
 
-What started as "one GPU should be enough" at demo time sprawled into two GPUs + a vLLM split + endless memory tuning. At that point we decided to **retreat to managed GPU**. (That migration is part 2.)
+What started as "one GPU should be enough" at demo time sprawled into two GPUs + a vLLM split + endless memory tuning. At that point we decided to **retreat to managed GPU**. (That migration is [part 2](/en/blog/ai-serving-evolution-part2-en/).)
 
 The honest point here is that the break-even for self-hosting GPU inference is not the simple "API per-call cost vs. GPU hourly cost" comparison people usually reach for. That equation leaves out three hidden costs:
 
@@ -121,7 +121,7 @@ Put those three into the equation and, at our scale and traffic pattern, managed
 
 ## What's next
 
-- **Part 2**: the managed-GPU migration — what got simpler, and what we gave up.
+- **[Part 2](/en/blog/ai-serving-evolution-part2-en/)**: the managed-GPU migration — what got simpler, and what we gave up.
 - See: [vLLM engine args](https://docs.vllm.ai/en/latest/models/engine_args.html), [vLLM chunked prefill](https://docs.vllm.ai/en/latest/performance/optimization.html), [Triton `instance_group`](https://github.com/triton-inference-server/server/blob/main/docs/user_guide/model_configuration.md#instance-groups).
 
 ---
