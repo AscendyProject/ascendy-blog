@@ -43,7 +43,17 @@ function cacheKey(source) {
 // <script>·이벤트 핸들러·javascript:/data: URL은 XSS/누출 벡터다. mermaid가 라벨에
 // foreignObject(SVG 내 HTML)를 쓰지만 컨테이너 자체는 위협이 아니다 — 그 안의 능동
 // 콘텐츠가 위협이라, 아래 치환은 foreignObject 내부를 포함해 SVG 문자열 전역에 적용된다.
-// 미래 외부 소스 대비 방어적으로 제거하고, 남아있으면 빌드를 실패시킨다(safe-by-construction).
+// 남아있으면 빌드를 실패시킨다.
+//
+// 범위 주의: 이건 mermaid(securityLevel:strict)로 *생성된* SVG에 대한 defense-in-depth
+// 이지 포괄적 hostile-SVG sanitizer가 아니다. 인코딩된 프로토콜(`&#x6a;avascript:`),
+// 제어문자/공백 변형, CSS `url()` 트릭 등은 정규식이 디코드하지 않는다. 임의 SVG 업로드를
+// 받는 단계(플랫폼 Phase 1)가 오면 실제 SVG sanitizer(DOMPurify 등)를 쓰거나 raw SVG를 금지할 것.
+const ACTIVE_CONTENT_RE =
+  /<script\b|\son[a-z]+\s*=|(?:xlink:href|href)\s*=\s*["']?\s*(?:javascript|data):/i;
+
+// 갓 렌더된(mermaid 출력) SVG를 정리한다 — strip 후에도 능동 콘텐츠가 남으면
+// stripper 자체의 결함이므로 빌드를 실패시킨다. 캐시에 쓰기 전에만 호출한다.
 function sanitizeSvg(svg) {
   const s = svg
     .replace(/<script[\s\S]*?<\/script>/gi, '')
@@ -51,10 +61,22 @@ function sanitizeSvg(svg) {
     .replace(/\son[a-z]+\s*=\s*'[^']*'/gi, '')
     .replace(/(xlink:href|href)\s*=\s*"(?:javascript|data):[^"]*"/gi, '$1=""')
     .replace(/(xlink:href|href)\s*=\s*'(?:javascript|data):[^']*'/gi, "$1=''");
-  if (/<script\b|\son[a-z]+\s*=|(?:xlink:href|href)\s*=\s*["']?(?:javascript|data):/i.test(s)) {
+  if (ACTIVE_CONTENT_RE.test(s)) {
     throw new Error('[mermaid] SVG sanitization failed: active content remains after strip');
   }
   return s;
+}
+
+// 인라인 직전 게이트. 캐시는 sanitizeSvg를 거쳐 *이미 깨끗*해야 한다 — 그런데
+// 능동 콘텐츠가 보이면 오염/stale 캐시 신호이므로 조용히 고치지 않고 시끄럽게 실패한다.
+// (캐시 히트 경로 = CF Pages·로컬 재빌드·CI. 여기서 막아야 진짜 safe-by-construction.)
+function assertSvgClean(svg, where) {
+  if (ACTIVE_CONTENT_RE.test(svg)) {
+    throw new Error(
+      `[mermaid] active content in SVG (${where}) — refusing to inline. ` +
+        `Likely poisoned/stale .mermaid-cache; delete it and re-render (\`pnpm build\`), then recommit.`,
+    );
+  }
 }
 
 function escapeHtml(s) {
@@ -117,7 +139,11 @@ export default function remarkMermaidFigure() {
     }
 
     // mermaid code 노드를 raw HTML 노드로 변형한다 (트리 참조 유지).
+    // 인라인 직전에 출처 무관하게 게이트한다 — 캐시 히트 경로(CF Pages·로컬 재빌드·CI)는
+    // 커밋된 캐시를 읽으므로, 오염·stale 캐시도 여기서 빌드를 실패시킨다.
+    // 불변식: "능동 콘텐츠가 든 SVG는 절대 인라인되지 않는다."
     for (const t of targets) {
+      assertSvgClean(t.svg, t.cachePath);
       t.node.type = 'html';
       t.node.value = figureHtml(t.svg, t.source);
       delete t.node.lang;
