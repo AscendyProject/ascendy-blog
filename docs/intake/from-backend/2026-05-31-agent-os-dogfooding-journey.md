@@ -51,10 +51,10 @@ redactionReviewed: true
 ## redaction 기록 (raw → 정제본)
 - **모델 버전 식별자 제거**: 구체 버전(예: Opus/GPT/Gemini 숫자) 미사용. 도구/벤더명(Claude Code, Codex, GPT, Gemini)은 버전 없이 유지(하이브리드 톤).
 - **제품명**: Ascendy 노출 OK(블로그 소속, case study 톤).
-- **내부 경로 제거**: `.tdd-batch/`, `docs/agent-os/` 등 디렉토리 경로는 글에 쓰지 않음. 하네스 *이름*(tdd-batch/pair-agent)은 유지.
+- **내부 경로 제거**: 점 붙은 하네스 디렉토리 경로 형태는 글에도 이 정제본에도 쓰지 않음. 하네스 *이름*(tdd-batch/pair-agent)은 유지.
 - **비즈니스 도메인 모듈명**: raw 본문에 없음(외부공유 가이드에만 예시). 글에 미포함.
 - **inter-session 통신 도구**: 공개 URL 미확인 → 일반화("inter-session agent communication 도구"). 사용자 확인 시 실명 가능.
-- **YouTube 채널("아일의 워크룸")**: 익명 추상화("a small YouTube creator"). owner 동의 시 실명 credit 추가 가능.
+- **YouTube 채널**: 익명 추상화("a small YouTube creator"). 소규모 채널이라 실명은 정제본에도 적지 않음(누출 방지). owner 동의 확인 시 실명 credit 추가 가능.
 - **오픈소스화 검토 언급 제외**: 미announce 로드맵 → 글에서 뺌(사용자 결정).
 - **사내 incident/회고**: raw에 없음(meta narrative만).
-- Karpathy CLAUDE.md URL: 정확 출처는 게시 전 확인 필요(placeholder).
+- Karpathy CLAUDE.md URL: 글은 이름만 언급(링크 없음)으로 발행 가능. 정확 출처 URL은 **후속 확인 항목(발행 차단 아님)** — 확인되면 링크 추가.
