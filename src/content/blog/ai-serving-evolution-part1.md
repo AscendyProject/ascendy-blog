@@ -108,7 +108,7 @@ python3 -m vllm.entrypoints.openai.api_server \
 
 ## 결정 / 트레이드오프
 
-데모에서 "GPU 한 장이면 되겠지"로 시작한 게 GPU 2장 + vLLM 분리 + 끝없는 메모리 튜닝으로 번졌다. 그 시점에 **managed GPU로의 후퇴**를 결정했다. (이 이주 이야기가 2부다.)
+데모에서 "GPU 한 장이면 되겠지"로 시작한 게 GPU 2장 + vLLM 분리 + 끝없는 메모리 튜닝으로 번졌다. 그 시점에 **managed GPU로의 후퇴**를 결정했다. (이 이주 이야기가 [2부](/blog/ai-serving-evolution-part2/)다.)
 
 여기서 정직하게 짚을 것은, self-hosting GPU 추론의 손익분기가 흔히 말하는 "API per-call 비용 vs GPU 시간당 비용"의 단순 비교가 아니라는 점이다. 그 등식에는 세 가지 숨은 비용이 빠져 있다:
 
@@ -120,7 +120,7 @@ python3 -m vllm.entrypoints.openai.api_server \
 
 ## 후속
 
-- **2부**: managed GPU 이주 — 무엇이 단순해졌고, 무엇을 포기했는가.
+- **[2부](/blog/ai-serving-evolution-part2/)**: managed GPU 이주 — 무엇이 단순해졌고, 무엇을 포기했는가.
 - 참고: [vLLM engine args](https://docs.vllm.ai/en/latest/models/engine_args.html), [vLLM chunked prefill](https://docs.vllm.ai/en/latest/performance/optimization.html), [Triton `instance_group`](https://github.com/triton-inference-server/server/blob/main/docs/user_guide/model_configuration.md#instance-groups).
 
 ---
