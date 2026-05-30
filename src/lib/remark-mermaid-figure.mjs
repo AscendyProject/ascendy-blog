@@ -25,14 +25,36 @@ import { visit } from 'unist-util-visit';
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 const CACHE_DIR = join(ROOT, '.mermaid-cache');
 // 렌더 결과 포맷을 바꾸면 올려서 전체 캐시를 무효화한다.
-const CACHE_VERSION = '1';
-const MERMAID_OPTIONS = { theme: 'neutral' };
+// 렌더 옵션을 바꾸면 캐시 키가 바뀌어 자동 재렌더된다.
+// securityLevel:'strict' — mermaid가 라벨 콘텐츠를 새니타이즈한다(mermaid 기본이지만
+// 보안 의존이라 명시). SVG의 능동 콘텐츠(script/핸들러/js-url)는 아래 sanitizeSvg가
+// foreignObject 내부까지 전역으로 제거한다 — 위협은 컨테이너가 아니라 능동 콘텐츠다.
+const CACHE_VERSION = '2';
+const MERMAID_OPTIONS = { theme: 'neutral', securityLevel: 'strict' };
 
 function cacheKey(source) {
   return createHash('sha256')
     .update(`${CACHE_VERSION}\n${JSON.stringify(MERMAID_OPTIONS)}\n${source}`)
     .digest('hex')
     .slice(0, 16);
+}
+
+// 빌드타임 SVG의 능동 콘텐츠를 제거한다. 정적 사이트라 SVG는 브라우저에서 렌더되므로
+// <script>·이벤트 핸들러·javascript:/data: URL은 XSS/누출 벡터다. mermaid가 라벨에
+// foreignObject(SVG 내 HTML)를 쓰지만 컨테이너 자체는 위협이 아니다 — 그 안의 능동
+// 콘텐츠가 위협이라, 아래 치환은 foreignObject 내부를 포함해 SVG 문자열 전역에 적용된다.
+// 미래 외부 소스 대비 방어적으로 제거하고, 남아있으면 빌드를 실패시킨다(safe-by-construction).
+function sanitizeSvg(svg) {
+  const s = svg
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/\son[a-z]+\s*=\s*"[^"]*"/gi, '')
+    .replace(/\son[a-z]+\s*=\s*'[^']*'/gi, '')
+    .replace(/(xlink:href|href)\s*=\s*"(?:javascript|data):[^"]*"/gi, '$1=""')
+    .replace(/(xlink:href|href)\s*=\s*'(?:javascript|data):[^']*'/gi, "$1=''");
+  if (/<script\b|\son[a-z]+\s*=|(?:xlink:href|href)\s*=\s*["']?(?:javascript|data):/i.test(s)) {
+    throw new Error('[mermaid] SVG sanitization failed: active content remains after strip');
+  }
+  return s;
 }
 
 function escapeHtml(s) {
@@ -89,7 +111,7 @@ export default function remarkMermaidFigure() {
           const reason = r && r.reason ? r.reason : 'unknown render error';
           throw new Error(`[mermaid] failed to render diagram:\n${m.source}\n→ ${reason}`);
         }
-        m.svg = value.svg;
+        m.svg = sanitizeSvg(value.svg);
         writeFileSync(m.cachePath, m.svg, 'utf8');
       });
     }
