@@ -47,7 +47,7 @@ We pivoted to self-hosting and put every model on **a single high-end GPU** with
 - a face detector + face embedding (a two-stage pipeline)
 - a VLM (vision-language instruction model)
 
-One card would be enough, right? (The title already spoils that.) Loading all of them on one card produced **constant OOM**. The culprit surfaced fast: the VLM eats most of the VRAM, and keeping the embedding models resident on top of it couldn't possibly fit.
+One card would be enough, right? (The title already spoils that.) Loading all of them on one card produced **constant OOM**. The culprit was clear: the VLM eats most of the VRAM, and keeping the embedding models resident on top of it didn't fit in memory.
 
 The mitigation was intuitive — **we moved the embeddings and reranker from GPU to CPU.** Those two are smaller than the VLM and do run on CPU. To relieve the VRAM pressure, we moved the lightest models to CPU.
 
@@ -82,7 +82,7 @@ The reason we split out only the VLM to vLLM is that vLLM does memory and batchi
 
 ## Stage 4 — vLLM OOM'd too, and then there was fixed cost
 
-Splitting them, we figured, would settle it. The vLLM side **OOM'd and was unstable again**. A VLM's KV cache grows with context length and the number of concurrent sequences during inference. We had to keep tightening the memory knobs.
+We split them. But the vLLM side **OOM'd and was unstable again**. A VLM's KV cache grows with context length and the number of concurrent sequences during inference. We had to keep tightening the memory knobs.
 
 ```bash
 # OOM-defense tuning when serving a VLM separately with vLLM.
@@ -105,7 +105,7 @@ python3 -m vllm.entrypoints.openai.api_server \
 
 > **Code trace.** The now-parked vLLM config still carries this tuning's marks. `--gpu-memory-utilization` and `--max-model-len` are split between an aggressive script default and a conservative override — the scar of starting aggressive and being walked back conservative after OOM.
 
-And on top of this came **fixed cost**. A self-managed cluster's GPU nodes are always-on. Even at 3am with no traffic, two GPUs bill by the hour. Add the operational burden of multi-model serving — OOM tuning, model loading, node-failure response — to always-on fixed cost, and the original assumption that "self-hosting is cheaper than the cloud API" started to wobble.
+And on top of this came **fixed cost**. A self-managed cluster's GPU nodes are always-on. Even with no traffic, two GPUs bill by the hour. Add the operational burden of multi-model serving — OOM tuning, model loading, node-failure response — to always-on fixed cost, and the original assumption that "self-hosting is cheaper than the cloud API" started to wobble.
 
 ## Decision / tradeoffs
 
