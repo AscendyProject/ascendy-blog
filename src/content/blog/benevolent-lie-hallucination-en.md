@@ -74,7 +74,7 @@ And the "looks fake" worry is answered by **showing the source.** In the AI era,
 
 ## So, ask before you write
 
-The way to cut hallucination falls out of the same place. Even if I don't remember an issue precisely, **as long as I remember that it was recorded somewhere**, I can ask the AI — *"this should be in git or docs, so fact-check it against that."* If there's a record, fact-check; if there's no record at all, label it honestly as "from memory."
+The way to cut hallucination falls out of the same place. Even if I don't remember an issue precisely, **as long as I remember that it was recorded somewhere**, I can ask the AI — *"this should be in git or docs, so fact-check it against that."* If there's a record, fact-check; if there's no record but it's genuinely in my memory, label it "from memory" — and if the AI made it up, discard it rather than label it.
 
 This post has a twist of its own. The piece you're reading was written by **an AI interviewing me — grilling me** — as the first trial of the very harness we're building. *"Was it really 3am?"* — that one question split color from fact. The simplest way to stop an invented detail wasn't a smooth filter at the end; it was **asking, before the writing.**
 
