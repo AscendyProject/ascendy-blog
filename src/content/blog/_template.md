@@ -36,6 +36,9 @@ redactionReviewed: false     # 게재 전 redaction-checklist.md 통과 후 true
 
 ## 본문
 
+- **읽는 맛**: TL;DR·헤딩·교훈 박스는 요약(에이전트용)으로 두되, 본문은
+  내러티브로 — 장면화·텐션/복선·목소리·리듬. 추상 동사보다 구체 장면·숫자·순간.
+  (editorial-policy.md "읽는 맛" 참조. 단 사실·구조·redaction은 무손상.)
 - 코드 예시는 실제 동작하는 최소 단위로.
 - 내부 식별자(클러스터 이름, namespace, image tag, registry path 등)는
   일반화하거나 제거.
