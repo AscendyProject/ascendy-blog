@@ -35,11 +35,11 @@ your_task.delay(99999)  # not-found path triggers logger.error
 docker compose logs worker --since 30s | grep your_task
 ```
 
-ERROR appeared in the worker's stdout. That meant dispatch and consume were healthy, and suspicion narrowed straight to **"INFO is being filtered out."**
+ERROR appeared in the worker's stdout. That meant at least the probe task's dispatch+consume path was alive, and suspicion narrowed straight to **"INFO is being filtered out."**
 
 ## Cause 1 — Python logging never initialized in the worker
 
-`logging.basicConfig(level=INFO)` only ran **when the web app was imported**. The worker is a different entry point into the same code, so it started with the root logger at the default WARNING — muting every `logger.info(...)` in the app modules.
+`logging.basicConfig(level=logging.INFO)` only ran **when the web app was imported**. The worker is a different entry point into the same code, so it started with the root logger at the default WARNING — muting every `logger.info(...)` in the app modules.
 
 On top of that, Celery prefork child processes can have their logging level re-touched by Celery's own setup even after fork, so configuring once in the parent wasn't enough. Three pieces together kept INFO alive down into the prefork children.
 
@@ -77,10 +77,10 @@ def _init_logging_in_prefork_child(**kwargs):
 
 Even after INFO came back, something was off: the worker's `--concurrency` setting was being ignored. Inspecting the container's actual CMD revealed that `--loglevel`, `--queues`, `--concurrency`, and `--max-memory-per-child` were running **as separate (and failing) shell commands** inside the container.
 
-The culprit was `command: |-` in compose. A literal block scalar (`|`) **preserves** the LF on every line. When that reaches `bash -lc "..."`, bash treats the unquoted LFs as **command separators**. So in reality only `celery ... worker` ran, with zero arguments, and every other line scattered into separate (failing) commands. **A single bug** was simultaneously dropping concurrency, the memory limit, and the log level.
+The culprit was `command: |-` combined with our container's entrypoint. A literal block scalar (`|`) **preserves** the LF on every line. The key condition: Compose's `command` doesn't go through a shell automatically — our image's entrypoint ran this command string via `bash -lc`, and once that string reaches bash, it treats the unquoted LFs as **command separators**. So in reality only `celery ... worker` ran, with zero arguments, and every other line scattered into separate (failing) commands. **A single bug** was simultaneously dropping concurrency, the memory limit, and the log level.
 
 ```yaml
-# BAD: literal `|-` preserves LFs → bash treats LF as a command separator
+# BAD: literal |- preserves LFs → in an entrypoint that runs this via bash -lc, bash treats LF as a command separator
 command: |-
   celery -A app.celery_app:celery worker
     --loglevel=INFO
@@ -94,7 +94,7 @@ command: >-
     --queues=default,heavy
     --concurrency=1
 
-# OK 2: the list form is the most explicit and safest
+# OK 2: list form is explicit exec-style (shell semantics still depend on the image entrypoint)
 command:
   - celery
   - -A
@@ -108,7 +108,7 @@ command:
 ## How to avoid the same traps next time
 
 - **When you see a multi-line `command:`**, check the container's actual CMD first (`docker inspect` / `docker compose config`). What YAML sent and what bash received can differ.
-- **If you use `worker_hijack_root_logger=False`**, the `basicConfig` + `setup_logging` + `worker_process_init` set must come together. One call in the parent won't cover prefork children.
+- **In this setup**, `basicConfig` + `setup_logging` + `worker_process_init` had to come together to keep INFO alive into prefork children. Connecting a handler to `setup_logging` disables Celery's own logging config; if you observe a child-level reset, re-apply in `worker_process_init`. (Whether all three are needed depends on the app's logger lifecycle and prefork behavior.)
 - **When you see an ERROR-only asymmetry**, use an active probe (force `logger.error` via a `delay()` on a non-existent id) to separate "not running" from "running but muted" first.
 
 ## What's next

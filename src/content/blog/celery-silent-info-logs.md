@@ -35,11 +35,11 @@ your_task.delay(99999)  # not-found path triggers logger.error
 docker compose logs worker --since 30s | grep your_task
 ```
 
-ERROR가 워커 stdout에 나왔다. dispatch와 consume은 정상이라는 뜻이고, 의심은 곧장 **"INFO가 필터링되고 있다"** 쪽으로 좁혀졌다.
+ERROR가 워커 stdout에 나왔다. 적어도 그 프로브 태스크의 dispatch+consume 경로는 살아있다는 뜻이고, 의심은 곧장 **"INFO가 필터링되고 있다"** 쪽으로 좁혀졌다.
 
 ## 원인 1 — Python 로깅이 워커에서 초기화되지 않았다
 
-`logging.basicConfig(level=INFO)`가 **웹 앱을 import할 때만** 실행되는 구조였다. 워커는 앱 코드의 다른 진입점이라, root logger를 기본값 WARNING으로 시작했다. 그래서 app 모듈의 `logger.info(...)`가 통째로 묵음이 됐다.
+`logging.basicConfig(level=logging.INFO)`가 **웹 앱을 import할 때만** 실행되는 구조였다. 워커는 앱 코드의 다른 진입점이라, root logger를 기본값 WARNING으로 시작했다. 그래서 app 모듈의 `logger.info(...)`가 통째로 묵음이 됐다.
 
 게다가 Celery prefork 자식 프로세스는 fork 이후에도 Celery 내부 셋업이 로깅 레벨을 다시 만지는 경우가 있어, 부모에서 한 번 설정하는 것만으로는 부족했다. 세 가지를 합쳐야 prefork 자식에서까지 INFO가 살아남았다.
 
@@ -77,10 +77,10 @@ def _init_logging_in_prefork_child(**kwargs):
 
 INFO를 살려도 뭔가 이상했다. 워커의 `--concurrency` 설정이 무시되고 있었던 것이다. 컨테이너의 실제 CMD를 점검하니, `--loglevel`·`--queues`·`--concurrency`·`--max-memory-per-child` 같은 인자가 컨테이너 안에서 **별도의 (그리고 실패하는) 쉘 명령**으로 실행되고 있었다.
 
-원인은 compose의 `command: |-` 였다. literal block scalar(`|`)는 줄마다 LF를 그대로 **보존**한다. 그게 `bash -lc "..."`로 넘어가면, bash는 인용되지 않은 LF를 **명령어 구분자**로 처리한다. 결국 실제로는 `celery ... worker` 한 줄만 인자 0개로 돌고, 나머지 라인은 전부 별개의 (실패하는) 명령으로 흩어졌다. **한 개의 버그가 동시에** concurrency 미적용·메모리 제한 미적용·로그 레벨 미적용을 일으키고 있었다.
+원인은 compose의 `command: |-`와 컨테이너 entrypoint의 조합이었다. literal block scalar(`|`)는 줄마다 LF를 그대로 **보존**한다. 여기에 핵심 조건이 붙는다 — Compose의 `command`가 자동으로 셸을 거치는 건 아니다. 우리 이미지의 entrypoint가 이 command 문자열을 `bash -lc`로 실행하는 구성이었고, 그 문자열이 bash로 넘어가는 순간 bash는 인용되지 않은 LF를 **명령어 구분자**로 처리한다. 결국 실제로는 `celery ... worker` 한 줄만 인자 0개로 돌고, 나머지 라인은 전부 별개의 (실패하는) 명령으로 흩어졌다. **한 개의 버그가 동시에** concurrency 미적용·메모리 제한 미적용·로그 레벨 미적용을 일으키고 있었다.
 
 ```yaml
-# BAD: literal `|-`는 LF를 보존 → bash가 LF를 명령어 구분자로 처리
+# BAD: literal |-는 LF 보존 → 이 문자열을 bash -lc로 실행하는 entrypoint 구성에서 bash가 LF를 명령 구분자로 처리
 command: |-
   celery -A app.celery_app:celery worker
     --loglevel=INFO
@@ -94,7 +94,7 @@ command: >-
     --queues=default,heavy
     --concurrency=1
 
-# OK 2: list 형태가 가장 명시적이고 안전
+# OK 2: list 형태는 exec-style이라 가장 명시적 (셸 해석이 필요하면 entrypoint 계약에 따라 다름)
 command:
   - celery
   - -A
@@ -108,7 +108,7 @@ command:
 ## 다음에 같은 함정에 빠지지 않으려면
 
 - **다중라인 `command:`를 보면** 먼저 컨테이너의 실제 CMD를 확인한다(`docker inspect` / `docker compose config`). YAML이 보낸 것과 bash가 받은 것이 다를 수 있다.
-- **`worker_hijack_root_logger=False`를 쓰면** `basicConfig` + `setup_logging` + `worker_process_init` 셋트가 함께 와야 한다. 부모 한 번으로는 prefork 자식을 못 덮는다.
+- **이 셋업에선** `basicConfig` + `setup_logging` + `worker_process_init`를 함께 둬야 prefork 자식까지 INFO가 살았다. `setup_logging`에 핸들러를 연결하면 Celery 자체 로깅 설정이 꺼지고, 자식 레벨에서 레벨이 되돌려지는 게 관측되면 `worker_process_init`에서 재적용한다. (셋이 모두 필요한지는 앱의 로거 생애주기·prefork 동작에 따라 다르다.)
 - **ERROR-only 비대칭이 보이면** 액티브 프로브(없는 id로 `delay()` → `logger.error` 강제)로 "안 돈다" vs "도는데 묵음"을 먼저 가른다.
 
 ## 후속
