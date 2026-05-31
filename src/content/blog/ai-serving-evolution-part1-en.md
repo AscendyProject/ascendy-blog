@@ -23,13 +23,13 @@ redactionReviewed: true
 
 ## Background — what worked at one or two photos
 
-We built a feature where uploading an image triggers AI preprocessing. For a single photo it generates a caption, tags it, recognizes faces, and produces a search embedding. The first implementation took the fastest path — call an **external multimodal LLM API** to describe the photo. Tested with one or two photos, it was fast and accurate. We thought we were done.
+We built a feature where uploading a photo lets AI organize it for you. For each photo it writes a caption, tags it, finds faces, and produces a search embedding. The first implementation took the fastest path — send the photo to an **external multimodal LLM API** and get a description back. Tested with one or two photos, it was fast and accurate. We thought we were done.
 
-The catch was that our service is fundamentally **album-scale**. Users don't upload one photo at a time. They upload 100 at once.
+We'd missed one thing. Our service is fundamentally **album-scale**. Users don't upload one photo at a time — they upload 100 at once.
 
 ## Stage 1 — the cloud API broke at batch scale
 
-Once photos came in batches of 100, two things blew up at the same time: **latency and cost**. Per-call billing and per-call latency both accumulate linearly with batch size. A constant that was harmless at one or two photos became, at 100, large enough to threaten the viability of the service itself.
+Once photos came in batches of 100, two things blew up at the same time — **latency and cost**. Per-call billing and per-call latency both accumulate linearly with batch size. A constant that was harmless at one or two photos, multiplied by 100, swelled into something large enough to threaten the viability of the service itself.
 
 This wasn't a tuning problem. The **structure** of "one external API call per image" simply didn't fit a batch workload. We needed a structural replacement, not an optimization.
 
@@ -47,7 +47,7 @@ We pivoted to self-hosting and put every model on **a single high-end GPU** with
 - a face detector + face embedding (a two-stage pipeline)
 - a VLM (vision-language instruction model)
 
-Loading all of them on one card produced **constant OOM**. The culprit was clear. The VLM eats most of the VRAM, and keeping the embedding models resident on top of it didn't fit in memory.
+One card would be enough, right? (The title already spoils that.) Loading all of them on one card produced **constant OOM**. The culprit surfaced fast: the VLM eats most of the VRAM, and keeping the embedding models resident on top of it couldn't possibly fit.
 
 The mitigation was intuitive — **we moved the embeddings and reranker from GPU to CPU.** Those two are smaller than the VLM and do run on CPU. To relieve the VRAM pressure, we moved the lightest models to CPU.
 
@@ -67,7 +67,7 @@ instance_group { kind: KIND_CPU, count: N }   # for GPU serving: kind: KIND_GPU
 
 ## Stage 3 — CPU offload created latency this time
 
-Memory was freed. But the embeddings got too slow.
+Memory was freed. But this time the embeddings got too slow.
 
 The core of an embedding workload is **batch throughput**. For a 100-photo album you have to produce hundreds of vectors at once. Moving that to CPU collapsed the throughput. We'd traded a memory problem for a latency problem.
 
@@ -82,7 +82,7 @@ The reason we split out only the VLM to vLLM is that vLLM does memory and batchi
 
 ## Stage 4 — vLLM OOM'd too, and then there was fixed cost
 
-After splitting, the vLLM side **OOM'd and was unstable again**. A VLM's KV cache grows with context length and the number of concurrent sequences during inference. We had to keep tightening the memory knobs.
+Splitting them, we figured, would settle it. The vLLM side **OOM'd and was unstable again**. A VLM's KV cache grows with context length and the number of concurrent sequences during inference. We had to keep tightening the memory knobs.
 
 ```bash
 # OOM-defense tuning when serving a VLM separately with vLLM.
