@@ -21,7 +21,7 @@ redactionReviewed: true
 
 ## 배경 — "안 도는 것"과 "도는데 로그만 묵음"은 다르다
 
-다른 이슈를 쫓던 중, 워커 로그에 태스크 시작 INFO가 한 줄도 없다는 걸 발견했다. 처음 든 의심은 "워커가 죽어서 태스크가 안 도는 것 아닌가"였다. 하지만 ERROR 라인은 멀쩡히 찍히고 있었다.
+다른 이슈를 쫓다가 워커 로그를 들여다봤다. 태스크 시작 INFO가 — 한 줄도 없었다. 처음 든 의심은 "워커가 죽어서 태스크가 안 도는 것 아닌가"였다. 그런데 ERROR 라인은 멀쩡히 찍히고 있었다.
 
 **ERROR는 보이는데 INFO만 없다.** 이 비대칭은 "태스크가 안 돈다"가 아니라 "태스크는 도는데 INFO 레벨만 묵음"일 가능성을 가리킨다. 그래서 먼저 그 둘을 갈랐다 — 존재하지 않는 id로 태스크를 dispatch해서 `logger.error(...)` 한 줄을 강제로 끌어내는 **액티브 프로브**다.
 
@@ -39,7 +39,7 @@ ERROR가 워커 stdout에 나왔다. 적어도 그 프로브 태스크의 dispat
 
 ## 원인 1 — Python 로깅이 워커에서 초기화되지 않았다
 
-`logging.basicConfig(level=logging.INFO)`가 **웹 앱을 import할 때만** 실행되는 구조였다. 워커는 앱 코드의 다른 진입점이라, root logger를 기본값 WARNING으로 시작했다. 그래서 app 모듈의 `logger.info(...)`가 통째로 묵음이 됐다.
+`logging.basicConfig(level=logging.INFO)`가 **웹 앱을 import할 때만** 실행되는 구조였다. 그런데 워커는 같은 코드로 들어오는 *다른 문*이다 — root logger를 기본값 WARNING으로 시작했고, app 모듈의 모든 `logger.info(...)`가 통째로 묵음이 됐다.
 
 게다가 Celery prefork 자식 프로세스는 fork 이후에도 Celery 내부 셋업이 로깅 레벨을 다시 만지는 경우가 있어, 부모에서 한 번 설정하는 것만으로는 부족했다. 세 가지를 합쳐야 prefork 자식에서까지 INFO가 살아남았다.
 
@@ -75,7 +75,7 @@ def _init_logging_in_prefork_child(**kwargs):
 
 ## 원인 2 — YAML block scalar가 명령을 토막냈다
 
-INFO를 살려도 뭔가 이상했다. 워커의 `--concurrency` 설정이 무시되고 있었던 것이다. 컨테이너의 실제 CMD를 점검하니, `--loglevel`·`--queues`·`--concurrency`·`--max-memory-per-child` 같은 인자가 컨테이너 안에서 **별도의 (그리고 실패하는) 쉘 명령**으로 실행되고 있었다.
+INFO는 살렸다. 그런데 또 뭔가 이상했다 — 워커의 `--concurrency` 설정이 무시되고 있었다. 컨테이너의 실제 CMD를 점검하니, `--loglevel`·`--queues`·`--concurrency`·`--max-memory-per-child` 같은 인자가 컨테이너 안에서 **별도의 (그리고 실패하는) 쉘 명령**으로 실행되고 있었다.
 
 원인은 compose의 `command: |-`와 컨테이너 entrypoint의 조합이었다. literal block scalar(`|`)는 줄마다 LF를 그대로 **보존**한다. 여기에 핵심 조건이 붙는다 — Compose의 `command`가 자동으로 셸을 거치는 건 아니다. 우리 이미지의 entrypoint가 이 command 문자열을 `bash -lc`로 실행하는 구성이었고, 그 문자열이 bash로 넘어가는 순간 bash는 인용되지 않은 LF를 **명령어 구분자**로 처리한다. 결국 실제로는 `celery ... worker` 한 줄만 인자 0개로 돌고, 나머지 라인은 전부 별개의 (실패하는) 명령으로 흩어졌다. **한 개의 버그가 동시에** concurrency 미적용·메모리 제한 미적용·로그 레벨 미적용을 일으키고 있었다.
 
