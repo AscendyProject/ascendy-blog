@@ -21,13 +21,13 @@ redactionReviewed: true
 
 ## Background — why does only one die
 
-We had an agent chat that picks among several LLM providers. But selecting one specific model **always 404'd**, while the others worked fine.
+We had an agent chat that picks among several LLM providers. But one model — only that one — **404'd every time** you picked it. The rest worked fine.
 
 "**Only one model fails**" is itself a strong clue. If the shared path (auth, network, request format) were broken, usually everything breaks. One breaking alone means that model takes a **different branch**.
 
 ## Cause 1 — branch asymmetry (fall-through)
 
-The runtime model-selection middleware explicitly mapped a client only for *some* providers. The problematic provider had no mapping, so it returned `None` — which fell through, with no override, to the agent's **base model**.
+The culprit was in the routing. The runtime model-selection middleware explicitly mapped a client only for *some* providers; the problematic one had no mapping. It returned `None`, which fell through — with no override — to the agent's **base model**.
 
 ```python
 # Branch asymmetry: some providers explicitly mapped, the rest → None → base model
