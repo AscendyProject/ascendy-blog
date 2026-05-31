@@ -45,7 +45,7 @@ The other providers were explicitly mapped, so they went safely to their own cli
 
 ## Cause 2 — the base was a preview alias
 
-The base model id the fall-through reached was pinned to a **preview alias**. Preview aliases are often retired by the provider at the GA (general availability) cutover. Once retired, calls to that id return `404 NOT_FOUND` ("no longer available").
+The base model id the fall-through reached was pinned to a **preview alias**. Preview aliases can be deprecated and shut down on the provider's schedule (ours was retired after a GA successor shipped). Once shut down, calls to that id return `404 NOT_FOUND` ("no longer available").
 
 In our case, the provider on that fall-through path was **Gemini**. A preview model was promoted to GA, the old preview alias disappeared ([model lifecycle is documented publicly](https://ai.google.dev/gemini-api/docs/models)), and that one path died with a 404. The preview id we'd hardcoded was a **time bomb**.
 
@@ -63,11 +63,11 @@ for client in configured_model_clients:
     assert SUNSET_GENERATION not in mid  # forbid a soon-to-be-retired generation
 ```
 
-Model ids are inherently perishable. A class-level guard blocks the **bug class itself** (hardcoding an id that will be retired) without the brittleness of breaking on every generation bump.
+Model ids are inherently perishable. This guard doesn't catch *every* perishable id — it blocks **known risky patterns** (preview aliases, a specific sunset generation) and complements the provider's lifecycle monitoring. Still, blocking that pattern without breaking on every generation bump beats pinning the exact answer.
 
 ## How to avoid the same trap next time
 
-- **Don't hardcode preview model aliases.** They disappear at GA. Prefer a GA id; if you can't, add an expiry guard.
+- **Don't hardcode preview model aliases.** They can be deprecated and shut down — track the provider's lifecycle schedule or add an expiry guard. Prefer a GA id when you can.
 - **When "only one model breaks,"** suspect **branch asymmetry / fall-through**, not the shared path.
 - **Guard external dependency lifecycles (models, endpoints) in CI**, but as a "forbidden pattern" (`-preview`, sunset generation), not a "pin to the right answer" — a low-brittleness guard suited to perishable identifiers.
 

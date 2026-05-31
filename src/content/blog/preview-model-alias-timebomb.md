@@ -45,7 +45,7 @@ def _resolve_client(model_name: str):
 
 ## 원인 2 — base가 프리뷰 alias였다
 
-fall-through가 도달한 base 모델 id가 **프리뷰 alias**로 고정돼 있었다. 프리뷰 alias는 GA(정식 출시) 전환 시점에 프로바이더가 폐기하는 경우가 많다. 폐기되면 그 id로의 호출은 `404 NOT_FOUND`("no longer available")가 된다.
+fall-through가 도달한 base 모델 id가 **프리뷰 alias**로 고정돼 있었다. 프리뷰 alias는 deprecation 공지 후 정해진 일정에 따라 shutdown될 수 있다. shutdown되면 그 id로의 호출은 `404 NOT_FOUND`("no longer available")가 된다.
 
 우리 경우 그 fall-through 경로의 프로바이더가 **Gemini**였다. 프리뷰 모델이 GA로 승격되면서 기존 프리뷰 alias가 사라졌고([모델 수명주기는 공개 문서로 확인된다](https://ai.google.dev/gemini-api/docs/models)), 그 한 경로만 404로 죽은 것이다. 코드에 박아둔 프리뷰 id가 **시한폭탄**이었던 셈이다.
 
@@ -63,11 +63,11 @@ for client in configured_model_clients:
     assert SUNSET_GENERATION not in mid  # 곧 폐기될 세대 금지
 ```
 
-모델 id는 본질적으로 perishable(언젠가 만료된다)하다. 클래스 단위 가드는 "다음 세대로 올릴 때마다 테스트가 깨지는" brittleness 없이, **버그 클래스 자체**(폐기될 id를 코드에 박는 것)를 막는다.
+모델 id는 본질적으로 perishable(언젠가 만료된다)하다. 이 가드가 만료될 id *전체*를 잡지는 못한다 — **알려진 위험 패턴**(프리뷰 alias, 특정 sunset 세대)을 막아 프로바이더의 lifecycle 모니터링을 보완하는 장치다. 다만 "다음 세대로 올릴 때마다 깨지는" brittleness 없이 그 패턴을 막는다는 점이, 정답 id를 핀하는 것보다 낫다.
 
 ## 다음에 같은 함정에 빠지지 않으려면
 
-- **프리뷰 모델 alias를 코드에 박지 마라.** GA 전환 시 사라진다. 가능하면 GA id를, 안 되면 만료 가드를.
+- **프리뷰 모델 alias를 코드에 박지 마라.** deprecate·shutdown될 수 있다. 가능하면 GA id를, 안 되면 프로바이더 수명주기 일정을 추적하거나 만료 가드를 둬라.
 - **"한 모델만 깨지면"** 공통 경로가 아니라 **분기 비대칭/fall-through**를 의심하라.
 - **외부 의존성(모델·엔드포인트)의 수명주기를 CI 가드로 감시하되**, "정답 핀"이 아니라 "금지 패턴(`-preview`, sunset 세대)"으로 — perishable 식별자에 맞는 저-brittleness 가드.
 
