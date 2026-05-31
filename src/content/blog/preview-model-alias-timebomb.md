@@ -59,7 +59,7 @@ fall-through가 도달한 base 모델 id가 **프리뷰 alias**로 고정돼 있
 # 회귀 가드: 정답 id를 핀하지 말고, 폐기/프리뷰 패턴만 금지
 for client in configured_model_clients:
     mid = model_id(client)
-    assert "preview" not in mid        # GA 후 폐기되는 프리뷰 alias 금지
+    assert "preview" not in mid        # deprecate/shutdown될 수 있는 프리뷰 alias 금지
     assert SUNSET_GENERATION not in mid  # 곧 폐기될 세대 금지
 ```
 

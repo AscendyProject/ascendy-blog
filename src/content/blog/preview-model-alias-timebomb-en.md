@@ -1,6 +1,6 @@
 ---
 title: "Only one model kept 404'ing — a preview-alias time bomb meets branch asymmetry"
-description: "In a multi-provider agent chat, one model path always 404'd. Two layers: that path fell through to the base model, and that base was a preview alias the provider retired at GA. A CI guard for model lifecycle."
+description: "In a multi-provider agent chat, one model path always 404'd. Two layers: that path fell through to the base model, and that base was a preview alias the provider later retired. A CI guard for model lifecycle."
 pubDate: 2026-05-31
 author: "Ascendy Engineering"
 tags: ["llm", "model-lifecycle", "regression-testing", "incident-prevention", "multi-provider"]
@@ -59,7 +59,7 @@ The key part is the **regression guard** we added next. We did *not* pin "the cu
 # Regression guard: don't pin the right id, forbid the retire/preview pattern
 for client in configured_model_clients:
     mid = model_id(client)
-    assert "preview" not in mid          # forbid preview aliases retired at GA
+    assert "preview" not in mid          # forbid preview aliases that can be deprecated/shut down
     assert SUNSET_GENERATION not in mid  # forbid a soon-to-be-retired generation
 ```
 
