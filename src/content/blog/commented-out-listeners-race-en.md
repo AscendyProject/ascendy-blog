@@ -21,7 +21,7 @@ redactionReviewed: true
 
 ## Background — toggled on, but it doesn't run
 
-A report said native gallery auto-sync wasn't working. The toggle was clearly on. Tracing it down, two auto-retrigger listeners had been **left commented out**:
+A report came in — native gallery auto-sync wasn't working. The toggle was clearly on. Tracing it down, the culprit was two auto-retrigger listeners, **left commented out**:
 
 - a listener that restarts sync on network (Wi-Fi) reconnect
 - a listener that detects new media when the app returns to the foreground
@@ -45,7 +45,7 @@ And one more thing — **the condition gate and the trigger are separate axes.**
 
 ## Lesson 2 — the double-trigger race (an await defeats the lock)
 
-The two restored listeners both check the same global lock (`autoSyncRunning`). The problem: **there was an `await` between the check and the lock set (act)**. If the two events (app resume + Wi-Fi reconnect) fire nearly together, both pass the `if (autoSyncRunning) return` guard, then much later each sets the lock → a race that starts the same sync twice.
+The two listeners we revived hid one more trap. Both check the same global lock (`autoSyncRunning`), but the problem was that **there was an `await` between the check and the lock set (act)**. If the two events (app resume + Wi-Fi reconnect) fire nearly together, both pass the `if (autoSyncRunning) return` guard, then much later each sets the lock → a race that starts the same sync twice.
 
 ```ts
 // BEFORE (race): the lock is set only after the dynamic import + store checks
