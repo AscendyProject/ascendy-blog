@@ -21,7 +21,7 @@ redactionReviewed: true
 
 ## Background — "not running" and "running but muted" are different
 
-While chasing another issue, I noticed the worker logs had zero task-start INFO lines. My first suspicion was "the worker died and tasks aren't running." But ERROR lines were printing just fine.
+While chasing another issue, I looked at the worker logs. Task-start INFO lines — there were none. My first suspicion was "the worker died and tasks aren't running." But ERROR lines were printing just fine.
 
 **ERROR shows, INFO doesn't.** That asymmetry points away from "tasks aren't running" and toward "tasks run, but the INFO level is muted." So I separated the two first — with an **active probe** that dispatches a task with a non-existent id to force a single `logger.error(...)`.
 
@@ -39,7 +39,7 @@ ERROR appeared in the worker's stdout. That meant at least the probe task's disp
 
 ## Cause 1 — Python logging never initialized in the worker
 
-`logging.basicConfig(level=logging.INFO)` only ran **when the web app was imported**. The worker is a different entry point into the same code, so it started with the root logger at the default WARNING — muting every `logger.info(...)` in the app modules.
+`logging.basicConfig(level=logging.INFO)` only ran **when the web app was imported**. But the worker is a *different door* into the same code — it started with the root logger at the default WARNING, muting every `logger.info(...)` in the app modules.
 
 On top of that, Celery prefork child processes can have their logging level re-touched by Celery's own setup even after fork, so configuring once in the parent wasn't enough. Three pieces together kept INFO alive down into the prefork children.
 
@@ -75,7 +75,7 @@ def _init_logging_in_prefork_child(**kwargs):
 
 ## Cause 2 — a YAML block scalar chopped the command apart
 
-Even after INFO came back, something was off: the worker's `--concurrency` setting was being ignored. Inspecting the container's actual CMD revealed that `--loglevel`, `--queues`, `--concurrency`, and `--max-memory-per-child` were running **as separate (and failing) shell commands** inside the container.
+INFO was back. But something was still off — the worker's `--concurrency` setting was being ignored. Inspecting the container's actual CMD revealed that `--loglevel`, `--queues`, `--concurrency`, and `--max-memory-per-child` were running **as separate (and failing) shell commands** inside the container.
 
 The culprit was `command: |-` combined with our container's entrypoint. A literal block scalar (`|`) **preserves** the LF on every line. The key condition: Compose's `command` doesn't go through a shell automatically — our image's entrypoint ran this command string via `bash -lc`, and once that string reaches bash, it treats the unquoted LFs as **command separators**. So in reality only `celery ... worker` ran, with zero arguments, and every other line scattered into separate (failing) commands. **A single bug** was simultaneously dropping concurrency, the memory limit, and the log level.
 
