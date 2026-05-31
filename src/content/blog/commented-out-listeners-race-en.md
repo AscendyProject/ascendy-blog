@@ -36,7 +36,7 @@ The condition gate did go in (both sync entry points check it). But the **trigge
 
 ## Lesson 1 — commenting out makes restoration go missing
 
-Emergency-blocking by **commenting code out** tends to lose the restoration. A commented block doesn't show in `grep`, and in review it reads as "dead code," so it never comes back. An emergency block is better done by:
+Emergency-blocking by **commenting code out** tends to lose the restoration. A commented block drops out of the executable paths and reads as intentionally dead code in review, so it never comes back (the text still turns up in `grep`, but nothing marks it as code that *must* be restored). An emergency block is better done by:
 
 - an **explicit feature flag**, or
 - a **one-line early-return + a TODO (with an expiry condition)** — at least the trace lives in code and surfaces in search and review.
@@ -85,6 +85,7 @@ The key point is that **a race happens even though JS is single-threaded.** Anot
 
 - Drop "emergency block = comment it out" from team convention; replace with a feature flag or an expiry TODO.
 - Add re-entrancy locks that cross an `await` boundary to the review checklist as a "claim-before-await" pattern.
+- When multiple listeners share one lock, put the acquisition in a **shared wrapper** instead of duplicating it per listener, to avoid drift.
 
 ---
 
