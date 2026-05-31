@@ -21,7 +21,7 @@ redactionReviewed: true
 
 ## 배경 — 토글은 켜졌는데 안 된다
 
-네이티브 갤러리 자동동기화가 동작하지 않는다는 제보가 들어왔다. 토글은 분명히 켜져 있었다. 추적해보니 자동 재트리거 listener 두 개가 **주석 처리된 채** 방치돼 있었다.
+제보가 들어왔다 — 네이티브 갤러리 자동동기화가 안 된다고. 토글은 분명히 켜져 있었다. 추적해보니 범인은 자동 재트리거 listener 두 개였다. **주석 처리된 채** 방치돼 있었던 것이다.
 
 - 네트워크(WiFi) 재연결 시 동기화를 재시작하는 listener
 - 앱이 foreground로 복귀할 때 새 미디어를 감지하는 listener
@@ -45,7 +45,7 @@ redactionReviewed: true
 
 ## 교훈 2 — double-trigger 레이스 (await가 락을 무력화한다)
 
-복원한 두 listener는 둘 다 같은 전역 락(`autoSyncRunning`)을 검사한다. 문제는 **검사(check)와 락 set(act) 사이에 `await`가 끼어 있었다**는 것이다. 두 이벤트(앱 resume + WiFi 재연결)가 거의 동시에 발생하면, 둘 다 `if (autoSyncRunning) return` 가드를 통과한 뒤 한참 뒤에야 각자 락을 set한다 → 같은 동기화를 두 번 시작하는 레이스다.
+되살린 두 listener에는 함정이 하나 더 숨어 있었다. 둘 다 같은 전역 락(`autoSyncRunning`)을 검사하는데, 문제는 **검사(check)와 락 set(act) 사이에 `await`가 끼어 있었다**는 것이다. 두 이벤트(앱 resume + WiFi 재연결)가 거의 동시에 발생하면, 둘 다 `if (autoSyncRunning) return` 가드를 통과한 뒤 한참 뒤에야 각자 락을 set한다 → 같은 동기화를 두 번 시작하는 레이스다.
 
 ```ts
 // BEFORE (race): 락은 동적 import·store 검사 이후에야 set됨
