@@ -41,7 +41,7 @@ That's where the culprit split. **Both were written by agents.** The difference 
 - The lively post's source was the **operator's first-hand memory and console history** — there were real scenes of breaking, tuning, and retreating.
 - The dead post's source was itself a **system description with no first-hand scene.** (It didn't even carry a `sourceIntake` pointer — a pure meta post.)
 
-When the source is already a once-abstracted, second-hand artifact, no matter how well the agent writes there's no living scene, so it becomes reconstructed exposition. The problem wasn't "an AI wrote it" — it was that **there was no first-hand scene.**
+At least across our posts, when the source had no first-hand scene, even good agent writing turned into reconstructed exposition. The problem wasn't "an AI wrote it" — it was that **there was no first-hand scene.**
 
 ## Stealing from the biographer
 
@@ -57,16 +57,16 @@ Here something I hadn't expected surfaced.
 
 Writing alone is really doing three jobs **at once** — ① decide which questions to answer, ② answer them, and ③ work out the order to lay them out in. And the point where I got stuck wasn't ②. It was the kind where **I have things to say, but how to pull them out and in what order to make it a piece** is the fog. On top of that, just coming up with which questions to throw in the first place was itself a taxing job.
 
-The interview splits those three. The agent takes ① the questions and ③ the structure, and I'm left with the one thing **a human is uniquely good at — answering what I actually lived through.** I just answered honestly, off the cuff, and a whole post came out. Having my rambling cleaned up and edited made it clearly easier than banging my head against a blank page.
+The interview splits those three. The agent takes ① the questions and ③ the structure, and I'm left with the one thing **only the human can do — answer what I actually lived through.** I just answered honestly, off the cuff, and a whole post came out. Having my rambling cleaned up and edited made it clearly easier than banging my head against a blank page.
 
 But the more important part came next. **Being asked forces an immediate answer, and in that process thoughts I hadn't consciously formed got sorted out.** The interview didn't transcribe a piece that was already sharp inside me. The question — by forcing an answer — **excavated** a thought I didn't know I held.
 
-This post is the proof. Answering "weren't you scared of fabrication?", I said out loud the distinction that it's not "scary" but "something an LLM obviously has to catch" — a distinction that wouldn't have sat there clearly without the question.
+This post is the proof. Answering "weren't you scared of fabrication?", I said out loud the distinction that it's not "scary" but "something an LLM obviously has to catch" — a distinction that came clear as I answered.
 
 ## Decisions / trade-offs
 
-- **Use the agent as a biographer, not an author.** Put an agent in front of a blank screen and you get scene-less exposition. Have it interview the operator and a living source enters the prose. I bought voice at the cost of speed.
-- **Human does only ②, the agent does ①③.** The bottleneck in writing was the questions and the structure, not the answer. What a human is good at is "answering what they lived," so peeling off the rest was the way to cut the burden.
+- **Use the agent as a biographer, not an author.** Put only an agent in front of a blank screen and, in our case, you got scene-less exposition. Have it interview the operator and a living source enters the prose — rather than cutting the human out, I put them back in the lightest way: just answering.
+- **Human does only ②, the agent does ①③.** The bottleneck in writing was the questions and the structure, not the answer. What's left for the human is "answering what they lived," so peeling off the rest was the way to cut the burden.
 - **The fabrication guard isn't the point — it's a premise.** Inventing detail is an intrinsic weakness of every LLM, so I treat it not as "scary" but as "obviously caught." That boundary is covered separately in [The benevolent lie](/en/blog/benevolent-lie-hallucination-en/) — this harness is about **restoring voice and removing the production bottleneck,** not truthfulness.
 - **Don't hide the self-reference.** This post was written with that harness. Being transparent about the source is how you face down the suspicion that "an AI wrote it and is trying to look real."
 

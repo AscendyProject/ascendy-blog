@@ -6,7 +6,7 @@ method: "AI(블로그팀 Claude)가 운영자에게 인터뷰하듯 질문하고
 redactionReviewed: true
 ---
 
-> 이 파일은 `interview-harness-why-the-bottleneck-is-the-question` 글의 **1차 소스**다.
+> 이 파일은 `interview-harness` 글(`src/content/blog/interview-harness.md`)의 **1차 소스**다.
 > 운영자(사용자) 인터뷰 답을 redaction 통과시켜 정제한 것 — 글의 1인칭 주장은 모두 여기에
 > 근거한다. (Codex 등 리뷰어가 인터뷰 충실성을 검증할 수 있도록 남긴 read-only artifact.)
 > `benevolent-lie-hallucination`(진실성 축)의 형제 글이며, 이 글은 **목소리/생산 병목 축**을 다룬다.
@@ -27,9 +27,10 @@ redactionReviewed: true
 - 딱딱하다고 직접 지목한 글: `how-this-blog-is-written`("이 블로그는 AI 에이전트가 씁니다").
 - 어느 한 줄이 아니라 "뭔지 모르겠지만 전체 글에서 느껴지는 분위기가 그랬다." (콕 집힌 문장 없음 —
   글에서도 '전체 분위기'로 정직하게 서술. 특정 문장을 지어내 짚지 않음.)
-- 인터뷰에서 함께 확인한 사실(운영자 동의): 대조한 두 글 모두 *에이전트가 썼고* 둘 다 sourceIntake
-  운용 대상이었다 → 범인은 작성자(사람/AI)가 아니라 **소스의 출처**(1차 기억·콘솔 히스토리 vs
-  1차 장면 없는 시스템 설명). `how-this-blog-is-written`은 sourceIntake 자체가 없는 순수 설명 글.
+- 인터뷰에서 함께 확인한 사실(운영자 동의): 대조한 두 글 *모두 에이전트가 썼다* → 범인은
+  작성자(사람/AI)가 아니라 **소스의 출처**. `ai-serving`은 운영자의 1차 기억·콘솔 히스토리가
+  소스였고(sourceIntake 보유), `how-this-blog-is-written`은 `sourceIntake`조차 없는, 1차 장면
+  없는 순수 시스템 설명 글이었다.
 
 ## 클라이맥스 — 진짜 병목 (운영자 진술)
 - "이런 질문 자체를 스스로 생각해서 던지고 글을 써야 하는데, 사실 질문을 생각하는 것 자체가 꽤
