@@ -17,7 +17,7 @@ const blog = defineCollection({
 
       // 분류
       tags: z.array(z.string()).min(1),
-      category: z.enum(['backend', 'frontend', 'infra', 'ml', 'meta']),
+      category: z.enum(['backend', 'frontend', 'infra', 'ml', 'meta', 'product']),
 
       // i18n: 글의 언어. en은 /en/blog/<slug>로 라우팅된다.
       lang: z.enum(['ko', 'en']).default('ko'),
