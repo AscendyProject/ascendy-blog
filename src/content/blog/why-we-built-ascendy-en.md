@@ -16,29 +16,29 @@ redactionReviewed: true
 ## TL;DR
 
 - Ascendy didn't start with photos. It started when I tried to retouch my child's first-birthday photos with AI and **the child's face got swapped for a different one entirely.**
-- The first idea was "retouching by words," but I dropped it — big tech would do it better. The real gap was elsewhere: **no photo cloud let you search in natural language.**
+- The first idea was "retouching by words," but I dropped it — big tech would do it better. The real gap was elsewhere: **no photo cloud tied finding, organizing, and sharing into a single natural-language flow.**
 - The more I worked with photos, the clearer the real problem got. People pile photos into the cloud and **never look at them again.** They're stored, but **you can't find them** — like a squirrel that buries acorns and forgets where.
 - So we didn't build a bigger vault. We built an agent that **finds, sorts, and shares by natural language** — turning a junk pile of photos into **raw data that understands you.**
 
-> **Source note.** The primary source for this post is an operator interview, drawn out by [an agent that interviews me](/en/blog/interview-harness-en/). Every scene, judgment, and number below is something the operator actually said in that interview; the cleaned transcript lives at `docs/intake/from-user/2026-06-02-why-we-built-ascendy.md`. The market reasoning is our hypothesis, not established fact.
+> **Source note.** The primary source for this post is an operator interview, drawn out by [an agent that interviews me](/en/blog/interview-harness-en/). The core scenes, anecdotes, and numbers (the failed birthday-photo retouch, the squirrel analogy, the sibling story) are things the operator actually said in that interview; some market reasoning and generalization are editorial elaboration. The cleaned transcript lives at `docs/intake/from-user/2026-06-02-why-we-built-ascendy.md`. The market reasoning is our hypothesis, not established fact.
 
 ## It didn't start with photos
 
-About a year ago, we had our child's first-birthday celebration. The party was on May 31, and the photos came back two or three weeks later. At the time I only had a vague itch: *I should build something with AI.*
+About a year ago, we had our child's first-birthday celebration. It was last spring, and the photos came back a few weeks later. At the time I only had a vague itch: *I should build something with AI.*
 
 Picking shots to print, I hit a problem. The kid had cried through most of it, so nearly every face was a pout. So I asked GPT: "make this expression brighter." Back then GPT's image editing was a mess, and the result was exactly what you'd expect — **the child's face came back as a different child's face.** Told to fix an expression, the diffusion model swapped out the whole person, as they tend to.
 
 I was exasperated but not surprised. I'd played with Stable Diffusion enough to know this was a known limit. What stuck with me longer was what my wife said next: "It can't even do *this*? AI is useless."
 
-That line was the signal. The limit a builder shrugs off as "that's just how it is" is the same limit a user simply finds **frustrating.** Where that gap in temperature exists, there's a market.
+That line was the signal. The limit a builder shrugs off as "that's just how it is" is the same limit a user simply finds **frustrating.** I read that gap in temperature as a market signal.
 
 ## The first idea, and the first pivot
 
 So the first thing I imagined was **retouching by words.** People still retouch with clunky apps like SNOW. Let them just say "clean this up, naturally, about this much" instead — roughly the kind of thing Nano Banana or GPT image do now.
 
-It didn't last. Soon a thought landed: *even if we start now, big tech will do this better.* Image generation and editing models are ultimately won by whoever has the most data and the most GPUs. So I dropped it.
+It didn't last. Soon a thought landed: *even if we start now, big tech will do this better.* Image generation and editing models, I figured, are ultimately won by whoever has the most data and the most GPUs. So I dropped it.
 
-What caught my eye in the pivot was a gap nobody was touching. **Up to that point, no photo cloud supported natural-language search.** The "ask in plain words and it finds it" experience we'd all grown used to with GPT and Claude was missing from exactly the place our photos pile up the most.
+What caught my eye in the pivot was a gap nobody had really tied together. Google Photos did ship natural-language search with "Ask Photos" in 2024 — but it stopped there. **What we wanted — finding, organizing, and sharing tied into a single natural-language flow — existed nowhere.** The "ask in plain words and it just handles it" experience we'd all grown used to with GPT and Claude was missing from exactly the place our photos pile up the most.
 
 And I figured big tech *couldn't* easily do it. They already sit on **trillions** of photos. Processing that entire backlog with AI costs a fortune, and they already own the market — pour money in and the ROI isn't there. A newcomer with no backlog, by contrast, only has to accumulate **photos that were AI-processed from the start.** This is our hypothesis, but I judged the asymmetry to be on our side. After about two months of nothing but planning, no code, I made the first commit of a natural-language photo cloud in August 2025.
 
@@ -54,7 +54,7 @@ An agent that performs that one sentence **perfectly.** Building toward that is 
 
 ## The real problem — paying to store a junk pile
 
-Wiring up models for photo preprocessing taught me something. **Photos carry far more data than you'd think** — who, when, where, what, with which expression. And yet people dump it all into the cloud and never look again. I did exactly that.
+Wiring up models for photo preprocessing taught me something. **A single photo holds far more data than you'd think.** And yet people dump it all into the cloud and never look again. I did exactly that.
 
 A squirrel that diligently buries acorns, then forgets where and lets them rot. That's the picture.
 
