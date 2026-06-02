@@ -8,7 +8,7 @@ author: "Ascendy Engineering"
 
 # 분류 (필수)
 tags: ["astro", "cloudflare-pages", "lmo"]
-category: "infra"            # backend | frontend | infra | ml | meta
+category: "infra"            # backend | frontend | infra | ml | meta | product
 
 # 인테이크 추적 (3팀 산출물 기반이면 필수)
 sourceIntake:
