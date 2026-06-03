@@ -13,6 +13,17 @@ redactionReviewed: true
 > 않는다 — 이 정제본도 public이라 노트에 원본 식별자를 쓰면 그 자체가 누출이다). absolute-block
 > 없음(literal credential·비즈니스 로직·보안 메커니즘 detail 미포함 — 세션 만료 처리는 일반화
 > 가능한 SPA recovery 패턴 수준).
+>
+> **⚠️ 진단 정정 (2026-06-03):** 아래 원 글감의 진단 — *"Nuxt 3 `.client` 글로벌 미들웨어가
+> SSR-rendered initial route에서 fire하지 않는다(프레임워크 트레이트)"* — 은 블로그 편집국의
+> 게시화 팩트체크에서 **부정확**으로 판명됐다. Nuxt 3 미들웨어는 플러그인과 달리 `.client`/`.server`
+> suffix를 지원하지 않으며(환경 분기는 body 내 `import.meta.client/server`), `*.global.client.ts`의
+> `.client`는 미들웨어 로더가 인지하지 않는 잉여 토큰이다. 즉 "프레임워크 트레이트"가 아니라
+> **비표준 네이밍의 부산물**이었다. 이 피드백이 프론트엔드 팀의 코드 정정(파일명을 `.global.ts`로
+> 정통화 + body 첫 줄 `import.meta.server` 분기; 외부 관찰 동작 동일)을 유발했고, cold-load 안전망
+> (플러그인 가드)은 hard-rule ask-first + e2e 잠금이라 **의도적으로 유지**됐다. 발행 글(ko/en)은
+> **정정된 진단**을 담는다. 정정 경위·코드 수정 상세는 frontend 회신 글감(`middleware-naming-correction-reply`,
+> `middleware-rename-pr-cycle-aftermath`) 참조. 아래 원 글감 본문은 *원 진단 시점의 기록*으로 보존한다.
 
 ## 무엇을 했나
 
