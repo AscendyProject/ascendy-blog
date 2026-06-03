@@ -61,7 +61,7 @@ attribute.repository_owner_id == '<numeric>' &&
 attribute.ref == 'refs/heads/main'
 ```
 
-`attribute.ref`도 빼면 안 된다. 애플리케이션 레이어에 "main에서만" 가드가 있더라도, 그 가드는 IAM이 OIDC 토큰을 평가한 **다음에** 실행된다. 같은 저장소의 다른 워크플로가 non-main 브랜치에서 auth를 호출하면, 애플리케이션 게이트가 발동하기도 전에 OIDC 교환이 IAM 단에서 통과해버린다. `principalSet://...` IAM 바인딩도 마찬가지로 `repository/<name>`이 아니라 `repository_id/<numeric>`을 써야 한다. mutable 문자열 식별자는 trapdoor고, immutable 숫자 ID가 신뢰 경계다.
+`attribute.ref`도 빼면 안 된다. 애플리케이션 레이어에 "main에서만" 가드가 있더라도, 그 가드는 IAM이 OIDC 토큰을 평가한 **다음에** 실행된다. 같은 저장소의 다른 워크플로가 non-main 브랜치에서 auth를 호출하면, 애플리케이션 게이트가 발동하기도 전에 OIDC 교환이 IAM 단에서 통과해버린다. 우리가 쓴 attribute-scoped 구성에서는 `principalSet://...` IAM 바인딩도 `repository/<name>`이 아니라 `repository_id/<numeric>`을 쓴다. 바인딩 형태 자체가 핵심은 아니다 — mutable 문자열 식별자는 trapdoor고, immutable 숫자 ID가 신뢰 경계라는 게 핵심이다.
 
 ## 디테일 2 — 자격증명은 1시간이 아니라 5분 산다
 
@@ -94,7 +94,7 @@ play {
 
 `actions/setup-java`와 `android-actions/setup-android`는 눈에 안 띄는 방식으로 얽힌다.
 
-- `setup-android`의 `sdkmanager --licenses`는 JDK 17 이상을 요구한다. 그런데 ubuntu-22.04 러너의 기본 `JAVA_HOME`은 JDK 11을 가리킨다. 그래서 `setup-java`가 **먼저** 돌아 `sdkmanager`가 JDK 21을 보게 해야 한다.
+- `setup-android`의 `sdkmanager --licenses`는 JDK 17 이상을 요구한다. 그런데 ubuntu-22.04 러너의 기본 `JAVA_HOME`은 (우리가 마주친 러너 스냅샷 기준) JDK 11을 가리켰다 — 러너 이미지는 시간이 지나며 바뀐다. 그래서 `setup-java`가 **먼저** 돌아 `sdkmanager`가 JDK 21을 보게 해야 한다.
 - 이후 어떤 스텝이든 `JAVA_HOME`을 바꿔칠 수 있다. 그래서 Gradle 호출 스텝에서 `env: JAVA_HOME: ${{ steps.setup-java.outputs.path }}`로 launching JVM을 못 박았다. 셸 레벨의 Java만으로는 부족하다 — `invalid source release: 21` 오류를 결정하는 건 Gradle을 띄우는 JVM이기 때문이다.
 
 진단 스텝 두 개는 **영구로** 남겼다. `setup-java` 뒤에 `echo "$JAVA_HOME"; java -version`, Gradle 호출 안에 `./gradlew --version`. 임시로 넣었다 빼면, 다음 툴체인 드리프트가 2분짜리 컴파일 오류로 다시 나타난다. 영구로 두면 다음 dispatch 로그에 바로 찍힌다.

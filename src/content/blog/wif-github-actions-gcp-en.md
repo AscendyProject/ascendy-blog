@@ -61,7 +61,7 @@ attribute.repository_owner_id == '<numeric>' &&
 attribute.ref == 'refs/heads/main'
 ```
 
-The `attribute.ref` clause matters too. Even with a "main-only" guard at the application layer, that guard runs *after* IAM evaluates the OIDC token. If another workflow in the same repo calls auth from a non-main ref, the OIDC exchange succeeds at IAM before the application gate ever fires. The `principalSet://...` IAM binding likewise must use `repository_id/<numeric>`, not `repository/<name>`. Mutable string identifiers are a trapdoor; immutable numeric IDs are the trust boundary.
+The `attribute.ref` clause matters too. Even with a "main-only" guard at the application layer, that guard runs *after* IAM evaluates the OIDC token. If another workflow in the same repo calls auth from a non-main ref, the OIDC exchange succeeds at IAM before the application gate ever fires. In the attribute-scoped setup we used, the `principalSet://...` IAM binding likewise uses `repository_id/<numeric>`, not `repository/<name>`. The binding shape itself isn't the point — mutable string identifiers are a trapdoor; immutable numeric IDs are the trust boundary.
 
 ## Detail 2 — the credential lives 5 minutes, not 1 hour
 
@@ -94,7 +94,7 @@ Gating on the presence of `GOOGLE_APPLICATION_CREDENTIALS` doubles as a **local/
 
 `actions/setup-java` and `android-actions/setup-android` interact in non-obvious ways.
 
-- `setup-android`'s `sdkmanager --licenses` requires JDK 17+. The ubuntu-22.04 runner's default `JAVA_HOME` points at JDK 11. So `setup-java` must run **first** to give `sdkmanager` a JDK 21 to detect.
+- `setup-android`'s `sdkmanager --licenses` requires JDK 17+. The ubuntu-22.04 runner's default `JAVA_HOME` pointed at JDK 11 (as of the runner snapshot we hit — runner images change over time). So `setup-java` must run **first** to give `sdkmanager` a JDK 21 to detect.
 - After that, any step can mutate `JAVA_HOME`. So in the Gradle invocation step we pin the launching JVM with `env: JAVA_HOME: ${{ steps.setup-java.outputs.path }}`. Shell-level Java alone isn't enough — the JVM that *launches Gradle* is what decides `invalid source release: 21`.
 
 Two diagnostic steps stay **permanently**: `echo "$JAVA_HOME"; java -version` after `setup-java`, and `./gradlew --version` inside the Gradle invocation. Add-then-remove, and the next toolchain drift reappears as a two-minute compile error. Keep them, and it shows up in the next dispatch log instead.
