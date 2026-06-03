@@ -52,7 +52,7 @@ compose의 벡터DB 서비스는 스토리지 키를 이렇게 받고 있었다(
 services:
   vectordb:
     env_file:
-      - ./app/.env.secrets      # ← 컨테이너 안쪽 env. ${...} 보간엔 기여 안 함.
+      - ./path/to/secrets.env   # ← 컨테이너 안쪽 env. ${...} 보간엔 기여 안 함.
     environment:
       OBJSTORE_ACCESS_KEY: "${OBJSTORE_ACCESS_KEY}"   # ← 파싱 시점 호스트/.env 에서 해석
       OBJSTORE_SECRET_KEY: "${OBJSTORE_SECRET_KEY}"   #   셸에 없으면 빈 문자열

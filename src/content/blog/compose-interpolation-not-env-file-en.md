@@ -50,7 +50,7 @@ The vector-DB service was receiving its storage keys like this.
 services:
   vectordb:
     env_file:
-      - ./app/.env.secrets      # ← inside-container env. Contributes nothing to ${...}.
+      - ./path/to/secrets.env   # ← inside-container env. Contributes nothing to ${...}.
     environment:
       OBJSTORE_ACCESS_KEY: "${OBJSTORE_ACCESS_KEY}"   # ← resolved at parse time from host/.env
       OBJSTORE_SECRET_KEY: "${OBJSTORE_SECRET_KEY}"   #   empty string if not in the shell
