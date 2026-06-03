@@ -65,8 +65,8 @@ def get_collection(name: str):
 I pinned it with a measurement, not a guess. I queried the live collection schema directly.
 
 ```text
-# expected: [pk, tenant_filter_field, source_text, embedding]
-# actual:   [pk, source_text, embedding]   ← tenant_filter_field missing = drift confirmed
+# expected: [id_field, tenant_filter_field, text_field, vector_field]
+# actual:   [id_field, text_field, vector_field]   ← tenant_filter_field missing = drift confirmed
 ```
 
 The field the code wanted wasn't in the live data. And the search path filtered on that same field — so **reads were broken on this collection too, not just writes.**

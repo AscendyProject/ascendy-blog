@@ -96,8 +96,8 @@ def reindex(media_id):
 ```text
 # 진단: "succeeded 옆의 ERROR" 모순 → 추측 대신 실데이터 스키마 직접 조회.
 # (의사코드) connect(vector_db); print(collection(name).schema.fields)
-# 기대: [pk, tenant_filter_field, source_text, embedding]
-# 실제: [pk, source_text, embedding]   ← tenant_filter_field 누락 = 드리프트 확정
+# 기대: [id_field, tenant_filter_field, text_field, vector_field]
+# 실제: [id_field, text_field, vector_field]   ← tenant_filter_field 누락 = 드리프트 확정
 # fix: drop(name); get_collection(name)        # 코드 경로로 동일 스키마 재생성
 # 운영 확인: 같은 조회를 prod에 read-only로 1회 — 필드 세트만 비교
 ```

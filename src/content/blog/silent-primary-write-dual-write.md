@@ -65,8 +65,8 @@ def get_collection(name: str):
 추측이 아니라 실측으로 못 박았다. 라이브 컬렉션 스키마를 직접 조회했다.
 
 ```text
-# 기대: [pk, tenant_filter_field, source_text, embedding]
-# 실제: [pk, source_text, embedding]   ← tenant_filter_field 누락 = 드리프트 확정
+# 기대: [id_field, tenant_filter_field, text_field, vector_field]
+# 실제: [id_field, text_field, vector_field]   ← tenant_filter_field 누락 = 드리프트 확정
 ```
 
 코드가 넣으려는 필드가 실데이터엔 없었다. 게다가 검색 경로도 그 필드로 필터링하고 있었으니, **쓰기뿐 아니라 읽기까지** 이 컬렉션에서는 깨져 있었다.
