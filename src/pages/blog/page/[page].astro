@@ -10,19 +10,24 @@ export async function getStaticPaths() {
   const PAGE_SIZE = 10;
   const all = (await getCollection('blog', ({ data }) => !data.draft && data.redactionReviewed && data.lang === 'ko'))
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  const enCount = (await getCollection('blog', ({ data }) => !data.draft && data.redactionReviewed && data.lang === 'en')).length;
   const totalPages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
+  const enTotal = Math.max(1, Math.ceil(enCount / PAGE_SIZE));
   const paths = [];
   // 1페이지는 /blog/(index.astro)가 담당. 여기선 2페이지부터.
   for (let p = 2; p <= totalPages; p++) {
+    // counterpart(en) page가 존재할 때만 hreflang을 건다 (페이지 수 불일치 대비).
+    const alternates: { lang: 'ko' | 'en'; url: string }[] = [{ lang: 'ko', url: `/blog/page/${p}/` }];
+    if (p <= enTotal) alternates.push({ lang: 'en', url: `/en/blog/page/${p}/` });
     paths.push({
       params: { page: String(p) },
-      props: { posts: all.slice((p - 1) * PAGE_SIZE, p * PAGE_SIZE), currentPage: p, totalPages },
+      props: { posts: all.slice((p - 1) * PAGE_SIZE, p * PAGE_SIZE), currentPage: p, totalPages, alternates },
     });
   }
   return paths;
 }
 
-const { posts, currentPage, totalPages } = Astro.props;
+const { posts, currentPage, totalPages, alternates } = Astro.props;
 const t = useTranslations(lang);
 ---
 
@@ -31,6 +36,7 @@ const t = useTranslations(lang);
   description="Ascendy 엔지니어링 블로그의 전체 글 목록"
   schemaType="CollectionPage"
   lang={lang}
+  alternates={alternates}
 >
   <section class="prose-ascendy">
     <h1>{t('postsTitle')}</h1>
@@ -45,6 +51,6 @@ const t = useTranslations(lang);
         </li>
       ))}
     </ul>
-    <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/blog/" />
+    <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/blog/" lang={lang} />
   </section>
 </BaseLayout>

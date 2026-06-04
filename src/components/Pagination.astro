@@ -5,16 +5,21 @@ interface Props {
   currentPage: number;
   totalPages: number;
   basePath: string; // '/blog/' | '/en/blog/'
+  lang: 'ko' | 'en';
 }
-const { currentPage, totalPages, basePath } = Astro.props;
+const { currentPage, totalPages, basePath, lang } = Astro.props;
 const pageHref = (n: number) => (n === 1 ? basePath : `${basePath}page/${n}/`);
 const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+const L =
+  lang === 'ko'
+    ? { nav: '페이지 매기기', prev: '이전 페이지', next: '다음 페이지' }
+    : { nav: 'Pagination', prev: 'Previous page', next: 'Next page' };
 ---
 
 {totalPages > 1 && (
-  <nav class="pagination" aria-label="Pagination">
+  <nav class="pagination" aria-label={L.nav}>
     {currentPage > 1 && (
-      <a class="pg-arrow" href={pageHref(currentPage - 1)} rel="prev" aria-label="Previous page">←</a>
+      <a class="pg-arrow" href={pageHref(currentPage - 1)} rel="prev" aria-label={L.prev}>←</a>
     )}
     {pages.map((n) =>
       n === currentPage ? (
@@ -24,7 +29,7 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
       )
     )}
     {currentPage < totalPages && (
-      <a class="pg-arrow" href={pageHref(currentPage + 1)} rel="next" aria-label="Next page">→</a>
+      <a class="pg-arrow" href={pageHref(currentPage + 1)} rel="next" aria-label={L.next}>→</a>
     )}
   </nav>
 )}
