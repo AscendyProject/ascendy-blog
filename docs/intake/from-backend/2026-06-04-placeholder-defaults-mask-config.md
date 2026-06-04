@@ -10,10 +10,11 @@ redactionReviewed: true
 
 > 백엔드 팀 raw 글감의 redaction 정제본. 내부 식별자 일반화: 시크릿 소스 파일명·k8s Secret 이름·
 > 텔레그램 봇/채널·추론 엔드포인트 실제 호스트·클러스터/레지스트리 이름 → "운영 시크릿", "추론
-> 엔드포인트" 수준. **Class A 주의:** 시크릿 소스의 구조적 drift-guard(1차 방어)는 검토 단계라
-> "guard가 없다"식의 현재 운영 약점 서술은 빼고 **패턴/교훈만** 쓴다. fail-fast(코드 측 2차 방어)
-> 패턴은 일반화 가능. 회사/제품명·tier·가격 제외. celery silent-info / silent-primary-write와
-> 같은 "조용한 실패" 가족 — 상호 링크 권장.
+> 엔드포인트" 수준. **Class A 주의:** 1차 방어(시크릿 소스 drift 방지)의 구체 구현·운영 상태는
+> public 정제본에도 적지 않는다 — "아직 검토 단계"/"guard가 없다"식 서술은 곧 현재 운영 약점 신호라
+> Class A 노출이 된다. 이 글은 코드 측 fail-fast(2차 방어) **패턴/교훈만** 다룬다(일반화 가능).
+> 회사/제품명·tier·가격 제외. celery silent-info / silent-primary-write와 같은 "조용한 실패"
+> 가족 — 상호 링크 권장.
 
 ## 무엇을 했나
 
