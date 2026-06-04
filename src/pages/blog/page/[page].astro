@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { localizePath, useTranslations } from '../../../i18n/ui';
+import Pagination from '../../../components/Pagination.astro';
+
+const lang = 'ko' as const;
+
+export async function getStaticPaths() {
+  const PAGE_SIZE = 10;
+  const all = (await getCollection('blog', ({ data }) => !data.draft && data.redactionReviewed && data.lang === 'ko'))
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  const totalPages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
+  const paths = [];
+  // 1페이지는 /blog/(index.astro)가 담당. 여기선 2페이지부터.
+  for (let p = 2; p <= totalPages; p++) {
+    paths.push({
+      params: { page: String(p) },
+      props: { posts: all.slice((p - 1) * PAGE_SIZE, p * PAGE_SIZE), currentPage: p, totalPages },
+    });
+  }
+  return paths;
+}
+
+const { posts, currentPage, totalPages } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`글 (${currentPage}/${totalPages}) — Ascendy Engineering`}
+  description="Ascendy 엔지니어링 블로그의 전체 글 목록"
+  schemaType="CollectionPage"
+  lang={lang}
+>
+  <section class="prose-ascendy">
+    <h1>{t('postsTitle')}</h1>
+    <ul class="post-list space-y-2">
+      {posts.map((post) => (
+        <li>
+          <a href={localizePath(`/blog/${post.id}/`, lang)} class="post-card">
+            <span class="pc-meta">{post.data.category} · {post.data.pubDate.toISOString().slice(0, 10)}</span>
+            <span class="pc-title">{post.data.title}</span>
+            <span class="pc-desc">{post.data.description}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/blog/" />
+  </section>
+</BaseLayout>

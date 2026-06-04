@@ -1,0 +1,64 @@
+---
+// 미니멀 페이지네이션. 1페이지는 basePath(예: /blog/), 2+는 basePath + page/<n>/.
+// 글 상세 라우트(/blog/<slug>/)와 충돌하지 않도록 'page/' 세그먼트를 끼운다.
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  basePath: string; // '/blog/' | '/en/blog/'
+}
+const { currentPage, totalPages, basePath } = Astro.props;
+const pageHref = (n: number) => (n === 1 ? basePath : `${basePath}page/${n}/`);
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+---
+
+{totalPages > 1 && (
+  <nav class="pagination" aria-label="Pagination">
+    {currentPage > 1 && (
+      <a class="pg-arrow" href={pageHref(currentPage - 1)} rel="prev" aria-label="Previous page">←</a>
+    )}
+    {pages.map((n) =>
+      n === currentPage ? (
+        <span class="pg-current" aria-current="page">{n}</span>
+      ) : (
+        <a class="pg-num" href={pageHref(n)}>{n}</a>
+      )
+    )}
+    {currentPage < totalPages && (
+      <a class="pg-arrow" href={pageHref(currentPage + 1)} rel="next" aria-label="Next page">→</a>
+    )}
+  </nav>
+)}
+
+<style>
+  .pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 2.5rem;
+    font-size: 0.95rem;
+  }
+  .pagination a,
+  .pagination span {
+    min-width: 2rem;
+    padding: 0.35rem 0.5rem;
+    text-align: center;
+    border-radius: 6px;
+    text-decoration: none;
+    line-height: 1;
+  }
+  .pg-num,
+  .pg-arrow {
+    color: var(--muted, #555);
+  }
+  .pg-num:hover,
+  .pg-arrow:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: inherit;
+  }
+  .pg-current {
+    font-weight: 600;
+    color: inherit;
+    background: rgba(0, 0, 0, 0.06);
+  }
+</style>
