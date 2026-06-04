@@ -16,7 +16,8 @@ redactionReviewed: true
 
 ## 무엇을 했나
 
-[나를 인터뷰하는 게 아니라 코드를 고친 선순환](#)의 결말로, 글로벌 미들웨어 파일명을 비표준
+앞선 "nuxt 미들웨어 진단 정정" 선순환(편집국 팩트체크 → 프론트엔드 코드 정정;
+발행 글 `nuxt-client-middleware-skips-initial-route`)의 결말로, 글로벌 미들웨어 파일명을 비표준
 (`*.global.client.ts`)에서 정통(`.global.ts` + body `import.meta.server`)으로 바꾸는 rename PR을 머지했다.
 머지 자체보다 **머지에 도달하는 cycle에서 얻은 게 더 많았다.**
 
