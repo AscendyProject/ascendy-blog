@@ -16,7 +16,7 @@ redactionReviewed: true
 ## TL;DR
 
 - **주장(우리 의견)**: 메뉴·버튼 클릭으로 되는 *모든* 액션은 대화로 에이전트에게 시켜서도 돼야 한다 — "**대화-패리티**". 메뉴를 없애자는 게 아니라, 클릭으로 되는 전부에 **대화 경로가 함께 존재**해야 한다는 것.
-- **2026년 현재 사실**: Claude·ChatGPT·Gemini 모두 *과거 대화 회상*은 대화로 할 수 있게 됐다. 즉 패리티가 작동함을 산업이 **증명**했다.
+- **2026년 현재 사실**: Claude·ChatGPT·Gemini가 (지원 플랜·계정 기준) *과거 대화 회상*을 대화로 할 수 있게 됐다. 즉 패리티가 작동함을 산업이 **증명**했다.
 - **그런데 절반에서 멈췄다**: 정작 그 회상 기능을 *켜려면* Settings 메뉴로 들어가 토글을 눌러야 한다. 대화형 기능의 **진입 자체가 비대화형**이다. 도움말·설정·공유·export도 여전히 클릭 전용.
 - **분별 있는 예외는 있다**: 되돌릴 수 없는 *공개·프라이버시* 액션은 일부러 사람 클릭으로 남기는 게 맞다. 패리티는 독단이 아니다.
 
@@ -42,17 +42,17 @@ redactionReviewed: true
 
 ## 산업은 패리티가 작동함을 이미 증명했다
 
-여기서 정직해야 한다. "AI 에이전트는 아직도 다 클릭시킨다"는 *현재 사실로는 틀리다.* 2026년 기준, 세 제품 모두 *과거 대화 회상*은 대화로 할 수 있다:
+여기서 정직해야 한다. "AI 에이전트는 아직도 다 클릭시킨다"는 *현재 사실로는 틀리다.* 2026년 기준, 세 제품 모두 (지원 플랜·계정에서) *과거 대화 회상*은 대화로 할 수 있다:
 
-- **Claude** — chat search + memory(2026-03-02부터 전 유저 무료). "예전에 얘기한 거 찾아줘"라고 말하면 검색 도구를 호출해 끌어온다([Claude Help](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context)).
-- **ChatGPT** — 과거 대화 검색 + Memory Sources(2026-05, 참조 출처 표시).
-- **Gemini** — 과거 대화 recall("스레드를 따로 찾을 필요 없다", 단 정밀도는 상대적으로 낮음)([Google](https://blog.google/feed/gemini-referencing-past-chats/)).
+- **Claude** — *memory*는 2026-03-02부터 전 유저 무료, *chat search*(대화로 "예전 거 찾아줘")는 유료 플랜(Pro·Max·Team·Enterprise)에서 제공된다 — 둘은 가용 범위가 다르다. 말하면 검색 도구를 호출해 끌어온다([Claude Help](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context)).
+- **ChatGPT** — 과거 대화 검색 + Memory Sources(2026-05, 참조 출처 표시)([OpenAI Help](https://help.openai.com/en/articles/8590148-memory-faq)).
+- **Gemini** — 과거 대화 recall("스레드를 따로 찾을 필요 없다"). 단 Advanced/Premium에서 시작해 순차 롤아웃 중이라 모두에게 열려 있진 않고, 정밀도도 상대적으로 낮다([Google](https://blog.google/feed/gemini-referencing-past-chats/), [Gemini Help](https://support.google.com/gemini/answer/16598623)).
 
 이건 주장을 *약화*시키지 않는다. *강화*한다. **산업이 가장 흔한 클릭-액션 하나(과거 대화 찾기)를 대화형으로 만들어, 대화-패리티가 실제로 작동함을 스스로 증명했다.** 문제는 거기서 멈췄다는 것이다.
 
 ## 절반의 패리티
 
-회상은 대화형이 됐는데 — 그 회상을 *켜는 것*은 여전히 메뉴 토글이다. 도움말은 별도 페이지 클릭이다. 설정·공유·export 대부분은 클릭 전용이다. 심지어 회상조차, 사이드바 검색은 *제목만* 매칭하고 내용은 못 찾는다(Claude). 대화형 회상은 *보조 기능*으로 숨고, 리스트가 여전히 주력 동선이다.
+회상은 대화형이 됐는데 — 그 회상을 *켜는 것*은 여전히 메뉴 토글이다. 도움말은 별도 페이지 클릭이다. 우리가 본 주요 동선에서는 설정·공유·export 대부분이 클릭 전용이다. 심지어 회상조차, 사이드바 검색은 *제목만* 매칭하고 내용은 못 찾는다(Claude). 대화형 회상은 *보조 기능*으로 숨고, 리스트가 여전히 주력 동선이다.
 
 즉 패리티가 **절반에서 멈췄다.** 한 기능은 대화로 끌어왔으면서, 그 옆의 똑같이 클릭 가능한 기능들은 옛 자리에 그대로 뒀다.
 

@@ -16,7 +16,7 @@ redactionReviewed: true
 ## TL;DR
 
 - **Our claim (an opinion)**: *every* action you can do by clicking a menu or button should *also* be doable by telling the agent in conversation — **conversational parity**. Not "kill the menus," but: every click-action must have a conversational path *alongside* it.
-- **A fact, as of 2026**: Claude, ChatGPT, and Gemini all let you *recall past conversations* conversationally now. The industry **proved** parity works.
+- **A fact, as of 2026**: Claude, ChatGPT, and Gemini — on supported plans/accounts — now let you *recall past conversations* conversationally. The industry **proved** parity works.
 - **But it stopped halfway**: to *enable* that recall feature, you still have to dive into a Settings menu and flip a toggle. The conversational feature's **entry point is itself non-conversational.** Help, settings, sharing, export — still click-only.
 - **There's a principled exception**: irreversible *public / privacy* actions should stay behind a human click on purpose. Parity isn't dogma.
 
@@ -42,17 +42,17 @@ This stance doesn't actually conflict with what UX designers say publicly. It co
 
 ## The industry already proved parity works
 
-Here we have to be honest. "AI agents still make you click for everything" is *false as a current fact.* As of 2026, all three let you *recall past conversations* by talking:
+Here we have to be honest. "AI agents still make you click for everything" is *false as a current fact.* As of 2026, all three — on supported plans/accounts — let you *recall past conversations* by talking:
 
-- **Claude** — chat search + memory (free for all users since 2026-03-02). Say "find what I discussed before" and it calls a search tool to pull it together ([Claude Help](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context)).
-- **ChatGPT** — past-chat search + Memory Sources (2026-05, shows referenced sources).
-- **Gemini** — recalls past chats ("no need to hunt for a thread," though less precise) ([Google](https://blog.google/feed/gemini-referencing-past-chats/)).
+- **Claude** — *memory* is free for all users since 2026-03-02, while *chat search* (saying "find what I discussed before") is on paid plans (Pro/Max/Team/Enterprise) — the two differ in availability. It calls a search tool to pull it together ([Claude Help](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context)).
+- **ChatGPT** — past-chat search + Memory Sources (2026-05, shows referenced sources) ([OpenAI Help](https://help.openai.com/en/articles/8590148-memory-faq)).
+- **Gemini** — recalls past chats ("no need to hunt for a thread"). But it started on Advanced/Premium and is still rolling out more broadly, so it isn't open to everyone, and it's less precise ([Google](https://blog.google/feed/gemini-referencing-past-chats/), [Gemini Help](https://support.google.com/gemini/answer/16598623)).
 
 This doesn't *weaken* the claim. It *strengthens* it. **The industry took one of the most common click-actions — finding a past conversation — and made it conversational, proving conversational parity actually works.** The problem is it stopped there.
 
 ## The half-built parity
 
-Recall went conversational — yet *enabling* that recall is still a menu toggle. Help is still a separate page click. Settings, sharing, export are mostly click-only. Even recall: sidebar search matches *titles* only, not content (Claude). Conversational recall hides as a *secondary* feature while the list stays the primary path.
+Recall went conversational — yet *enabling* that recall is still a menu toggle. Help is still a separate page click. In the main flows we've seen, settings, sharing, and export are mostly click-only. Even recall: sidebar search matches *titles* only, not content (Claude). Conversational recall hides as a *secondary* feature while the list stays the primary path.
 
 So parity **stopped halfway.** One feature got pulled into conversation, while the equally-clickable features right next to it were left in their old spots.
 

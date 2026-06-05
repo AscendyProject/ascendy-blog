@@ -37,11 +37,14 @@ reference past chats" 토글을 켜야** 한다. — 즉 **대화형 회상 기�
 
 ## fact-check (발행 시 귀속)
 
-2026년 현재 세 제품 모두 **과거 대화를 대화로 불러오는 기능 자체는 있다** — 그래서 "아직도
-클릭만 된다"는 *현재 사실로는 틀림*. 단정/추측 분리 정책상 이대로 못 씀:
-- Claude: chat search + memory(2026-03-02 전 유저 무료), "찾아줘"로 RAG 호출.
-- ChatGPT: past chat 검색 + Memory Sources(2026-05).
-- Gemini: 과거 대화 recall(정밀도는 상대적으로 낮음).
+2026년 현재 세 제품 모두 (지원 플랜·계정에서) **과거 대화를 대화로 불러오는 기능 자체는 있다**
+— 그래서 "아직도 클릭만 된다"는 *현재 사실로는 틀림*. 단, 가용 범위에 plan/rollout 단서가 있어
+"세 제품 모두"는 qualifier 없이 단정하면 안 됨(단정/추측 분리):
+- Claude: **memory는 전 유저 무료(2026-03-02), chat search는 유료 플랜**(Pro/Max/Team/Enterprise)
+  — 둘은 가용 범위가 다름. 말하면 RAG 호출.
+- ChatGPT: past chat 검색 + Memory Sources(2026-05). 본문에 OpenAI Help 링크로 귀속.
+- Gemini: 과거 대화 recall — **Advanced/Premium서 시작해 순차 롤아웃 중**(모두에게 열려 있진 않음),
+  정밀도도 상대적으로 낮음.
 - 단 sidebar search는 제목만 매칭(내용 검색 안 됨, Claude) → 회상은 *보조*로 숨고 리스트가 주력.
 
 → **프레임**: "아직도 클릭시킨다"(약함·부정확)가 아니라 **"recall은 대화형으로 만들어
