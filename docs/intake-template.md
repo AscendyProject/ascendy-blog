@@ -134,7 +134,8 @@ externalMaterials: []
 ```
 
 redaction 경계는 동일하다 — 토론 *주제 자체*가 인증·레이트리밋·부정탐지·
-미공개 사업전략·고객식별이면 일반화해도 글감이 안 된다(Class 1, 스킵).
+미공개 사업전략·고객식별이면 일반화해도 **게시 부적합**이라 글감이 안 된다
+(스킵; [`redaction-checklist.md`](./redaction-checklist.md) §1·§3).
 
 ---
 
