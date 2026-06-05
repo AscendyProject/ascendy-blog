@@ -2,7 +2,9 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { localizePath, useTranslations } from '../../../i18n/ui';
+import Pagination from '../../../components/Pagination.astro';
 
+const PAGE_SIZE = 10;
 const lang = 'en' as const;
 const t = useTranslations(lang);
 const alternates = [
@@ -10,8 +12,10 @@ const alternates = [
   { lang: 'en' as const, url: '/en/blog/' },
 ];
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft && data.redactionReviewed && data.lang === lang))
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft && data.redactionReviewed && data.lang === lang))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const totalPages = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
+const posts = allPosts.slice(0, PAGE_SIZE);
 ---
 
 <BaseLayout
@@ -37,5 +41,6 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft && data.red
         <li style="color:var(--muted)">{t('homeEmpty')}</li>
       )}
     </ul>
+    <Pagination currentPage={1} totalPages={totalPages} basePath="/en/blog/" lang={lang} />
   </section>
 </BaseLayout>
