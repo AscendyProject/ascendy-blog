@@ -109,6 +109,36 @@ externalMaterials: []
 
 ---
 
+## 토론형 글감(Claude↔Codex 의견 충돌)일 때 — 본문 구조만 다르다
+
+[`intake-standing-order.md` §4-bis](./intake-standing-order.md)의 특별 트리거
+(3+ 라운드 substantive 토론)에 해당하면, frontmatter는 위와 같이 쓰되
+`relatedDecisions:`에 해당 `docs/agent-os/decisions/*` 결정문을 채우고,
+**본문은 "무엇을/왜 했나" 대신 아래 세 블록**으로 적는다:
+
+```markdown
+## 양쪽 입장 (각 진영 steelman)
+
+- **A 진영(누가):** 무엇을, 왜 주장했나. 가장 강한 형태로.
+- **B 진영(누가):** 무엇을, 왜 주장했나. 가장 강한 형태로.
+
+## 갈림의 crux
+
+정확히 어느 지점에서 갈렸나. (옵션 선택이 같아도 *추론*이 갈릴 수 있다 —
+그게 종종 진짜 이야기다.)
+
+## 수렴 경로
+
+한쪽이 다른 쪽의 무엇을 꺾었나/채택했나. 누가 어떤 근거로 마음을 바꿨나.
+끝까지 갈렸으면 그 분기를 그대로 적는다("합의함" 요약 금지 — 긴장이 콘텐츠).
+```
+
+redaction 경계는 동일하다 — 토론 *주제 자체*가 인증·레이트리밋·부정탐지·
+미공개 사업전략·고객식별이면 일반화해도 **게시 부적합**이라 글감이 안 된다
+(스킵; [`redaction-checklist.md`](./redaction-checklist.md) §1·§3).
+
+---
+
 ## 블로그팀이 인테이크를 처리하는 방식
 
 1. 제안 팀의 private repo `<팀 repo>/docs/blog-intake/`에서 인테이크
