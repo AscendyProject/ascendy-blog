@@ -40,7 +40,7 @@ A query like that has to return thousands. And here's the key distinction — th
 A reranker is structurally wrong for that bulk.
 
 - **(a) Cost/latency blow-up.** Cross-encoder-scoring thousands of candidates one by one is too slow and too expensive. A reranker runs the model once per query-document pair, so cost grows linearly as candidates grow.
-- **(c) Cutoff truncation.** A reranker pipeline is fundamentally about *reordering the top k*. Against "give me everything there is," that k cutoff slices off correct answers.
+- **(c) Cutoff truncation.** A typical reranker pipeline *reorders a limited candidate set (top-k)*. Against "give me everything there is," that top-k cutoff slices off correct answers.
 
 In one line: **a reranker is a precision@(small k) tool, not a "find all of it" recall tool.** We'd been using it for the wrong job.
 
@@ -50,13 +50,13 @@ The most natural objection lands here. *"Turn the reranker off for bulk queries 
 
 **One: natural language doesn't cleanly separate conditions.** A single sentence can mix an *include* and an *exclude* — "skip the ones with a dog, but show me all the baby photos." Having an LLM perfectly decompose that and route "this part is bulk, this part is pinpoint" is close to impossible. Get it wrong once and the user gets the wrong result.
 
-**Two: even if you could split it, you can't infer intent.** "Show me all" is *literally all thousands* for one person and *just show me a lot* for another. If the system guesses the intent behind the same phrase, half your users get something other than what they expected every time. **You can't read, from natural language alone, an intent that diverges under identical wording.**
+**Two: even if you could split it, you can't infer intent.** "Show me all" is *literally all thousands* for one person and *just show me a lot* for another. If the system guesses the intent behind the same phrase, half your users get something other than what they expected every time. **You can't reliably read, from natural language alone, an intent that diverges under identical wording — not safely, not consistently.**
 
 So instead of branching, we removed the reranker outright. What backed the decision: precision held up on the embedding alone — search quality was fine from the moment we pulled it.
 
 ## The replacement — a two-stage built on MRL (precision without a reranker)
 
-We thought about how to shore up precision after dropping the reranker, and it was easier than expected. **Qwen3-VL-Embedding has MRL (Matryoshka Representation Learning).** A single embedding vector keeps its meaning even when truncated short — like a matryoshka doll, the leading slice of dimensions is itself a usable embedding. Per the official spec, the default is **1024 dimensions**, with `truncate_dim` outputs of **64 · 128 · 256 · 512 · 1024 · 1536 · 2048**.
+We thought about how to shore up precision after dropping the reranker, and it was easier than expected. **Qwen3-VL-Embedding has MRL (Matryoshka Representation Learning).** A single embedding vector keeps its meaning even when truncated short — like a matryoshka doll, the leading slice of dimensions is itself a usable embedding. Per the official spec, the embedding dimension goes **up to 4096** (2B is 2048, 8B is 4096), with user-defined output dimensions anywhere from **64 to 4096**.
 
 We built a two-stage out of that.
 
