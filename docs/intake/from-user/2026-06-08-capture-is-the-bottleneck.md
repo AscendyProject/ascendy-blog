@@ -27,7 +27,9 @@ redactionReviewed: true
   스킬의 *지시문*(learnings.md)에 다시 써져 누적된다. 모델 가중치가 아니라 명령 레벨의 자기개선.
   (출처: MindStudio·mcpmarket 등 공개 자료. 빌트인 보장 기능이라기보다 스킬/패턴 형태 — 신중 표현.)
 - **여전히 사람 경유(제품 레벨)**: 세션 중 "이거 불편해"가 제공사로 자동 라우팅되진 않는다 —
-  사용자가 `/feedback`을 직접 눌러야 한다. 텔레메트리·서베이는 opt-out 존재(`DISABLE_TELEMETRY` 등).
+  사용자가 `/feedback`을 직접 눌러야 한다(별도 보고 흐름). 데이터 수집은 항목별 opt-out: 텔레메트리
+  `DISABLE_TELEMETRY`, 피드백 명령 `DISABLE_FEEDBACK_COMMAND`, 서베이 `CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY`
+  (공식 Claude Code Data Usage 문서). 비공식 해설이 아니라 공식 문서로 귀속할 것.
 - **없다(실시간 모델 자가치유)**: 내 에러를 보고 모델이 실시간으로 자기를 고치는 건 아니다.
 
 → 핵심: 루프는 있는데 **범위가 좁고(스킬 지시문), 무엇보다 *capture*에 달려 있다** — 누군가

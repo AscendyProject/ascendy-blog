@@ -16,7 +16,7 @@ redactionReviewed: true
 ## TL;DR
 
 - It started with a wish: "I want the AI coding tool I use to **learn from my complaints and errors and fix itself.**"
-- It turns out the **self-improvement loop already exists** — correct a skill, and the correction gets written back into the skill's *instructions* and accumulates. But that's a narrow, **instruction-level** loop, and **in-session complaints still don't auto-reach the product** (you have to run `/feedback` yourself).
+- It turns out the **self-improvement loop already exists (at the skill/pattern level)** — correct a skill, and the correction gets written back into the skill's *instructions* and accumulates. But that's a narrow, **instruction-level** loop, and **in-session complaints still don't auto-reach the product** (you have to run `/feedback` yourself).
 - The point: for the loop to close, the correction first has to be **captured** — and capture is manual and fragile. **The hard part was never 'improve'; it's always been 'capture→route'.**
 - And leaving capture manual isn't laziness — it's also **privacy, signal/noise, and consent.** A legitimate tradeoff.
 
@@ -33,7 +33,7 @@ My gut said "surely yes — it's modern AI." Checking, the answer was more inter
 First, honestly: "there's no such loop" is **now inaccurate.** The loop exists; you just have to distinguish the kinds.
 
 - **It exists — instruction-level self-improvement.** Some AI coding tools have a "learnings loop": correct a skill mid-use ("it should have done it this way"), and that correction gets written back into the skill's *instruction file* and accumulates. Next time, the correction applies — improving at the **prompt/instruction level**, not by touching model weights ([MindStudio](https://www.mindstudio.ai/blog/learnings-loop-claude-code-skills-self-improvement)).
-- **Still human-in-the-loop — at the product level.** But the "this is inconvenient" I drop mid-session doesn't *auto-reach the provider.* To send it into product improvement, I have to run `/feedback` myself. Telemetry and surveys have opt-out toggles (`DISABLE_TELEMETRY` and friends) ([decodethefuture](https://decodethefuture.org/en/claude-code-undercover-mode-killswitches-telemetry/)).
+- **Still human-in-the-loop — at the product level.** But the "this is inconvenient" I drop mid-session doesn't *auto-reach the provider.* To send it into product improvement, I have to run `/feedback` myself — a separate report flow. And data collection is opt-out per category: telemetry via `DISABLE_TELEMETRY`, the feedback command via `DISABLE_FEEDBACK_COMMAND`, and the satisfaction survey via `CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY` ([official Data Usage docs](https://code.claude.com/docs/en/data-usage)).
 - **It doesn't exist — real-time model self-healing.** The model doesn't watch my error and fix itself on the spot.
 
 One thing runs through all three. **For the loop to close, the correction first has to be *captured.*** Even the learnings loop only closes if someone (me, or a wrap-up step) *writes* that correction into the instructions. Product improvement only starts if I *press* `/feedback`. **The improve mechanism is already there — it's the capture in front of it that's manual.**
@@ -48,7 +48,7 @@ That's the insight. When we think "self-improvement," we usually picture "how do
                                  manual, fragile → evaporates here
 ```
 
-The improve step (learnings loop, product-improvement process) **already exists.** What breaks is the step before it — the surfaced correction being **captured and routed to the right place.** Don't write it down, don't press `/feedback`, and the signal vanishes with the session.
+Some improve mechanisms (learnings loop, product-improvement process) **already exist.** What breaks is the step before it — the surfaced correction being **captured and routed to the right place.** Don't write it down, don't press `/feedback`, and the signal vanishes with the session.
 
 We've seen this shape before. In [the monitoring post](/en/blog/monitoring-closed-loop-route-en/), the broken link wasn't 'measure' — it was 'capture→route': a human had to remember and re-relay it to make it action. Same here. Only this time the bottleneck sits **inside the tool we use every day.**
 
