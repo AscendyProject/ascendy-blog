@@ -20,7 +20,7 @@ redactionReviewed: true
 - 효과: 한 번의 거절이 런을 죽이지 않고, **고집스런 진짜 버그가 한 번의 재시도로 슬쩍 통과하지 못한다.**
 - 정직하게: **early(v0.1.0)**다. 자동 tier-routing은 로드맵(#13)이지 이번 릴리스엔 없다.
 
-> **소스 노트.** 이 글의 canonical 소스는 공개 repo([AscendyProject/redteam](https://github.com/AscendyProject/redteam))이고, 사실은 발행 시점에 README를 직접 확인해 박았다. 우리가 그동안 쓴 적대적 리뷰 글 — [두 번째 AI를 어떻게 부르고 언제 멈추나](/blog/headless-adversarial-review-loop/), [두 AI가 같은 답을 골랐다](/blog/right-answer-wrong-reasoning/), [멀티 AI를 붙였더니 느려졌다](/blog/agent-os-dogfooding-journey/) — 에서 다룬 패턴이 이제 하나의 도구로 추출됐다.
+> **소스 노트.** 이 글의 canonical 소스는 공개 repo([AscendyProject/redteam](https://github.com/AscendyProject/redteam))이고, 사실은 발행 시점에 README와 v0.1.0 release note를 직접 확인하고 redteam 팀의 엔진 대조 fact-check를 반영해 박았다. 우리가 그동안 쓴 적대적 리뷰 글 — [두 번째 AI를 어떻게 부르고 언제 멈추나](/blog/headless-adversarial-review-loop/), [두 AI가 같은 답을 골랐다](/blog/right-answer-wrong-reasoning/), [멀티 AI를 붙였더니 느려졌다](/blog/agent-os-dogfooding-journey/) — 에서 다룬 패턴이 이제 하나의 도구로 추출됐다.
 
 ## 문제 — 두 번째 모델도 고무도장을 찍는다
 
@@ -39,10 +39,10 @@ redteam에서 리뷰는 pass/fail이 아니다. 리뷰어는 각 발견에 **sev
 ```text
 blocker가 여러 라운드 생존 →  worker 재시도
                           →  더 무거운 rescue 패스
-                          →  사람(ask_user)에게 인계
+                          →  사람이 rescue 결과를 게이트 (복구 불가 시 운영자에게 보류)
 ```
 
-이 구조가 두 방향의 실패를 동시에 막는다.
+(이와 별개로, *plan* 단계에서 막히면 하네스가 멈추고 운영자에게 직접 묻는 탈출구도 있다.) 이 구조가 두 방향의 실패를 동시에 막는다.
 
 - **한 번의 거절이 런을 죽이지 않는다.** 리뷰어가 한 번 막아도, worker가 고칠 기회를 갖는다. "리뷰어가 틀렸을 수도 있는데 통째로 멈춰버리는" 과민함을 피한다.
 - **고집스런 진짜 버그가 슬쩍 통과하지 못한다.** 한 번의 재시도로 안 고쳐진 blocker는 사라지지 않고 *더 무거운 패스*로, 끝내 *사람*에게로 간다. "한 번 거절했다가 다음 라운드에 잊혀지는" 누수를 막는다.
@@ -53,7 +53,7 @@ blocker가 여러 라운드 생존 →  worker 재시도
 
 티어드 사다리가 작동하려면 리뷰가 진짜 적대적이어야 한다. redteam은 그걸 *구조*로 강제한다.
 
-리뷰어는 **신선한 에이전트**이고, 설정상 **다른 모델**일 수 있으며, **diff와 보안 체크리스트만** 본다 — **구현자의 추론은 절대 못 본다.** 작성자가 "이래서 이렇게 했어요"라고 변호할 통로 자체가 없다. 리뷰어는 결과물만 보고, 자기 시각으로 친다.
+리뷰어는 **신선한 에이전트**이고, 설정상 **다른 모델**일 수 있으며, **변경(diff)과 태스크 명세·보안 체크리스트**를 본다 — 그러나 **구현자의 추론은 보지 않는다.** 작성자가 "이래서 이렇게 했어요"라고 변호할 통로 자체가 없다. 리뷰어는 결과물과 명세만 보고, 자기 시각으로 친다.
 
 그리고 **비가역 단계는 사람이 게이트한다** — plan 승인과 PR 생성은 사람이 승인하기 전엔 막혀 있다. 에이전트가 제안하고, 사람이 되돌릴 수 없는 문을 연다.
 
@@ -74,7 +74,7 @@ worker든 reviewer든 **Claude 또는 Codex**를 꽂을 수 있다(역할별 설
 
 ## 써보기
 
-redteam은 **런타임 의존성이 없고**(stdlib-only, 프로젝트 비종속), 벤더드로 설치된다. early(v0.1.0)지만 — **내부 모노레포에서 추출돼 거기서 실제 머지된 PR들을 구동했고**, JS/TS 프론트엔드에서 cross-stack으로 검증됐다. API·레이아웃은 아직 움직일 수 있다.
+redteam은 **런타임 의존성이 없고**(stdlib-only, 프로젝트 비종속), 벤더드로 설치된다. early(v0.1.0)지만 — **내부 모노레포에서 추출돼 거기서 실제 머지된 PR들을 구동했고**, Nuxt/Vue/TS 프론트엔드에서 cross-stack으로 검증됐다. API·레이아웃은 아직 움직일 수 있다.
 
 ```text
 # Claude Code 플러그인 (권장)

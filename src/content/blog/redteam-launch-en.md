@@ -20,7 +20,7 @@ redactionReviewed: true
 - The effect: one rejection doesn't kill a run, and **a stubborn real bug doesn't slip through on a single retry.**
 - Honestly: it's **early (v0.1.0).** Automatic tier-routing is on the roadmap (#13), not in this release.
 
-> **Source note.** The canonical source for this post is the public repo ([AscendyProject/redteam](https://github.com/AscendyProject/redteam)); the facts were pulled straight from its README at publish time. The pattern we've written about before — [how you call the second AI, and when to stop it](/en/blog/headless-adversarial-review-loop-en/), [two AIs picked the same answer](/en/blog/right-answer-wrong-reasoning-en/), [pairing two AIs made things slower](/en/blog/agent-os-dogfooding-journey-en/) — is now extracted into a single tool.
+> **Source note.** The canonical source for this post is the public repo ([AscendyProject/redteam](https://github.com/AscendyProject/redteam)); the facts were pulled straight from its README and v0.1.0 release note at publish time, with the redteam team's engine fact-check applied. The pattern we've written about before — [how you call the second AI, and when to stop it](/en/blog/headless-adversarial-review-loop-en/), [two AIs picked the same answer](/en/blog/right-answer-wrong-reasoning-en/), [pairing two AIs made things slower](/en/blog/agent-os-dogfooding-journey-en/) — is now extracted into a single tool.
 
 ## The problem — a second model rubber-stamps too
 
@@ -39,10 +39,10 @@ A surviving `blocker` **climbs the ladder.**
 ```text
 blocker survives multiple rounds →  retry the worker
                                  →  a heavier rescue pass
-                                 →  hand to a human (ask_user)
+                                 →  a human gates the rescue result (deferred to an operator if unrecoverable)
 ```
 
-This structure blocks two opposite failures at once.
+(Separately, a block at the *plan* stage stops the harness and asks the operator directly.) This structure blocks two opposite failures at once.
 
 - **One rejection doesn't kill a run.** Even if the reviewer blocks once, the worker gets a chance to fix it. It avoids the over-sensitivity of "the reviewer might be wrong, but the whole thing halts anyway."
 - **A stubborn real bug doesn't slip through.** A blocker not fixed on one retry doesn't vanish — it goes to a *heavier pass*, and finally to a *human*. It plugs the leak of "rejected once, then forgotten next round."
@@ -53,7 +53,7 @@ This is what separates redteam from a plain "two-model" setup. Most treat review
 
 For the tiered ladder to work, the review has to be genuinely adversarial. redteam enforces that by *structure*.
 
-The reviewer is a **fresh agent**, can be a **different model** by config, and sees **only the diff and the security checklist** — **never the implementer's reasoning.** There's no channel for the writer to plead "here's why I did it this way." The reviewer sees only the artifact and judges on its own terms.
+The reviewer is a **fresh agent**, can be a **different model** by config, and sees **the change (diff) and the task spec + security checklist** — but **not the implementer's reasoning.** There's no channel for the writer to plead "here's why I did it this way." The reviewer sees only the artifact and its spec, and judges on its own terms.
 
 And **humans gate the irreversible steps** — plan approval and PR creation are blocked until a human approves. The agents propose; the human opens the doors you can't take back.
 
@@ -74,7 +74,7 @@ You can put **Claude or Codex** on either side — worker or reviewer (configure
 
 ## Try it
 
-redteam has **no runtime dependencies** (stdlib-only, project-agnostic) and installs vendored. It's early (v0.1.0), but it was **extracted from a private monorepo where it drove real, merged PRs**, and cross-stack validated on a JS/TS frontend. APIs and layout may still move.
+redteam has **no runtime dependencies** (stdlib-only, project-agnostic) and installs vendored. It's early (v0.1.0), but it was **extracted from a private monorepo where it drove real, merged PRs**, and cross-stack validated on a Nuxt/Vue/TS frontend. APIs and layout may still move.
 
 ```text
 # Claude Code plugin (recommended)
