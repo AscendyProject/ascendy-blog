@@ -15,7 +15,7 @@ redactionReviewed: true
 
 ## TL;DR
 
-- We're open-sourcing **redteam** (v0.1.0, AGPLv3). It's an **adversarial agent-pair harness**: one model writes code through a test-first pipeline (plan → test → implement), a **different, independent model** reviews the diff adversarially, and humans gate the irreversible steps.
+- We're open-sourcing **redteam** (v0.1.0, Apache-2.0). It's an **adversarial agent-pair harness**: one model writes code through a test-first pipeline (plan → test → implement), a **different, independent model** reviews the diff adversarially, and humans gate the irreversible steps.
 - The lead differentiator ⭐: **review isn't pass/fail.** The reviewer tags each finding with a severity (blocker/major/minor), and the orchestrator tracks it **across rounds**. A surviving blocker climbs: **retry → a heavier `rescue` pass → a human.**
 - The effect: one rejection doesn't kill a run, and **a stubborn real bug doesn't slip through on a single retry.**
 - Honestly: it's **early (v0.1.0).** Automatic tier-routing is on the roadmap (#13), not in this release.
@@ -86,7 +86,7 @@ redteam has **no runtime dependencies** (stdlib-only, project-agnostic) and inst
 python3 .redteam/scripts/install.py /path/to/your/project
 ```
 
-License is **AGPLv3**; contributions under a CLA (which preserves the option of an alternative/commercial license). Repo: [github.com/AscendyProject/redteam](https://github.com/AscendyProject/redteam).
+License is **Apache-2.0**; contributions under a CLA (which keeps provenance clean and preserves the option of offering the project under other terms). Repo: [github.com/AscendyProject/redteam](https://github.com/AscendyProject/redteam).
 
 ## Takeaways
 
