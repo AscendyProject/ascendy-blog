@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const lang = 'ko' as const;
+const alternates = [
+  { lang: 'ko' as const, url: '/about/' },
+  { lang: 'en' as const, url: '/en/about/' },
+];
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  mainEntity: {
+    '@type': 'Person',
+    name: 'Kitamura',
+    url: 'https://blog.ascendy.ai/about/',
+    jobTitle: 'Software Engineer',
+    description:
+      'Full-stack and AI/agent engineer who builds with frontier-model coding agents and writes about it at Ascendy.',
+    knowsAbout: [
+      'AI agents',
+      'LLM applications',
+      'developer experience',
+      'multimodal RAG',
+      'cloud infrastructure',
+      'Kubernetes',
+      'full-stack engineering',
+    ],
+    sameAs: [
+      'https://github.com/AscendyProject',
+      'https://www.linkedin.com/in/kangho-joo-970128173/',
+    ],
+  },
+};
+---
+
+<BaseLayout
+  title="소개 — Kitamura · Ascendy"
+  description="Ascendy 블로그를 혼자 구상하고 운영하는 Kitamura의 소개 — 프런티어-모델 에이전트로 빌드하고, 그 과정을 글과 오픈소스(redteam)로 남기는 풀스택·AI 엔지니어."
+  schemaType="none"
+  lang={lang}
+  alternates={alternates}
+>
+  <section class="prose-ascendy">
+    <h1>Kitamura</h1>
+
+    <p>
+      저는 <strong>Kitamura</strong>, 이 블로그 <strong>Ascendy</strong>를 혼자 구상하고
+      만들고 운영합니다. 낮에는 한 대형 테크 기업의 빅데이터 플랫폼 팀에서 소프트웨어 엔지니어로
+      일하고, 그 바깥에서 <strong>프런티어-모델 에이전트로 직접 빌드하고, 그 과정을 글과
+      오픈소스로 남깁니다.</strong> 이 블로그가 그 기록입니다 — 결정, 트레이드오프, 삽질,
+      그리고 AI와 함께 일하는 방법에 대한 생각.
+    </p>
+
+    <p>
+      글은 편집상 "Ascendy Engineering / 우리"로 쓰지만, 사실은 <strong>1인 프로젝트</strong>입니다 —
+      정확히는 저 한 사람과, 스택 전반에서 짝지어 일하는 <strong>AI 에이전트 페어(Claude + Codex)</strong>들이죠.
+      이 블로그가 다루는 주제가 곧 이 블로그가 만들어지는 방식입니다.
+    </p>
+
+    <h2>만드는 것</h2>
+    <ul>
+      <li>
+        <strong><a href="https://github.com/AscendyProject/redteam">redteam</a></strong> — 적대적
+        에이전트-페어 코드리뷰 하네스(오픈소스). 한 모델이 코드를 쓰고, <em>다른 독립 모델</em>이
+        적대적으로 검수하고, 사람은 비가역 단계만 게이트합니다.
+      </li>
+      <li>
+        <strong>이 블로그(Ascendy)</strong> — 한국어·영어 이중언어로, AI 에이전트와 일하며 얻은
+        결정과 회고를 씁니다. 사람 독자뿐 아니라 AI 답변엔진(ChatGPT·Perplexity·Claude 등)이 잘
+        수집·인용하도록 의식해서.
+      </li>
+      <li>
+        <strong>AI 에이전트 앱·인프라, 멀티모달 검색(RAG)</strong> — 개인 프로젝트로 프로덕션
+        스택을 직접 설계·운영합니다.
+      </li>
+    </ul>
+
+    <h2>일해온 길</h2>
+    <ul>
+      <li><strong>지금</strong> — 대형 테크 기업 빅데이터 플랫폼 팀 · 소프트웨어 엔지니어. 멀티클라우드(GCP·AWS·Azure) · 쿠버네티스 · Terraform/IaC · SRE.</li>
+      <li><strong>이전</strong> — 일본의 한 스타트업에서 웹 풀스택 개발자 (Ruby on Rails).</li>
+      <li><strong>강연</strong> — 일본 개발 취업을 준비하는 분들을 위한 강연 세미나 10회+ (발표 + Q&amp;A).</li>
+      <li><strong>매일</strong> — OpenAI Codex · Claude Code · Gemini Antigravity를 손에 익히며, 더 나은 빌드 방법을 끊임없이 찾습니다.</li>
+    </ul>
+
+    <h2>다루는 기술</h2>
+    <p>
+      풀스택(Python/FastAPI · Ruby on Rails · TypeScript) · 멀티클라우드(GCP·AWS·Azure) ·
+      Kubernetes · Terraform/IaC · AI 에이전트 · LLM 앱 · 멀티모달 RAG.
+    </p>
+
+    <h2>연결</h2>
+    <ul>
+      <li><a href="https://github.com/AscendyProject">GitHub — AscendyProject</a></li>
+      <li><a href="https://www.linkedin.com/in/kangho-joo-970128173/">LinkedIn</a></li>
+      <li><a href="/rss.xml">RSS</a> · <a href="/blog/">전체 글</a></li>
+    </ul>
+  </section>
+
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(personSchema)} />
+</BaseLayout>

@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const lang = 'en' as const;
+const alternates = [
+  { lang: 'ko' as const, url: '/about/' },
+  { lang: 'en' as const, url: '/en/about/' },
+];
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  mainEntity: {
+    '@type': 'Person',
+    name: 'Kitamura',
+    url: 'https://blog.ascendy.ai/en/about/',
+    jobTitle: 'Software Engineer',
+    description:
+      'Full-stack and AI/agent engineer who builds with frontier-model coding agents and writes about it at Ascendy.',
+    knowsAbout: [
+      'AI agents',
+      'LLM applications',
+      'developer experience',
+      'multimodal RAG',
+      'cloud infrastructure',
+      'Kubernetes',
+      'full-stack engineering',
+    ],
+    sameAs: [
+      'https://github.com/AscendyProject',
+      'https://www.linkedin.com/in/kangho-joo-970128173/',
+    ],
+  },
+};
+---
+
+<BaseLayout
+  title="About — Kitamura · Ascendy"
+  description="About Kitamura, who conceived and runs the Ascendy blog solo — a full-stack & AI engineer who builds with frontier-model agents and writes it up here, with open source like redteam."
+  schemaType="none"
+  lang={lang}
+  alternates={alternates}
+>
+  <section class="prose-ascendy">
+    <h1>Kitamura</h1>
+
+    <p>
+      I'm <strong>Kitamura</strong>, and I conceive, build, and run this blog —
+      <strong>Ascendy</strong> — on my own. By day I'm a software engineer on a big-data
+      platform team at a major tech company; outside of that I
+      <strong>build with frontier-model agents and leave a trail in writing and open source.</strong>
+      This blog is that trail — decisions, tradeoffs, the messy parts, and thoughts on
+      how to work with AI.
+    </p>
+
+    <p>
+      The posts are written in the editorial "we" (Ascendy Engineering), but it's really a
+      <strong>one-person project</strong> — me, plus the <strong>AI agent pairs (Claude + Codex)</strong>
+      I run across the stack. What this blog is about is also how this blog gets made.
+    </p>
+
+    <h2>What I build</h2>
+    <ul>
+      <li>
+        <strong><a href="https://github.com/AscendyProject/redteam">redteam</a></strong> — an
+        open-source adversarial agent-pair code-review harness. One model writes the code, a
+        <em>different, independent</em> model reviews it adversarially, and humans gate the
+        irreversible steps.
+      </li>
+      <li>
+        <strong>This blog (Ascendy)</strong> — bilingual (Korean / English) write-ups of the
+        decisions and retrospectives from working with AI agents, written so both human readers
+        and AI answer engines (ChatGPT, Perplexity, Claude, …) can pick it up and cite it.
+      </li>
+      <li>
+        <strong>AI agent apps &amp; infrastructure, multimodal search (RAG)</strong> — personal
+        projects where I design and run the production stack end to end.
+      </li>
+    </ul>
+
+    <h2>Where I've worked</h2>
+    <ul>
+      <li><strong>Now</strong> — Software Engineer on a big-data platform team at a major tech company. Multi-cloud (GCP / AWS / Azure) · Kubernetes · Terraform / IaC · SRE.</li>
+      <li><strong>Before</strong> — Web full-stack developer (Ruby on Rails) at a Japanese startup.</li>
+      <li><strong>Speaking</strong> — Delivered 10+ lecture-style seminars (with live Q&amp;A) for people preparing for software careers in Japan.</li>
+      <li><strong>Every day</strong> — Hands-on with OpenAI Codex, Claude Code, and Gemini Antigravity, always hunting for better ways to build.</li>
+    </ul>
+
+    <h2>What I work with</h2>
+    <p>
+      Full-stack (Python / FastAPI · Ruby on Rails · TypeScript) · multi-cloud (GCP · AWS · Azure) ·
+      Kubernetes · Terraform / IaC · AI agents · LLM apps · multimodal RAG.
+    </p>
+
+    <h2>Connect</h2>
+    <ul>
+      <li><a href="https://github.com/AscendyProject">GitHub — AscendyProject</a></li>
+      <li><a href="https://www.linkedin.com/in/kangho-joo-970128173/">LinkedIn</a></li>
+      <li><a href="/en/rss.xml">RSS</a> · <a href="/en/blog/">All posts</a></li>
+    </ul>
+  </section>
+
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(personSchema)} />
+</BaseLayout>

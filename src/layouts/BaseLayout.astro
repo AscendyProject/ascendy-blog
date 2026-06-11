@@ -8,7 +8,7 @@ interface Props {
   description: string;
   canonical?: string;
   image?: string;
-  schemaType?: 'WebSite' | 'CollectionPage';
+  schemaType?: 'WebSite' | 'CollectionPage' | 'none';
   lang?: Lang;
   alternates?: { lang: Lang; url: string }[];
 }
@@ -23,13 +23,14 @@ const other = alternates.find((a) => a.lang !== lang);
 <html lang={lang}>
   <head>
     <BaseHead title={title} description={description} canonical={canonical} image={image} lang={lang} alternates={alternates} />
-    <SchemaOrg type={schemaType} url={url} name={title} description={description} lang={localeTag[lang]} />
+    {schemaType !== 'none' && <SchemaOrg type={schemaType} url={url} name={title} description={description} lang={localeTag[lang]} />}
   </head>
   <body>
     <header class="prose-ascendy !py-6 flex items-baseline justify-between">
       <a href={localizePath('/', lang)} class="text-base font-semibold tracking-tight">Ascendy</a>
       <nav class="text-sm space-x-6">
         <a href={localizePath('/blog/', lang)}>{t('navPosts')}</a>
+        <a href={localizePath('/about/', lang)}>{t('navAbout')}</a>
         <a href={localizePath('/rss.xml', lang)}>{t('navRss')}</a>
         <a href="https://github.com/AscendyProject/ascendy-blog">GitHub</a>
         {other && <a href={other.url}>{t('switchLabel')}</a>}
