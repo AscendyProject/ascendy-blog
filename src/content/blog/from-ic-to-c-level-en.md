@@ -1,6 +1,6 @@
 ---
 title: "Reviewing it line by line was slower than writing it — working with agents calls for a C-level mindset"
-description: "Reviewing AI code line by line took longer than writing it. When models were weak, that was right. Now they're senior-level, review is better agent-to-agent than a tired human. The agent-era posture is C-level."
+description: "Reviewing AI code line by line took longer than writing it. When models were weak, that was right. Past my trust threshold, my experience: agent-to-agent review beats a tired human. My take: the posture is C-level."
 pubDate: 2026-06-10
 author: "Ascendy Engineering"
 tags: ["ai-agent", "engineering-management", "ai-collaboration", "developer-mindset", "opinion"]
