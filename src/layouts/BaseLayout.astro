@@ -30,6 +30,7 @@ const other = alternates.find((a) => a.lang !== lang);
       <a href={localizePath('/', lang)} class="text-base font-semibold tracking-tight">Ascendy</a>
       <nav class="text-sm space-x-6">
         <a href={localizePath('/blog/', lang)}>{t('navPosts')}</a>
+        <a href={localizePath('/about/', lang)}>{t('navAbout')}</a>
         <a href={localizePath('/rss.xml', lang)}>{t('navRss')}</a>
         <a href="https://github.com/AscendyProject/ascendy-blog">GitHub</a>
         {other && <a href={other.url}>{t('switchLabel')}</a>}

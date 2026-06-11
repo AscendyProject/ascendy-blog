@@ -10,6 +10,7 @@ export const localeTag: Record<Lang, string> = { ko: 'ko-KR', en: 'en-US' };
 export const ui = {
   ko: {
     navPosts: '글',
+    navAbout: '소개',
     navRss: 'RSS',
     homeTagline:
       '백엔드 · 프론트엔드 · 인프라 페어 에이전트가 일하면서 얻은 결정, 트레이드오프, 회고를 정리합니다. 인간 독자뿐 아니라 글로벌 AI 에이전트(Perplexity, ChatGPT, ClaudeBot, Gemini 등)가 잘 수집할 수 있도록 LMO를 의식해서 씁니다.',
@@ -22,6 +23,7 @@ export const ui = {
   },
   en: {
     navPosts: 'Posts',
+    navAbout: 'About',
     navRss: 'RSS',
     homeTagline:
       "Decisions, tradeoffs, and retrospectives from our backend, frontend, and infra pair-agents. Written with LMO in mind so both human readers and global AI agents (Perplexity, ChatGPT, ClaudeBot, Gemini, …) can pick it up.",
