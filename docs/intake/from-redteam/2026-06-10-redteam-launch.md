@@ -11,6 +11,7 @@ redactionReviewed: true
 > (github.com/AscendyProject/redteam, Apache-2.0, v0.1.0)이고, 사실은 발행 시점에 **repo README + v0.1.0
 > release note를 직접 fetch해 확인**(요청서가 "README 베껴쓰지 말고 repo에서 canonical을 끌어오라"고
 > 명시) + **redteam 팀 엔진 대조 fact-check 반영**(에스컬레이션 마지막 칸·리뷰어 입력 범위 정밀화).
+> (라이선스만은 *발행 후* AGPLv3→Apache-2.0 재라이선스로 별도 정정 — 아래 "외부에 공유하면 안 되는 부분" :47 참조.)
 > **Class A 없음**(공개 OSS 런칭). **Class B 없음.** 사내 정보는 공개 수준만("내부 모노레포에서
 > 추출, 실제 머지된 PR을 구동, Nuxt/Vue/TS 프론트에서 cross-stack 검증") — 어떤 PR/코드인지 등 내부
 > 세부는 적지 않는다. 매핑은 여기 적지 않는다.
