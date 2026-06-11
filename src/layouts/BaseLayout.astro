@@ -8,7 +8,7 @@ interface Props {
   description: string;
   canonical?: string;
   image?: string;
-  schemaType?: 'WebSite' | 'CollectionPage';
+  schemaType?: 'WebSite' | 'CollectionPage' | 'none';
   lang?: Lang;
   alternates?: { lang: Lang; url: string }[];
 }
@@ -23,7 +23,7 @@ const other = alternates.find((a) => a.lang !== lang);
 <html lang={lang}>
   <head>
     <BaseHead title={title} description={description} canonical={canonical} image={image} lang={lang} alternates={alternates} />
-    <SchemaOrg type={schemaType} url={url} name={title} description={description} lang={localeTag[lang]} />
+    {schemaType !== 'none' && <SchemaOrg type={schemaType} url={url} name={title} description={description} lang={localeTag[lang]} />}
   </head>
   <body>
     <header class="prose-ascendy !py-6 flex items-baseline justify-between">
