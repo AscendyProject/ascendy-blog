@@ -15,7 +15,7 @@ redactionReviewed: true
 
 ## TL;DR
 
-- **redteam**을 오픈소스로 공개한다(v0.1.0, AGPLv3). 한 모델이 test-first 파이프라인(plan→test→implement)으로 코드를 쓰고, **다른 독립 모델**이 그 diff를 적대적으로 리뷰하고, 사람은 비가역 단계만 게이트하는 **적대적 에이전트-페어 하네스**다.
+- **redteam**을 오픈소스로 공개한다(v0.1.0, Apache-2.0). 한 모델이 test-first 파이프라인(plan→test→implement)으로 코드를 쓰고, **다른 독립 모델**이 그 diff를 적대적으로 리뷰하고, 사람은 비가역 단계만 게이트하는 **적대적 에이전트-페어 하네스**다.
 - 리드 차별점 ⭐: **리뷰가 pass/fail이 아니다.** 리뷰어가 각 발견에 severity(blocker/major/minor)를 매기고, 오케스트레이터가 **라운드를 가로질러 추적**한다. 살아남은 blocker는 **재시도 → 더 무거운 `rescue` 패스 → 사람**으로 사다리를 오른다.
 - 효과: 한 번의 거절이 런을 죽이지 않고, **고집스런 진짜 버그가 한 번의 재시도로 슬쩍 통과하지 못한다.**
 - 정직하게: **early(v0.1.0)**다. 자동 tier-routing은 로드맵(#13)이지 이번 릴리스엔 없다.
@@ -86,7 +86,7 @@ redteam은 **런타임 의존성이 없고**(stdlib-only, 프로젝트 비종속
 python3 .redteam/scripts/install.py /path/to/your/project
 ```
 
-라이선스는 **AGPLv3**, 기여는 CLA(대체/상업 라이선스 옵션 보존). 저장소: [github.com/AscendyProject/redteam](https://github.com/AscendyProject/redteam).
+라이선스는 **Apache-2.0**, 기여는 CLA(provenance를 깔끔히 유지하고 다른 조건으로 제공할 옵션을 보존). 저장소: [github.com/AscendyProject/redteam](https://github.com/AscendyProject/redteam).
 
 ## 가져갈 것
 
