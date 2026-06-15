@@ -1,6 +1,6 @@
 ---
 title: "Onboarding re-appeared on every login — why the 'quick fix' was wrong, and the real cause (a cold-load race)"
-description: "Skip onboarding, it returns next login. Guess: the parent never PATCHes. But the child already did — review caught it. The real cause: a cold-load race — a separately-mounted onMounted races a serialized plugin chain."
+description: "Skip onboarding, it returns next login. Wrong guess: the parent never PATCHes — the child already did. Real cause: Pinia doesn't await $subscribe callbacks, so login hydration is fire-and-forget and races gallery mount."
 pubDate: 2026-06-11
 author: "Ascendy Engineering"
 tags: ["nuxt", "pinia", "race-condition", "settings-hydration", "lessons-from-review"]
@@ -17,7 +17,7 @@ redactionReviewed: true
 
 - Bug: **skip the onboarding wizard, and it pops up again on the next login.**
 - **The first diagnosis was wrong.** "The gallery page only closes a local ref and never PATCHes the server" — so I opened a PR adding a PATCH call in the parent. But **the child component already calls `await updateUserSettings(...)` before it `emit('complete')`s.** A second PATCH in the parent would mean duplicate calls + toast noise. A Codex review caught it and the PR was closed.
-- **The real cause = a cold-load race.** The gallery's `onMounted` gate races the auth-init plugin's `await fetchUserSettings()`. On a fresh login the gate reads the default `onboardingCompleted = false` and shows the wizard — and by the time the fetch returns `true`, the gate has already fired.
+- **The real cause = a cold-load race.** On a cold boot it's safe — Nuxt awaits the async plugin before mount. The bug is the **login-transition** path: the plugin registers `authStore.$subscribe(async () => await hydrate…)`, and **Pinia does not await a `$subscribe` callback (fire-and-forget).** The gallery mounts in the meantime, and the gate reads the default `onboardingCompleted = false` and shows the wizard.
 - **Fix**: a `hasFetched` flag + `watch(..., { immediate: true })` — "don't evaluate the gate until the load is done." Why `hasFetched` guard (B) over default-true-then-override (A)? Because of *what happens when a first-time user's first fetch fails.*
 
 > **Source note.** Distilled from a frontend-team intake. The backend API path and code locations are generalized/removed; no secrets or identifiers. Same *the-review-caught-it* vein as [how a fixed bug came back](/en/blog/nuxt-client-middleware-skips-initial-route-en/) and [the race a commented-out listener created](/en/blog/commented-out-listeners-race-en/).
@@ -50,16 +50,18 @@ One lesson here — **when you're handed a wrong first diagnosis, don't code it 
 
 ## The real cause: a cold-load race
 
-If it's being saved, the problem is **when it's read.**
+If it's being saved, the problem is **when it's read.** And the picture I first drew was *wrong* — that's the second twist of this story.
 
-The fresh-login flow had two async paths:
+The settings-loading function `hydrateUserAndSettings()` (→ `await fetchUserSettings()`) lives in the auth-init plugin and is called from **two places.**
 
-- **The auth-init plugin** — right after login, `await fetchUserSettings()` pulls settings from the server and fills the store.
-- **The gallery page's `onMounted` gate** — once mounted, it looks at `onboardingCompleted` and shows the wizard if it's `false`.
+1. **Cold-boot path** — `defineNuxtPlugin(async () => { … await hydrateUserAndSettings() … })`. When the app starts with a stored token, it awaits directly inside the plugin setup.
+2. **Login-transition path** — a `authStore.$subscribe(async (_m, state) => { if (loggedIn) await hydrateUserAndSettings() })` the plugin registers. It fires when the token changes (i.e., a login) while the app is already running.
 
-These two **race.** If the gallery mounts before the plugin finishes `fetchUserSettings()`, the gate reads the store's **default `onboardingCompleted = false`** → shows the wizard. Moments later the fetch returns `true` into the store, but the gate has *already fired*, so it's too late.
+I first wrote "the plugin `await`s `fetchUserSettings()`, and the gallery's `onMounted` races it." But **on path 1 that's impossible.** Nuxt **awaits the promise returned by an async plugin setup before it mounts the app.** If the plugin truly waits for the fetch, every component's `onMounted` runs after it. On a cold boot the gate already sees the *fetched* value — no race.
 
-Here's the crux — **`await` inside the plugin chain serializes exactly.** auth-init does wait for the fetch. The problem is a **component mounted independently of that chain.** The gallery's `onMounted` doesn't wait on the plugin's `await`. Serialization is guaranteed only *within one chain*; between two separate entry points (plugin vs component mount) there is no guarantee. That gap is the race window.
+**The real race is path 2.** And the crux fits in one line — **Pinia does not await a `$subscribe` callback.** It throws away the promise an async subscriber returns. So when a login flips the token, `$subscribe` kicks off `hydrateUserAndSettings()` *fire-and-forget*, while the router moves to `/gallery` and mounts the component. The moment the gallery's gate evaluates, `fetchUserSettings()` is still in flight, so the gate reads the store's **default `onboardingCompleted = false`** and shows the wizard. The fetch later returns `true`, but the gate has *already fired*.
+
+Here's the generalizable lesson — **whether an `await` serializes within a function isn't the end of it; what matters is *who awaits that await*.** Nuxt awaits the plugin setup; Pinia doesn't await the `$subscribe` callback. The *same* hydration function serializes when called one way and runs fire-and-forget when called another. "The plugin awaits, so it's safe" is true only for path 1 — the bug was hiding in path 2.
 
 ## Fix: "don't evaluate until the load is done"
 
@@ -117,7 +119,7 @@ Backend explicitly recommended B and frontend reached the same conclusion. The e
 
 ## Takeaways
 
-- **Cold-load races are common in SPAs.** Even when `await` serializes within one plugin chain, a component mounted independently of that chain won't wait on it. The serialization guarantee holds only *within a chain*.
+- **Whether an `await` serializes matters less than *who awaits it*.** The same hydration function is awaited before mount when called from a Nuxt plugin setup (cold boot), but runs **fire-and-forget** when called from a Pinia `$subscribe` callback (login transition) — because Pinia doesn't await subscribers. The latter races component mount. Suspect any "async but the caller doesn't wait" entry point: `$subscribe`, `watch`, event handlers.
 - **Be suspicious of gates that read default values.** Any UI gate evaluated before hydration can mistake "a value that hasn't arrived" for "the value the server gave." A *load-complete signal* like `hasFetched` + `watch(immediate: true)` is the general remedy.
 - **The difference between the two fix shapes is the first-time user's failure mode.** default-true hides onboarding forever on a failed fetch; the hasFetched guard distinguishes "not loaded" from "server says false." The shorter fix isn't always the right one.
 - **Don't code a wrong first diagnosis as-is.** A diagnosis is a hypothesis. Here a reviewer cross-checked that the child was already PATCHing — review-driven development cutting a wasted detour.
