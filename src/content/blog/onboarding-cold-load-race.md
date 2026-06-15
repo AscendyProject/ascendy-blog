@@ -1,6 +1,6 @@
 ---
 title: "온보딩이 매 로그인마다 다시 떴다 — '빠른 fix'가 틀린 이유와 진짜 원인(cold-load race)"
-description: "'온보딩을 skip해도 다음 로그인에 또 뜬다.' 1차 진단은 '부모가 서버에 PATCH를 안 한다'였고 그대로 코딩했다. 그런데 자식 컴포넌트가 이미 PATCH하고 있었다 — 리뷰가 잡았다. 진짜 원인은 cold-load race. plugin chain은 직렬화돼도, 별개로 mount된 컴포넌트의 onMounted가 race window를 만든다."
+description: "'온보딩을 skip해도 다음 로그인에 또 뜬다.' 1차 진단 '부모가 PATCH를 안 한다'대로 코딩했지만, 자식이 이미 PATCH 중이었다 — 리뷰가 잡았다. 진짜 원인은 cold-load race: Pinia가 $subscribe 콜백을 await하지 않아, 로그인 hydration이 fire-and-forget으로 돌며 gallery mount와 race한다."
 pubDate: 2026-06-11
 author: "Ascendy Engineering"
 tags: ["nuxt", "pinia", "race-condition", "settings-hydration", "lessons-from-review"]
@@ -17,7 +17,7 @@ redactionReviewed: true
 
 - 버그: **온보딩 wizard를 skip해도 다음 로그인 때 또 뜬다.**
 - **1차 진단이 틀렸다.** "gallery 페이지가 로컬 ref만 닫고 서버에 PATCH를 안 한다"는 진단을 받아 부모에 PATCH 호출을 추가하는 PR을 올렸다 — 그런데 **자식 컴포넌트가 이미 `await updateUserSettings(...)` 후에 `emit('complete')`를 부르고 있었다.** 부모에서 또 PATCH하면 중복 호출 + 토스트 노이즈. Codex 리뷰가 잡고 PR을 닫았다.
-- **진짜 원인 = cold-load race.** gallery의 `onMounted` 게이트가 auth-init plugin의 `await fetchUserSettings()`를 race한다. 신규 로그인에서 게이트가 default `onboardingCompleted=false`를 읽고 wizard를 띄움 — fetch가 끝나 `true`가 와도 게이트는 이미 fired된 뒤.
+- **진짜 원인 = cold-load race.** 콜드 부트에선 Nuxt가 async plugin을 마운트 전에 await해 안전하다. 버그는 **로그인 전이** 경로 — plugin이 등록한 `authStore.$subscribe(async () => await hydrate…)`가 hydration을 트리거하는데, **Pinia는 `$subscribe` 콜백을 await하지 않는다(fire-and-forget).** 그 사이 gallery가 mount돼 게이트가 default `onboardingCompleted=false`를 읽고 wizard를 띄움.
 - **fix**: `hasFetched` 플래그 + `watch(..., { immediate: true })`로 "로드 완료 전엔 게이트 평가 안 함." default-true-then-override(A)가 아니라 hasFetched guard(B)를 택한 이유는 *first-time user의 첫 fetch가 실패할 때*다.
 
 > **소스 노트.** frontend 팀 인테이크를 정제한 글이다. 백엔드 API 경로·코드 위치는 일반화/제거했고, 시크릿·식별자는 없다. 같은 *리뷰가-잡았다* 결의 [한 번 고친 버그가 어떻게 되살아났나](/blog/nuxt-client-middleware-skips-initial-route/), [주석 처리한 리스너가 만든 race](/blog/commented-out-listeners-race/)와 이어진다.
@@ -50,16 +50,18 @@ Codex 리뷰가 PR을 막았다. **자식 컴포넌트 `MobileOnboardingWizard`�
 
 ## 진짜 원인: cold-load race
 
-저장이 되고 있다면, 문제는 **읽는 타이밍**이다.
+저장이 되고 있다면, 문제는 **읽는 타이밍**이다. 그리고 여기서 처음 짚었던 그림은 *틀렸다* — 이게 이 글의 두 번째 반전이다.
 
-신규 로그인 흐름엔 두 개의 비동기 흐름이 있었다:
+설정을 끌어오는 `hydrateUserAndSettings()`(→ `await fetchUserSettings()`)는 auth-init plugin 안에 있고, **두 군데서 불린다.**
 
-- **auth-init plugin** — 로그인 직후 `await fetchUserSettings()`로 서버에서 설정을 끌어와 store를 채운다.
-- **gallery 페이지의 `onMounted` 게이트** — 마운트되면 `onboardingCompleted`를 보고 `false`면 wizard를 띄운다.
+1. **콜드 부트 경로** — `defineNuxtPlugin(async () => { … await hydrateUserAndSettings() … })`. 앱이 저장된 토큰으로 시작할 때 plugin setup 안에서 직접 await한다.
+2. **로그인 전이 경로** — plugin이 등록하는 `authStore.$subscribe(async (_m, state) => { if (로그인됨) await hydrateUserAndSettings() })`. 앱이 떠 있는 상태에서 토큰이 바뀌면(=로그인) 호출된다.
 
-이 둘이 **race한다.** plugin이 `fetchUserSettings()`를 끝내기 전에 gallery가 mount되면, 게이트는 store의 **default 값 `onboardingCompleted = false`**를 읽는다. → wizard를 띄운다. 잠시 뒤 fetch가 끝나 `true`가 store에 들어와도, 게이트는 *이미 fired된 뒤*라 소용없다.
+처음엔 "plugin이 `await fetchUserSettings()`를 하는데 gallery의 `onMounted`가 그걸 race한다"고 적었다. 그런데 **경로 1에선 그게 불가능하다.** Nuxt는 async plugin setup이 반환한 promise를 **앱 마운트 전에 await**한다. plugin이 fetch를 진짜로 기다리면, 어떤 컴포넌트의 `onMounted`도 그 뒤에 뜬다. 콜드 부트에선 게이트가 이미 *fetch된 값*을 본다 — race 없음.
 
-핵심은 이거다 — **plugin chain 안의 `await`은 정확히 직렬화된다.** auth-init은 fetch를 제대로 기다린다. 문제는 그 chain과 **별개로 mount된 컴포넌트**다. gallery의 `onMounted`는 plugin의 `await`을 기다려주지 않는다. 직렬화는 *한 chain 안*에서만 보장되고, 서로 다른 두 진입점(plugin / 컴포넌트 mount) 사이엔 보장이 없다. 그 틈이 race window다.
+**진짜 race는 경로 2다.** 그리고 핵심은 한 줄로 요약된다 — **Pinia는 `$subscribe` 콜백을 await하지 않는다.** async 구독자가 돌려준 promise를 그냥 버린다. 그래서 로그인으로 토큰이 바뀌면 `$subscribe`가 `hydrateUserAndSettings()`를 *fire-and-forget*으로 띄우고, 그 사이 라우터는 `/gallery`로 넘어가 컴포넌트를 mount한다. gallery의 게이트가 평가되는 순간 `fetchUserSettings()`는 아직 in-flight고, 게이트는 store의 **default `onboardingCompleted = false`**를 읽어 wizard를 띄운다. fetch가 끝나 `true`가 들어와도 게이트는 *이미 fired된 뒤*다.
+
+여기서 일반화할 교훈이 나온다 — **`await`이 한 함수 안에서 직렬화되는 건 끝이 아니다. 그 await를 *누가 기다려 주느냐*가 관건이다.** Nuxt는 plugin setup을 기다리고, Pinia는 `$subscribe` 콜백을 안 기다린다. *같은* hydration 함수라도 어느 진입점에서 불리느냐에 따라 직렬화되기도, fire-and-forget이 되기도 한다. "plugin이 await하니까 안전하다"는 경로 1에만 맞고, 버그는 경로 2에 숨어 있었다.
 
 ## fix: "로드 완료 전엔 평가하지 않는다"
 
@@ -117,7 +119,7 @@ backend도 명시적으로 B를 권했고, frontend도 같은 결론에 도달�
 
 ## 가져갈 것
 
-- **Cold-load race는 SPA에서 흔하다.** `await`이 한 plugin chain 안에서 직렬화돼도, 그 chain과 별개로 mount된 컴포넌트의 `onMounted`는 그 `await`을 기다리지 않는다. 직렬화 보장은 *한 chain 안*에서만 성립한다.
+- **`await`이 직렬화되는지보다 *누가 그 await를 기다리느냐*가 중요하다.** 같은 hydration 함수라도 Nuxt plugin setup에서 불리면(콜드 부트) 마운트 전에 await되지만, Pinia `$subscribe` 콜백에서 불리면(로그인 전이) **await되지 않고 fire-and-forget**으로 돈다. 후자가 컴포넌트 mount와 race한다 — `$subscribe`·`watch`·이벤트 핸들러처럼 "async인데 호출자가 안 기다리는" 진입점을 의심하라.
 - **default 값을 읽는 게이트를 의심하라.** hydration 전에 평가되는 모든 UI 게이트는 "아직 안 들어온 값"을 "서버가 준 값"으로 착각할 수 있다. `hasFetched` 같은 *로드 완료 신호* + `watch(immediate: true)`가 일반 해법이다.
 - **두 fix shape의 차이는 first-time user의 실패 모드다.** default-true는 fetch 실패 시 온보딩을 영원히 숨기고, hasFetched guard는 "로드 안 됨"과 "서버가 false"를 구분한다. 짧은 fix가 늘 옳은 건 아니다.
 - **잘못된 1차 진단에 그대로 코딩하지 마라.** 진단은 가설이다. 이 사례에선 자식 컴포넌트가 이미 PATCH하고 있다는 사실을 리뷰어가 cross-check해 줬다 — review-driven development가 헛걸음을 줄인 한 사례.

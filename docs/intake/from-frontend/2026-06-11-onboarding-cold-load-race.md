@@ -24,9 +24,14 @@ redactionReviewed: true
 한 다음 `emit('complete')`를 부른다. 부모에서 또 PATCH하면 매 dismiss마다 중복 호출 + 토스트 노이즈.
 → 1차 진단이 틀렸다. PR close + 브랜치 삭제.
 
-**진짜 원인 = cold-load race**: gallery 페이지의 `onMounted` 게이트가 auth-init plugin의
-`await fetchUserSettings()`를 race한다. 신규 로그인에서 게이트가 default `onboardingCompleted=false`를
-읽어 wizard를 띄움. fetch가 끝나 true가 와도 게이트는 이미 fired된 후.
+**진짜 원인 = cold-load race (메커니즘 정정)**: hydration(`await fetchUserSettings()`)은 auth-init
+plugin 안에서 두 군데서 불린다 — (1) `defineNuxtPlugin(async)` setup의 콜드 부트 경로, (2) plugin이
+등록한 `authStore.$subscribe(async () => await hydrate…)`의 로그인 전이 경로. 경로 1은 Nuxt가 async
+plugin을 **앱 마운트 전에 await**하므로 게이트가 fetch된 값을 봐 race 없음. **진짜 race는 경로 2** —
+**Pinia는 `$subscribe` 콜백을 await하지 않는다(fire-and-forget).** 로그인으로 토큰이 바뀌면 hydration이
+fire-and-forget으로 돌고, 그 사이 gallery가 mount되어 게이트가 default `onboardingCompleted=false`를
+읽어 wizard를 띄움. (원raw글감은 race를 경로 1의 boot-await로 지목했으나, 실제 plugin 코드 대조 결과
+경로 2의 `$subscribe` un-awaited 콜백이 원인 — Codex round-1 지적 + 실코드 검증으로 정정.)
 
 **fix**: settings store에 `hasFetched` ref 추가 + `fetchUserSettings`의 finally에서 success/error
 무관하게 true로 flip. gallery 게이트를 `watch(() => settingsStore.hasFetched, ..., { immediate: true })`로
@@ -41,8 +46,10 @@ redactionReviewed: true
   한 줄 더 들지만 "로드 안 됨" vs "로드됐고 서버가 false"를 깔끔히 구분. → backend/frontend 둘 다 B.
 
 ## 패턴
-- Cold-load race는 SPA에서 흔하다. `await`이 한 plugin chain 안에서 정확히 직렬화되더라도, 그 chain과
-  **별개로 mount된 컴포넌트의 onMounted가 race window**를 만든다.
+- `await`이 한 함수 안에서 직렬화되는지보다 **그 await를 누가 기다려 주느냐**가 관건. Nuxt는 plugin
+  setup을 마운트 전에 await하지만, **Pinia는 `$subscribe` 콜백을 await하지 않는다.** 같은 hydration
+  함수라도 진입점에 따라 직렬화/fire-and-forget이 갈린다. `$subscribe`·`watch`·이벤트 핸들러처럼
+  "async인데 호출자가 안 기다리는" 진입점이 컴포넌트 mount와 race window를 만든다.
 - "boolean fetched-flag + `watch(immediate: true)`" 패턴은 hydration-gated UI 어디에든 일반화 가능.
 - 두 fix shape의 trade-off = first-time user failure mode를 어떻게 다루느냐. 교과서적 선택지 비교.
 - 잘못된 1차 진단에 그대로 코딩하지 말고 자식 컴포넌트까지 cross-check — review가 catch한 게 핵심 학습.
