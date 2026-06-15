@@ -31,6 +31,11 @@ docs/intake/**/*.jpg
 docs/intake/**/*.pdf
 docs/intake/**/_drafts/
 
+# 로컬 전용 raw 핸드오프 — 절대 public repo에 커밋 금지.
+# redteam(오픈소스) 등이 자기 public GitHub 대신 로컬에 raw 글감을 떨구는 경로.
+# 정식 파이프라인은 redaction 후 docs/intake/from-<team>/ 정제본만 추적한다.
+docs/requests/
+
 # 생성 산출물
 public/llms.txt
 public/llms-full.txt
