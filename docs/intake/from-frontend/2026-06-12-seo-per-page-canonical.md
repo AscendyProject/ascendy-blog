@@ -26,7 +26,7 @@ fix: 6개 공개 페이지 각각의 `useSeoMeta`에 `ogUrl` + `useHead`로 `<li
 쉽게 빠뜨린다. SEO 가이드 대부분 "global default OG 깔고 끝", per-page override는 "선택"이라 부른다.
 그런데 **og:url과 canonical은 *default가 의미 없는* 필드**다. 페이지마다 달라야지, 안 그러면:
 - SNS 미리보기에서 모든 페이지가 같은 root URL을 advertise하고,
-- 검색엔진이 모든 페이지를 root의 *duplicate*로 봐 인덱싱에서 떨어진다.
+- 검색엔진에 "root가 정본"이라는 강한 canonical 신호가 가, 나머지 페이지가 root의 *duplicate*로 묶여 색인에서 제외될 위험이 크다(canonical은 명령이 아니라 신호 — Google이 종합 판단).
 
 SEO baseline 작업에서 가장 일어나면 안 되는 일이 바로 그거다.
 
