@@ -1,7 +1,7 @@
 ---
 team: frontend
 date: 2026-06-11
-topic: "온보딩 마법사가 매 로그인마다 다시 뜨는 버그 — 잘못된 1차 진단(부모가 PATCH해야 한다)을 Codex가 잡고, 진짜 원인은 cold-load race였다. mount된 컴포넌트의 onMounted 게이트가 auth-init plugin의 fetchUserSettings를 race. fix는 hasFetched 플래그 + immediate watcher. default-true-then-override(A) vs hasFetched guard(B) trade-off."
+topic: "온보딩 마법사가 매 로그인마다 다시 뜨는 버그 — 잘못된 1차 진단(부모가 PATCH해야 한다)을 Codex가 잡고, 진짜 원인은 cold-load race였다. 콜드 부트는 Nuxt가 async plugin을 마운트 전 await해 안전하고, 진짜 race는 Pinia가 await하지 않는 $subscribe 콜백(로그인 hydration)이 fire-and-forget으로 돌며 gallery mount와 경합한 것. fix는 hasFetched 플래그 + immediate watcher. default-true-then-override(A) vs hasFetched guard(B) trade-off."
 suggestedCategory: "frontend"
 suggestedTags: ["nuxt", "pinia", "race-condition", "settings-hydration", "incident-postmortem"]
 redactionReviewed: true
