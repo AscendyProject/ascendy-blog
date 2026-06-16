@@ -80,8 +80,8 @@ portfolio는 화살표를 뒤집는다:
 과장하지 않는 게 이 도구의 정체성이니, 성숙도도 정직하게 적는다.
 
 - **early scaffold, v0.0.1.** README가 스스로 그렇게 부른다.
-- **지금 실제로 출하된 것:** 결정론 grounding 코어(증거 추출 + gate) + **`/portfolio`**(grounded 포트폴리오를 Markdown으로) + **`/resume`**(JD 맞춤 grounded 이력서).
-- **아직 아닌 것(로드맵):** `/reference-check`(grounded 추천서)는 **draft PR이고 미머지**다. `/fit`(JD 결정론 매칭 커버리지 %)와 `/rating`(증거 기반 역량 프로필)은 **아직 코드가 없다**. 특히 `/rating`은 근거 없는 "상위 X%" 같은 절대주장은 의도적으로 **하지 않을** 방향이다.
+- **지금 실제로 출하된 것:** 결정론 grounding 코어(증거 추출 + gate) + **`/portfolio`**(grounded 포트폴리오를 Markdown으로) + **`/resume`**(JD 맞춤 grounded 이력서) + **`/reference-check`**(grounded 추천서 — 모든 문단이 실재 증거 ref를 인용).
+- **아직 아닌 것(로드맵):** `/fit`(JD 결정론 매칭 커버리지 %)와 `/rating`(증거 기반 역량 프로필)은 **아직 코드가 없다**. 특히 `/rating`은 근거 없는 "상위 X%" 같은 절대주장은 의도적으로 **하지 않을** 방향이다.
 
 도구의 철학("지어내지 않음")을 도구 *소개글*에서부터 지키는 게 맞다고 봤다.
 

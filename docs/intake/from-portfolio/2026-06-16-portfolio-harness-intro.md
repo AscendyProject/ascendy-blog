@@ -1,7 +1,7 @@
 ---
 team: portfolio
 date: 2026-06-16
-topic: "portfolio 하네스 소개(런칭) — '지어내지 않는' grounded 포트폴리오. 증거(gh로 결정론 추출)를 먼저 고정하고, 모델은 그 위에서만 서술하며, grounding gate가 un-grounded claim을 거부. 신뢰를 바람이 아니라 구조로 보장. 출하=/portfolio·/resume, 로드맵=/reference-check·/fit·/rating. Apache-2.0, v0.0.1 early scaffold."
+topic: "portfolio 하네스 소개(런칭) — '지어내지 않는' grounded 포트폴리오. 증거(gh로 결정론 추출)를 먼저 고정하고, 모델은 그 위에서만 서술하며, grounding gate가 un-grounded claim을 거부. 신뢰를 바람이 아니라 구조로 보장. 출하=/portfolio·/resume·/reference-check, 로드맵=/fit·/rating. Apache-2.0, v0.0.1 early scaffold."
 suggestedCategory: "meta"
 suggestedTags: ["grounding", "ai", "portfolio", "developer-tools", "harness", "trust"]
 redactionReviewed: true
@@ -49,8 +49,8 @@ extract·ground 레이어는 **모델을 절대 호출하지 않고**, narrate �
 ## 현재 성숙도 (정직하게)
 
 - **early / v0.0.1** — README가 스스로 "early scaffold"라 명시.
-- **출하(main):** 결정론 grounding 코어(Evidence/Claim 계약, gh→Evidence 추출, gate) + **`/portfolio`**(grounded 포트폴리오를 Markdown으로) + **`/resume`**(JD 맞춤 grounded 이력서, 환각 ref는 `enforce_grounding`이 거부).
-- **로드맵(아직 "있다"고 쓰지 말 것):** `/reference-check`(grounded 추천서 — **draft PR, 미머지**), `/fit`(JD 결정론 매칭 %), `/rating`(증거 기반 역량 — 단 근거 없는 "상위 X%" 절대주장은 의도적으로 **안 함**).
+- **출하(main):** 결정론 grounding 코어(Evidence/Claim 계약, gh→Evidence 추출, gate) + **`/portfolio`**(grounded 포트폴리오를 Markdown으로) + **`/resume`**(JD 맞춤 grounded 이력서, 환각 ref는 `enforce_grounding`이 거부) + **`/reference-check`**(grounded 추천서 — 모든 문단이 실재 증거 ref 인용; PR #10로 2026-06-16 머지).
+- **로드맵(아직 "있다"고 쓰지 말 것):** `/fit`(JD 결정론 매칭 %), `/rating`(증거 기반 역량 — 단 근거 없는 "상위 X%" 절대주장은 의도적으로 **안 함**).
 
 ## 설치 / CTA
 
@@ -73,6 +73,6 @@ python -m resume --source-type github --source <url> --author <handle> --jd <jd.
 - 3-레이어, grounding gate 개념, `gh` 기반 결정론 추출 패턴.
 
 ## 외부에 공유하면 안 되는 부분
-- 아직 없는 기능을 "있다"고 쓰지 말 것(`/reference-check`=draft, `/fit`·`/rating`=계획).
+- 아직 없는 기능을 "있다"고 쓰지 말 것(`/fit`·`/rating`=계획). (`/reference-check`은 2026-06-16 PR #10로 머지돼 출하로 분류 — 글감 작성 시점엔 draft였으나 같은 날 머지됨.)
 - 과장 카피 금지("최고의/완벽한 AI 이력서") — 이 제품의 포인트는 *겸손한 정직성*이라 톤이 어긋남.
 - (시크릿·사내 경로·호스트명 — 이 글감엔 없음. 데모 캡처 쓰면 로컬 경로/핸들 가림.)

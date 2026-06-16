@@ -80,8 +80,8 @@ For example, `/resume` selects which bullets to include for a given job descript
 Not exaggerating is this tool's identity, so the maturity gets stated honestly too.
 
 - **early scaffold, v0.0.1.** The README calls itself that.
-- **What actually ships today:** the deterministic grounding core (evidence extraction + gate), plus **`/portfolio`** (a grounded portfolio as Markdown) and **`/resume`** (a JD-tailored grounded résumé).
-- **What's not yet (roadmap):** `/reference-check` (grounded reference letters) is a **draft PR, unmerged.** `/fit` (deterministic JD-match coverage %) and `/rating` (evidence-based skill profile) have **no code yet** — and `/rating` deliberately **won't** make ungrounded "top X%" absolute claims.
+- **What actually ships today:** the deterministic grounding core (evidence extraction + gate), plus **`/portfolio`** (a grounded portfolio as Markdown), **`/resume`** (a JD-tailored grounded résumé), and **`/reference-check`** (grounded reference letters — every paragraph cites real evidence refs).
+- **What's not yet (roadmap):** `/fit` (deterministic JD-match coverage %) and `/rating` (evidence-based skill profile) have **no code yet** — and `/rating` deliberately **won't** make ungrounded "top X%" absolute claims.
 
 Keeping the tool's philosophy ("never invented") starting from the tool's *intro post* felt like the right call.
 
