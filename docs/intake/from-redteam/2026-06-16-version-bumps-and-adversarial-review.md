@@ -9,7 +9,7 @@ redactionReviewed: true
 
 > redteam 팀 raw 글감의 정제본. **Class A/B 없음** — 전부 public OSS(`AscendyProject/redteam`,
 > Apache-2.0). 캐논은 공개 CHANGELOG·README·issue/PR에서 직접 확인. 시크릿·키·사내 호스트·경로 없음.
-> AGPL→Apache는 정정 완료(현재 Apache-2.0). 헤드라인("4 HIGH 결함")은 CHANGELOG로 1차 확증,
+> 초기 라이선스 표기는 정정 완료(현재 Apache-2.0). 헤드라인("4 HIGH 결함")은 CHANGELOG로 1차 확증,
 > 4개 결함의 세부 mechanic은 redteam 팀 계정(발행 전 fact-check 제안 있음).
 
 ## 무엇이고 왜 (앵글)
