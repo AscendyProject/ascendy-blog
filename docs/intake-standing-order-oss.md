@@ -6,9 +6,10 @@ OSS repo)를 위한 블로그 글감 공급 상시 지침이다. 블로그팀(�
 (`CLAUDE.md` / `AGENTS.md`)에 standing order로 반영해 운용한다.
 
 > 이 문서는 backend/frontend/infra 3팀용 [`intake-standing-order.md`](./intake-standing-order.md)의
-> **OSS 변형**이다. 다른 점은 단 하나 — **드롭 위치**. 나머지(포맷·민감정보 표시·
-> 특별 트리거·이후 흐름)는 3팀 지침과 동일하다. 두 문서가 충돌하면 OSS 프로젝트
-> 경로의 일은 이 문서가 우선.
+> **OSS 변형**이다. 주된 차이는 **드롭 위치**이고, OSS는 public repo라 **공개 repo
+> fact-check 항목(§3 캐논 정직성)**이 더해진다. 나머지(포맷·민감정보 표시·특별
+> 트리거·이후 흐름)는 3팀 지침과 동일하다. 두 문서가 충돌하면 OSS 프로젝트 경로의
+> 일은 이 문서가 우선.
 
 ## 왜 OSS는 다른가 — raw를 자기 repo에 두면 안 된다
 
@@ -19,8 +20,10 @@ public이 된 commit은 force-push로도 완전히 못 지운다.
 
 그래서 OSS 프로젝트의 raw 원본은 **자기 repo가 아니라 blog repo의 gitignored
 로컬 경로**에 떨군다. blog repo는 public이지만 이 경로는 `.gitignore`에 등록돼
-있어(파일 자체가 커밋되지 않음) raw가 public에 닿지 않는다. 블로그팀이 읽은 뒤
-redaction을 통과시킨 **정제본만** `docs/intake/from-<project>/`에 커밋한다.
+있어 **실수로 커밋되지 않는다**. (gitignore는 accidental commit을 막는 **운영
+규칙**이지 `git add -f`까지 막는 보안 경계는 아니다 — raw를 강제로 커밋하지 않는
+것은 운영 약속으로 지킨다.) 블로그팀이 읽은 뒤 redaction을 통과시킨 **정제본만**
+`docs/intake/from-<project>/`에 커밋한다.
 
 ## 요청 (한 줄)
 
@@ -54,10 +57,12 @@ OSS 프로젝트는 캐논(라이선스·버전·issue/PR 번호·기능 상태)
 - **shipped vs roadmap** — "있다/출하됐다"고 쓰는 기능은 `gh`로 머지 여부를
   확인하라. (실전 사고: portfolio 글감이 `/reference-check`를 "draft/미머지"로
   적었으나 실제로는 PR이 **이미 머지**였다.)
-- **issue# vs PR# / OPEN vs CLOSED** — 결함·기능을 번호로 추적할 때 issue 번호와
-  fix PR 번호, OPEN/CLOSED 상태를 정확히. (실전 사고: redteam 글감의 `#37`이
-  "구현됨"처럼 읽혔으나 실제로는 **OPEN issue**(fallback-ladder 단계까지만,
-  나머지는 로드맵)였다.)
+- **issue# vs PR# / OPEN vs CLOSED / shipped vs rejected** — 결함·기능을 번호로
+  추적할 때 issue 번호·fix PR 번호와 **현재 상태**를 정확히. (실전 사고: redteam
+  `#37`을 "OPEN·나머지는 로드맵"으로 적었으나, 현재 repo는 **#37 CLOSED**(umbrella
+  issue) — step 4(fallback ladder)는 0.3.0 출하, step 5·6(sub-agent adapter·
+  멀티플렉서 transport)은 **설계상 reject**다. "로드맵(예정)"과 "reject(안 함)"는
+  엄연히 다르다 — gh로 닫힘 사유까지 확인하라.)
 - **라이선스·버전** — CHANGELOG / `LICENSE` / 릴리스 태그를 직접 보고 적는다.
   초기 표기와 현재가 다를 수 있다.
 
