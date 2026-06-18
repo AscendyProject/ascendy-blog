@@ -130,8 +130,14 @@ const ui = {
     font-size: 15px;
     line-height: 1.5;
     background: var(--bg);
+    cursor: pointer;
   }
-  #diagnostic .opt:hover { background: var(--surface); border-color: var(--text-muted); }
+  #diagnostic .opt:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    cursor: pointer;
+  }
+  #diagnostic .opt:hover .dot { border-color: var(--accent); }
   #diagnostic .opt .dot {
     flex: 0 0 auto;
     width: 18px;
