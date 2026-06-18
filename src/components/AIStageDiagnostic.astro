@@ -564,19 +564,20 @@ const ui = {
           // 컨텍스트에서 거짓 성공이 뜨지 않도록. legacy execCommand 폴백 후
           // 그래도 실패하면 실패 상태를 표시.
           const legacyCopy = function (): boolean {
+            const ta = document.createElement("textarea");
+            ta.value = shareUrl;
+            ta.setAttribute("readonly", "");
+            ta.style.position = "fixed";
+            ta.style.top = "-9999px";
+            document.body.appendChild(ta);
+            ta.select();
             try {
-              const ta = document.createElement("textarea");
-              ta.value = shareUrl;
-              ta.setAttribute("readonly", "");
-              ta.style.position = "fixed";
-              ta.style.top = "-9999px";
-              document.body.appendChild(ta);
-              ta.select();
-              const ok = document.execCommand("copy");
-              document.body.removeChild(ta);
-              return ok;
+              return document.execCommand("copy");
             } catch {
               return false;
+            } finally {
+              // execCommand가 throw해도 숨은 textarea가 DOM에 남지 않도록
+              document.body.removeChild(ta);
             }
           };
           const onFail = function () {
