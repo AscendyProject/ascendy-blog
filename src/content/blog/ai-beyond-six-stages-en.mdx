@@ -46,7 +46,7 @@ For example:
 
 ### Adversarial verification is the core
 
-The strongest part of this system is that when AIs document their disagreement whenever they reach different conclusions.
+The strongest part of this system is that whenever the paired AIs reach different conclusions, the disagreement gets documented.
 
 Is there a bug in the code? Claude and Codex (or Gemini) review it independently. If opinions split, both are written down. Is a technical decision right? The operator decides after seeing several models' views.
 
@@ -115,7 +115,7 @@ Among themselves the AIs keep verifying the "how." Is the code right? Is the log
 
 But "why this direction?" "Is this really the right goal?"... no one asks.
 
-This is **a limit of the current Ascendy organization**, and more fundamentally a **structural limit of AI.** AI only optimizes a given premise; doubting and re-examining the premise itself is outside its design. When same-family AIs (Claude vs Codex) share the same premise, a question that would overturn that premise can't clear the agreement threshold. Pushed to the end, both give the same answer. And that agreement actually becomes an outward-facing decision.
+This is **a limit of the current Ascendy setup**, and arguably points at a broader limit in *how* these tools get used. When two AIs are handed the **same premise and context** — even cross-provider ones like Claude and Codex — a question that would overturn that premise tends not to clear the agreement threshold; in practice they often converge on the same answer. And that agreement can quietly become an outward-facing decision.
 
 ### The operator's fix
 

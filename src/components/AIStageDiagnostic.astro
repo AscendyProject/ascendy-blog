@@ -220,6 +220,7 @@ const ui = {
     learnMore: (s: number) => string;
     copy: string;
     copied: string;
+    copyFail: string;
     shareNative: string;
     shareText: (s: number) => string;
     chokeTitle: string;
@@ -306,6 +307,7 @@ const ui = {
       learnMore: (s) => `${s}단계 더 알아보기`,
       copy: "링크 복사",
       copied: "복사됨!",
+      copyFail: "복사 실패 — 길게 눌러 복사",
       shareNative: "공유…",
       shareText: (s) => `나는 AI 활용 ${s}단계. 당신은?`,
       chokeTitle: "3 → 4, 대부분이 여기서 멈춥니다",
@@ -390,6 +392,7 @@ const ui = {
       learnMore: (s) => `More on Stage ${s}`,
       copy: "Copy link",
       copied: "Copied!",
+      copyFail: "Couldn't copy — long-press to copy",
       shareNative: "Share…",
       shareText: (s) => `I'm at Stage ${s} of using AI. Where are you?`,
       chokeTitle: "3 → 4: most people stop here",
@@ -551,16 +554,41 @@ const ui = {
       const copyBtn = document.getElementById("copy") as HTMLButtonElement | null;
       if (copyBtn) {
         copyBtn.addEventListener("click", function () {
-          const done = function () {
-            copyBtn.textContent = T.copied;
+          const flash = function (label: string) {
+            copyBtn.textContent = label;
             window.setTimeout(function () {
               copyBtn.textContent = T.copy;
             }, 1500);
           };
+          // 실제 복사가 됐을 때만 "복사됨"을 표시한다 — 권한 거부/비보안
+          // 컨텍스트에서 거짓 성공이 뜨지 않도록. legacy execCommand 폴백 후
+          // 그래도 실패하면 실패 상태를 표시.
+          const legacyCopy = function (): boolean {
+            try {
+              const ta = document.createElement("textarea");
+              ta.value = shareUrl;
+              ta.setAttribute("readonly", "");
+              ta.style.position = "fixed";
+              ta.style.top = "-9999px";
+              document.body.appendChild(ta);
+              ta.select();
+              const ok = document.execCommand("copy");
+              document.body.removeChild(ta);
+              return ok;
+            } catch {
+              return false;
+            }
+          };
+          const onFail = function () {
+            if (legacyCopy()) flash(T.copied);
+            else flash(T.copyFail);
+          };
           if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(shareUrl).then(done).catch(done);
+            navigator.clipboard.writeText(shareUrl).then(function () {
+              flash(T.copied);
+            }).catch(onFail);
           } else {
-            done();
+            onFail();
           }
         });
       }
