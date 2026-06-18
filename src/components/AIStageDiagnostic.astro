@@ -50,12 +50,13 @@ const ui = {
   </details>
 </div>
 
-<style>
-  /* 변수는 :root가 아니라 컴포넌트 래퍼(.wrap)에 둔다 — Astro는 :root를
-     스코프하지 않아 전역으로 새고, global.css의 --accent와 충돌해 페이지
-     전체 링크 색을 바꿔버린다. .wrap은 스코프되므로 변수가 이 컴포넌트
-     하위로만 cascade된다. */
-  .wrap {
+<style is:global>
+  /* 선택지·결과 카드·공유 버튼은 클라이언트 JS가 런타임 생성하므로 Astro
+     스코프 속성(data-astro-cid)이 붙지 않는다 → 스코프 CSS가 적용되지 않아
+     hover·선택 강조가 무시됐다. 그래서 이 블록은 is:global로 두되 모든 규칙을
+     고유 id(#diagnostic)로 네임스페이스해 전역 누출을 막는다. CSS 변수도
+     #diagnostic에 둬 하위로만 cascade되고 global.css의 --accent와 충돌하지 않는다. */
+  #diagnostic {
     --bg: #ffffff;
     --surface: #f4f3ee;
     --surface-2: #ebe9e1;
@@ -74,7 +75,7 @@ const ui = {
     color: var(--text);
   }
   @media (prefers-color-scheme: dark) {
-    .wrap {
+    #diagnostic {
       --bg: #1f1f1d;
       --surface: #2a2a27;
       --surface-2: #34332f;
@@ -85,15 +86,15 @@ const ui = {
       --accent-soft: rgba(133, 183, 235, 0.16);
     }
   }
-  .card {
+  #diagnostic .card {
     background: var(--bg);
     border: 0.5px solid var(--border);
     border-radius: var(--radius);
     padding: 1.75rem;
   }
-  .card h2 { font-size: 22px; font-weight: 500; margin: 0 0 8px; }
-  .lead { font-size: 15px; color: var(--text-muted); margin: 0 0 1.5rem; }
-  button {
+  #diagnostic .card h2 { font-size: 22px; font-weight: 500; margin: 0 0 8px; }
+  #diagnostic .lead { font-size: 15px; color: var(--text-muted); margin: 0 0 1.5rem; }
+  #diagnostic button {
     font: inherit;
     color: var(--text);
     background: transparent;
@@ -103,23 +104,23 @@ const ui = {
     cursor: pointer;
     transition: background 0.15s, transform 0.05s, border-color 0.15s;
   }
-  button:hover { background: var(--surface); }
-  button:active { transform: scale(0.98); }
-  button.primary {
+  #diagnostic button:hover { background: var(--surface); }
+  #diagnostic button:active { transform: scale(0.98); }
+  #diagnostic button.primary {
     border-color: var(--accent);
     color: var(--accent);
     font-weight: 500;
   }
-  button.primary:hover { background: var(--accent-soft); }
-  .progress { display: flex; align-items: center; gap: 10px; margin: 0 0 1.25rem; }
-  .bar-track { flex: 1; height: 6px; background: var(--surface); border-radius: 3px; overflow: hidden; }
-  .bar-fill { height: 100%; width: 20%; background: var(--accent); border-radius: 3px; transition: width 0.3s; }
-  .counter { font-size: 13px; color: var(--text-muted); min-width: 32px; }
-  .q-text { font-size: 18px; font-weight: 500; line-height: 1.6; margin: 0 0 1.25rem; }
-  .options { display: flex; flex-direction: column; gap: 10px; }
+  #diagnostic button.primary:hover { background: var(--accent-soft); }
+  #diagnostic .progress { display: flex; align-items: center; gap: 10px; margin: 0 0 1.25rem; }
+  #diagnostic .bar-track { flex: 1; height: 6px; background: var(--surface); border-radius: 3px; overflow: hidden; }
+  #diagnostic .bar-fill { height: 100%; width: 20%; background: var(--accent); border-radius: 3px; transition: width 0.3s; }
+  #diagnostic .counter { font-size: 13px; color: var(--text-muted); min-width: 32px; }
+  #diagnostic .q-text { font-size: 18px; font-weight: 500; line-height: 1.6; margin: 0 0 1.25rem; }
+  #diagnostic .options { display: flex; flex-direction: column; gap: 10px; }
 
   /* 선택지: 카드형 + 라디오 표시 + 선택 피드백 */
-  .opt {
+  #diagnostic .opt {
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -130,8 +131,8 @@ const ui = {
     line-height: 1.5;
     background: var(--bg);
   }
-  .opt:hover { background: var(--surface); border-color: var(--text-muted); }
-  .opt .dot {
+  #diagnostic .opt:hover { background: var(--surface); border-color: var(--text-muted); }
+  #diagnostic .opt .dot {
     flex: 0 0 auto;
     width: 18px;
     height: 18px;
@@ -141,62 +142,62 @@ const ui = {
     position: relative;
     transition: border-color 0.15s, background 0.15s;
   }
-  .opt .opt-t { flex: 1; }
-  .opt.selected {
+  #diagnostic .opt .opt-t { flex: 1; }
+  #diagnostic .opt.selected {
     border-color: var(--accent);
     background: var(--accent-soft);
   }
-  .opt.selected .dot {
+  #diagnostic .opt.selected .dot {
     border-color: var(--accent);
     background: var(--accent);
   }
-  .opt.selected .dot::after {
+  #diagnostic .opt.selected .dot::after {
     content: "";
     position: absolute;
     inset: 4px;
     border-radius: 50%;
     background: var(--bg);
   }
-  .opt:disabled { cursor: default; opacity: 1; }
+  #diagnostic .opt:disabled { cursor: default; opacity: 1; }
 
-  .result-card { border-radius: var(--radius); padding: 1.75rem; }
-  .result-card .pos { font-size: 13px; margin: 0 0 8px; opacity: 0.85; }
-  .result-card .stage { font-size: 24px; font-weight: 500; margin: 0 0 14px; }
-  .result-card .desc { font-size: 15px; line-height: 1.7; margin: 0; }
-  .choke {
+  #diagnostic .result-card { border-radius: var(--radius); padding: 1.75rem; }
+  #diagnostic .result-card .pos { font-size: 13px; margin: 0 0 8px; opacity: 0.85; }
+  #diagnostic .result-card .stage { font-size: 24px; font-weight: 500; margin: 0 0 14px; }
+  #diagnostic .result-card .desc { font-size: 15px; line-height: 1.7; margin: 0; }
+  #diagnostic .choke {
     margin-top: 1rem; border-left: 3px solid #993c1d; padding: 12px 16px;
     background: var(--surface); border-radius: 0;
   }
-  .choke .ct { font-size: 14px; font-weight: 500; margin: 0 0 6px; }
-  .choke .cb { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin: 0; }
+  #diagnostic .choke .ct { font-size: 14px; font-weight: 500; margin: 0 0 6px; }
+  #diagnostic .choke .cb { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin: 0; }
 
-  .actions { display: flex; gap: 8px; margin-top: 1.25rem; flex-wrap: wrap; align-items: center; }
-  .actions a { text-decoration: none; }
-  .actions button, .actions a button { background: transparent; }
-  .share-label { font-size: 13px; color: var(--text-muted); width: 100%; margin: 4px 0 0; }
-  .icon-btn {
+  #diagnostic .actions { display: flex; gap: 8px; margin-top: 1.25rem; flex-wrap: wrap; align-items: center; }
+  #diagnostic .actions a { text-decoration: none; }
+  #diagnostic .actions button, #diagnostic .actions a button { background: transparent; }
+  #diagnostic .share-label { font-size: 13px; color: var(--text-muted); width: 100%; margin: 4px 0 0; }
+  #diagnostic .icon-btn {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 8px 12px; font-size: 14px;
   }
-  .hidden { display: none; }
+  #diagnostic .hidden { display: none; }
 
-  .s1 { background: #f1efe8; color: #2c2c2a; }
-  .s2 { background: #e6f1fb; color: #042c53; }
-  .s3 { background: #e1f5ee; color: #04342c; }
-  .s4 { background: #eeedfe; color: #26215c; }
-  .s5 { background: #faece7; color: #4a1b0c; }
-  .s6 { background: #fbeaf0; color: #4b1528; }
+  #diagnostic .s1 { background: #f1efe8; color: #2c2c2a; }
+  #diagnostic .s2 { background: #e6f1fb; color: #042c53; }
+  #diagnostic .s3 { background: #e1f5ee; color: #04342c; }
+  #diagnostic .s4 { background: #eeedfe; color: #26215c; }
+  #diagnostic .s5 { background: #faece7; color: #4a1b0c; }
+  #diagnostic .s6 { background: #fbeaf0; color: #4b1528; }
   @media (prefers-color-scheme: dark) {
-    .s1 { background: #444441; color: #f1efe8; }
-    .s2 { background: #0c447c; color: #e6f1fb; }
-    .s3 { background: #085041; color: #e1f5ee; }
-    .s4 { background: #3c3489; color: #eeedfe; }
-    .s5 { background: #712b13; color: #faece7; }
-    .s6 { background: #72243e; color: #fbeaf0; }
+    #diagnostic .s1 { background: #444441; color: #f1efe8; }
+    #diagnostic .s2 { background: #0c447c; color: #e6f1fb; }
+    #diagnostic .s3 { background: #085041; color: #e1f5ee; }
+    #diagnostic .s4 { background: #3c3489; color: #eeedfe; }
+    #diagnostic .s5 { background: #712b13; color: #faece7; }
+    #diagnostic .s6 { background: #72243e; color: #fbeaf0; }
   }
 
-  .lmo { margin-top: 2.5rem; font-size: 13px; color: var(--text-muted); }
-  .lmo summary { cursor: pointer; }
+  #diagnostic .lmo { margin-top: 2.5rem; font-size: 13px; color: var(--text-muted); }
+  #diagnostic .lmo summary { cursor: pointer; }
 </style>
 
 <script>
