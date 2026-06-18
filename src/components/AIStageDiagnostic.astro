@@ -1,13 +1,36 @@
 ---
 // AI 활용 단계 자가진단 도구 컴포넌트
-// HTML 진단 도구를 Astro 컴포넌트로 변환
+// lang prop으로 ko/en 둘 다 렌더 (영어 글에서 재사용). 기본 ko.
+interface Props {
+  lang?: "ko" | "en";
+}
+const { lang = "ko" } = Astro.props;
+
+const ui = {
+  ko: {
+    title: "AI 활용 6단계, 당신은 몇 단계?",
+    lead: '단계를 직접 고르는 게 아니라, 평소 행동 5개로 당신의 위치를 역산합니다. 솔직하게 "가장 가까운 것"을 고르세요. 1분이면 끝납니다.',
+    start: "진단 시작 →",
+    detailsSummary: "이 진단의 단계 정의 (참고)",
+    detailsBody:
+      "AI 활용 단계는 행동의 성격으로 구분한다. 1단계 안 쓴다. 2단계 묻는다(검색 대신 AI에 질문). 3단계 시킨다(글 초안·요약·번역 등 단발 작업 위임). 4단계 일을 맡긴다(반복 업무를 AI 중심으로 재설계). 5단계 만든다(웹·앱·자동화 도구 직접 제작, 개발자는 코드로 비개발자는 노코드로). 6단계 AI가 일하게 만든다(에이전트·자동화 시스템 구축). 가장 넘기 어려운 구간은 3→4로, 능력이 아니라 사고방식의 전환이 필요하다. 채점은 행동 질문 5개 점수의 평균을 반올림해 1~6으로 산출한다.",
+  },
+  en: {
+    title: "The 6 stages of using AI — which one are you at?",
+    lead: 'Instead of picking a stage directly, this back-calculates your position from 5 everyday behaviors. Just pick the closest one, honestly. Takes about a minute.',
+    start: "Start →",
+    detailsSummary: "Stage definitions (reference)",
+    detailsBody:
+      "AI-use stages are defined by the nature of the behavior. Stage 1: not using it. Stage 2: asking (AI instead of search). Stage 3: delegating (one-off tasks — drafts, summaries, translation). Stage 4: handing off the work (re-architecting recurring work around AI). Stage 5: building (making web/app/automation tools yourself — developers in code, non-developers in no-code). Stage 6: making AI do the work (building agent/automation systems). The hardest jump is 3→4, which needs a shift in mindset, not skill. Scoring averages the 5 behavior questions and rounds to 1–6.",
+  },
+}[lang];
 ---
 
-<div class="wrap">
+<div class="wrap" id="diagnostic" data-lang={lang}>
   <div id="intro" class="card">
-    <h2>AI 활용 6단계, 당신은 몇 단계?</h2>
-    <p class="lead">단계를 직접 고르는 게 아니라, 평소 행동 5개로 당신의 위치를 역산합니다. 솔직하게 "가장 가까운 것"을 고르세요. 1분이면 끝납니다.</p>
-    <button id="start-btn">진단 시작 →</button>
+    <h2>{ui.title}</h2>
+    <p class="lead">{ui.lead}</p>
+    <button id="start-btn" class="primary">{ui.start}</button>
   </div>
 
   <div id="quiz" class="hidden">
@@ -16,14 +39,14 @@
       <span id="counter" class="counter">1/5</span>
     </div>
     <p id="q-text" class="q-text"></p>
-    <div id="options" class="options"></div>
+    <div id="options" class="options" role="radiogroup"></div>
   </div>
 
   <div id="result" class="hidden"></div>
 
   <details class="lmo">
-    <summary>이 진단의 단계 정의 (참고)</summary>
-    <p>AI 활용 단계는 행동의 성격으로 구분한다. 1단계 안 쓴다. 2단계 묻는다(검색 대신 AI에 질문). 3단계 시킨다(글 초안·요약·번역 등 단발 작업 위임). 4단계 일을 맡긴다(반복 업무를 AI 중심으로 재설계). 5단계 만든다(웹·앱·자동화 도구 직접 제작, 개발자는 코드로 비개발자는 노코드로). 6단계 AI가 일하게 만든다(에이전트·자동화 시스템 구축). 가장 넘기 어려운 구간은 3→4로, 능력이 아니라 사고방식의 전환이 필요하다. 채점은 행동 질문 5개 점수의 평균을 반올림해 1~6으로 산출한다.</p>
+    <summary>{ui.detailsSummary}</summary>
+    <p>{ui.detailsBody}</p>
   </details>
 </div>
 
@@ -35,25 +58,31 @@
   .wrap {
     --bg: #ffffff;
     --surface: #f4f3ee;
+    --surface-2: #ebe9e1;
     --text: #1a1a18;
     --text-muted: #5f5e5a;
     --border: rgba(0, 0, 0, 0.12);
     --accent: #185fa5;
+    --accent-soft: rgba(24, 95, 165, 0.1);
     --radius: 12px;
     --radius-sm: 8px;
     max-width: 640px;
     margin: 0 auto;
     padding: 2rem 1.25rem 3rem;
+    /* 앵커(#diagnostic)로 스크롤 착지 시 상단 여백 확보 */
+    scroll-margin-top: 1.5rem;
     color: var(--text);
   }
   @media (prefers-color-scheme: dark) {
     .wrap {
       --bg: #1f1f1d;
       --surface: #2a2a27;
+      --surface-2: #34332f;
       --text: #f0efe9;
       --text-muted: #b4b2a9;
       --border: rgba(255, 255, 255, 0.15);
       --accent: #85b7eb;
+      --accent-soft: rgba(133, 183, 235, 0.16);
     }
   }
   .card {
@@ -72,17 +101,64 @@
     border-radius: var(--radius-sm);
     padding: 10px 18px;
     cursor: pointer;
-    transition: background 0.15s, transform 0.05s;
+    transition: background 0.15s, transform 0.05s, border-color 0.15s;
   }
   button:hover { background: var(--surface); }
   button:active { transform: scale(0.98); }
+  button.primary {
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 500;
+  }
+  button.primary:hover { background: var(--accent-soft); }
   .progress { display: flex; align-items: center; gap: 10px; margin: 0 0 1.25rem; }
   .bar-track { flex: 1; height: 6px; background: var(--surface); border-radius: 3px; overflow: hidden; }
   .bar-fill { height: 100%; width: 20%; background: var(--accent); border-radius: 3px; transition: width 0.3s; }
   .counter { font-size: 13px; color: var(--text-muted); min-width: 32px; }
   .q-text { font-size: 18px; font-weight: 500; line-height: 1.6; margin: 0 0 1.25rem; }
   .options { display: flex; flex-direction: column; gap: 10px; }
-  .options button { text-align: left; padding: 12px 16px; font-size: 15px; line-height: 1.5; }
+
+  /* 선택지: 카드형 + 라디오 표시 + 선택 피드백 */
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    text-align: left;
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 15px;
+    line-height: 1.5;
+    background: var(--bg);
+  }
+  .opt:hover { background: var(--surface); border-color: var(--text-muted); }
+  .opt .dot {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    border-radius: 50%;
+    border: 1.5px solid var(--text-muted);
+    position: relative;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .opt .opt-t { flex: 1; }
+  .opt.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .opt.selected .dot {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  .opt.selected .dot::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: var(--bg);
+  }
+  .opt:disabled { cursor: default; opacity: 1; }
+
   .result-card { border-radius: var(--radius); padding: 1.75rem; }
   .result-card .pos { font-size: 13px; margin: 0 0 8px; opacity: 0.85; }
   .result-card .stage { font-size: 24px; font-weight: 500; margin: 0 0 14px; }
@@ -93,11 +169,16 @@
   }
   .choke .ct { font-size: 14px; font-weight: 500; margin: 0 0 6px; }
   .choke .cb { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin: 0; }
-  .actions { display: flex; gap: 10px; margin-top: 1.25rem; flex-wrap: wrap; }
+
+  .actions { display: flex; gap: 8px; margin-top: 1.25rem; flex-wrap: wrap; align-items: center; }
   .actions a { text-decoration: none; }
-  .actions button { background: transparent; }
+  .actions button, .actions a button { background: transparent; }
+  .share-label { font-size: 13px; color: var(--text-muted); width: 100%; margin: 4px 0 0; }
+  .icon-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 12px; font-size: 14px;
+  }
   .hidden { display: none; }
-  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
   .s1 { background: #f1efe8; color: #2c2c2a; }
   .s2 { background: #e6f1fb; color: #042c53; }
@@ -123,120 +204,213 @@
     q: string;
     opts: Array<{ t: string; s: number }>;
   }
-
   interface Stage {
     name: string;
     cls: string;
     desc: string;
     choke?: boolean;
   }
-
   type StageKey = 1 | 2 | 3 | 4 | 5 | 6;
+  interface Strings {
+    questions: Question[];
+    stages: Record<StageKey, Stage>;
+    stageLinks: Record<StageKey, string>;
+    pos: string;
+    retry: string;
+    learnMore: (s: number) => string;
+    copy: string;
+    copied: string;
+    copyFail: string;
+    shareNative: string;
+    shareText: (s: number) => string;
+    chokeTitle: string;
+    chokeBody: string;
+    shareHint: string;
+  }
+
+  const STR: Record<"ko" | "en", Strings> = {
+    ko: {
+      questions: [
+        {
+          q: "지난 한 주를 떠올려보면, AI를 어떻게 썼나요?",
+          opts: [
+            { t: "거의 안 썼다", s: 1 },
+            { t: "궁금한 걸 검색 대신 물어봤다", s: 2 },
+            { t: "글 초안·요약·번역 같은 작업을 시켰다", s: 3 },
+            { t: "반복 업무 일부를 AI가 처리하도록 짜뒀다", s: 4 },
+            { t: "AI로 도구나 서비스를 직접 만들었다", s: 5 },
+            { t: "AI가 스스로 돌아가는 시스템을 운영했다", s: 6 },
+          ],
+        },
+        {
+          q: "AI에게 일을 맡길 때, 당신과 AI의 관계에 가장 가까운 건?",
+          opts: [
+            { t: "맡길 일이 없다 / 안 맡긴다", s: 1 },
+            { t: "내가 일하다 막히면 물어보는 정도", s: 2 },
+            { t: "단발 작업을 던지고 결과를 받아 쓴다", s: 3 },
+            { t: "내 업무 흐름의 일부를 아예 AI에 넘겼다", s: 4 },
+            { t: "AI가 할 일을 내가 코드/도구로 설계한다", s: 5 },
+            { t: "AI들이 서로 일을 주고받게 구성했다", s: 6 },
+          ],
+        },
+        {
+          q: '"이 일을 AI에 맡겨도 될까?" 할 때 당신은?',
+          opts: [
+            { t: "그런 고민을 해본 적 없다", s: 1 },
+            { t: "답이 맞나 정도만 눈으로 확인한다", s: 2 },
+            { t: "결과물을 받아 내가 손봐서 쓴다", s: 3 },
+            { t: "검증 없이 맡기는 구간을 만들어 신뢰한다", s: 4 },
+            { t: "맡길 부분/내 부분을 분해해 시스템화한다", s: 5 },
+            { t: "검증조차 다른 AI에게 교차로 시킨다", s: 6 },
+          ],
+        },
+        {
+          q: 'AI로 무언가를 "만들어" 본 경험은?',
+          opts: [
+            { t: "없다", s: 2 },
+            { t: "프롬프트로 글·이미지 결과물을 받은 정도", s: 3 },
+            { t: "노코드/바이브코딩으로 간단한 걸 만들어봤다", s: 4 },
+            { t: "웹·앱·자동화 도구를 직접 완성했다", s: 5 },
+            { t: "에이전트나 자동화 시스템까지 구축했다", s: 6 },
+          ],
+        },
+        {
+          q: "당신이 AI에 대해 통제하는 대상은 주로?",
+          opts: [
+            { t: "딱히 없다", s: 1 },
+            { t: "그때그때 내 질문", s: 2 },
+            { t: "맡길 작업의 지시문(프롬프트)", s: 3 },
+            { t: "업무 프로세스 어디를 AI에 넘길지", s: 4 },
+            { t: "AI가 돌아가는 도구·코드 자체", s: 5 },
+            { t: "여러 에이전트의 역할·위임·견제 구조", s: 6 },
+          ],
+        },
+      ],
+      stages: {
+        1: { name: "1단계 · 안 쓴다", cls: "s1", desc: "아직 AI를 일상에 들이지 않은 단계입니다. 나쁜 게 아니라, 가장 큰 점프가 남아있는 자리예요. 다음 한 칸은 의외로 쉽습니다 — 검색하던 걸 한 번 AI에 물어보는 것부터." },
+        2: { name: "2단계 · 묻는다", cls: "s2", desc: "검색 대신 AI에게 묻기 시작한 단계. AI를 '더 똑똑한 검색창'으로 쓰고 있습니다. 다음 칸은 묻기에서 시키기로 — 답을 받는 걸 넘어, 초안·요약 같은 작업을 맡겨보세요." },
+        3: { name: "3단계 · 시킨다", cls: "s3", choke: true, desc: "단발 작업을 AI에 맡기는 단계. 여기서 체감 생산성이 확 오르죠. 그래서 대부분 여기 머뭅니다. 바로 다음 칸이 가장 넘기 어려운 벽입니다 — 아래를 꼭 읽어보세요." },
+        4: { name: "4단계 · 일을 맡긴다", cls: "s4", desc: "가장 많은 사람이 못 넘는 벽을 넘었습니다. 단발 작업을 넘어 업무 흐름 자체를 AI 중심으로 재설계한 단계. 도구를 쓰는 걸 넘어 일하는 방식을 바꾼 거예요. 다음은 직접 만들기입니다." },
+        5: { name: "5단계 · 만든다", cls: "s5", desc: "AI로 도구·서비스를 직접 만드는 단계. 소비자에서 생산자로 넘어왔습니다. 개발자는 코드로, 비개발자는 노코드로 오는 길이 다를 뿐 같은 단계예요. 마지막 칸은 'AI가 스스로 일하게' 만드는 것." },
+        6: { name: "6단계 · AI가 일하게 만든다", cls: "s6", desc: "꼭대기입니다. AI가 스스로 작업하는 시스템을 구축한 단계. 다만 여기도 폭이 넓어요 — 자동화 하나를 끼운 것부터, 여러 에이전트가 서로 일을 주고받는 조직까지. 같은 6단계 안에서도 층이 있습니다." },
+      },
+      stageLinks: {
+        1: "#1단계-안-쓴다",
+        2: "#2단계-묻는다",
+        3: "#3단계-시킨다",
+        4: "#4단계-일을-맡긴다",
+        5: "#5단계-만든다",
+        6: "#6단계-ai가-일하게-만든다",
+      },
+      pos: "당신의 현재 위치",
+      retry: "↻ 다시 진단",
+      learnMore: (s) => `${s}단계 더 알아보기`,
+      copy: "링크 복사",
+      copied: "복사됨!",
+      copyFail: "복사 실패 — 길게 눌러 복사",
+      shareNative: "공유…",
+      shareText: (s) => `나는 AI 활용 ${s}단계. 당신은?`,
+      chokeTitle: "3 → 4, 대부분이 여기서 멈춥니다",
+      chokeBody: "시키기는 'AI가 도구, 내가 주체'입니다. 맡기기는 '일 자체를 AI가 하도록 다시 짜기'예요. 능력이 아니라 사고방식이 바뀌어야 해서, AI를 잘 쓰는 사람도 평생 안 넘기도 합니다.",
+      shareHint: "결과 공유:",
+    },
+    en: {
+      questions: [
+        {
+          q: "Thinking back over the past week, how did you use AI?",
+          opts: [
+            { t: "Barely used it", s: 1 },
+            { t: "Asked it things instead of searching", s: 2 },
+            { t: "Had it draft / summarize / translate", s: 3 },
+            { t: "Set up AI to handle part of a recurring task", s: 4 },
+            { t: "Built a tool or service with AI", s: 5 },
+            { t: "Ran a system where AI works on its own", s: 6 },
+          ],
+        },
+        {
+          q: "When you hand work to AI, which is closest to your relationship with it?",
+          opts: [
+            { t: "Nothing to hand off / I don't", s: 1 },
+            { t: "I ask when I get stuck", s: 2 },
+            { t: "I toss one-off tasks and use the result", s: 3 },
+            { t: "I've handed off part of my workflow entirely", s: 4 },
+            { t: "I design what AI does, in code / tools", s: 5 },
+            { t: "I've set up AIs to pass work to each other", s: 6 },
+          ],
+        },
+        {
+          q: 'When you wonder "can I let AI handle this?", you…',
+          opts: [
+            { t: "Never thought about it", s: 1 },
+            { t: "Just eyeball whether the answer's right", s: 2 },
+            { t: "Take the output and edit it myself", s: 3 },
+            { t: "Create zones I delegate without checking, and trust them", s: 4 },
+            { t: "Decompose my part vs AI's part and systematize", s: 5 },
+            { t: "Even cross-delegate the checking to another AI", s: 6 },
+          ],
+        },
+        {
+          q: 'Your experience "building" something with AI?',
+          opts: [
+            { t: "None", s: 2 },
+            { t: "Got text / image outputs from prompts", s: 3 },
+            { t: "Made something simple with no-code / vibe-coding", s: 4 },
+            { t: "Finished a web / app / automation tool myself", s: 5 },
+            { t: "Built agents or automation systems too", s: 6 },
+          ],
+        },
+        {
+          q: "What you mainly control about AI is…",
+          opts: [
+            { t: "Nothing in particular", s: 1 },
+            { t: "My questions, case by case", s: 2 },
+            { t: "The prompts for tasks I delegate", s: 3 },
+            { t: "Which parts of my process go to AI", s: 4 },
+            { t: "The tools / code AI runs on", s: 5 },
+            { t: "Roles, delegation, and checks across multiple agents", s: 6 },
+          ],
+        },
+      ],
+      stages: {
+        1: { name: "Stage 1 · Not using it", cls: "s1", desc: "You haven't brought AI into your daily work yet. That's not bad — it just means the biggest jump is still ahead. The next step is surprisingly easy: ask AI the next thing you'd have searched for." },
+        2: { name: "Stage 2 · Asking", cls: "s2", desc: "You've started asking AI instead of searching — using it as a 'smarter search box.' Next: go from asking to delegating. Beyond getting answers, hand it a draft or a summary." },
+        3: { name: "Stage 3 · Delegating tasks", cls: "s3", choke: true, desc: "You hand one-off tasks to AI. This is where productivity jumps — which is exactly why most people stop here. The very next step is the hardest wall to cross; be sure to read below." },
+        4: { name: "Stage 4 · Handing off the work", cls: "s4", desc: "You crossed the wall most people don't. Beyond one-off tasks, you've re-architected the workflow itself around AI — you changed how you work, not just which tool you use. Next is building." },
+        5: { name: "Stage 5 · Building", cls: "s5", desc: "You build tools and services with AI — you've crossed from consumer to producer. Developers via code, non-developers via no-code; different paths, same stage. The last step is making AI 'work on its own.'" },
+        6: { name: "Stage 6 · Making AI do the work", cls: "s6", desc: "The top. You've built systems where AI works on its own. But it's wide here too — from slotting in one automation, to an organization of agents passing work to each other. Even within Stage 6 there are layers." },
+      },
+      stageLinks: {
+        1: "#stage-1-not-using-it",
+        2: "#stage-2-asking",
+        3: "#stage-3-delegating-tasks",
+        4: "#stage-4-handing-off-the-work",
+        5: "#stage-5-building",
+        6: "#stage-6-making-ai-do-the-work",
+      },
+      pos: "Your current position",
+      retry: "↻ Retake",
+      learnMore: (s) => `More on Stage ${s}`,
+      copy: "Copy link",
+      copied: "Copied!",
+      copyFail: "Couldn't copy — long-press to copy",
+      shareNative: "Share…",
+      shareText: (s) => `I'm at Stage ${s} of using AI. Where are you?`,
+      chokeTitle: "3 → 4: most people stop here",
+      chokeBody: "“Delegating tasks” is ‘AI is the tool, I'm the driver.’ “Handing off the work” is ‘re-architecting the work so AI does it.’ It takes a shift in mindset, not skill — even heavy AI users sometimes never cross it.",
+      shareHint: "Share your result:",
+    },
+  };
 
   (function () {
-    const questions: Question[] = [
-      {
-        q: "지난 한 주를 떠올려보면, AI를 어떻게 썼나요?",
-        opts: [
-          { t: "거의 안 썼다", s: 1 },
-          { t: "궁금한 걸 검색 대신 물어봤다", s: 2 },
-          { t: "글 초안·요약·번역 같은 작업을 시켰다", s: 3 },
-          { t: "반복 업무 일부를 AI가 처리하도록 짜뒀다", s: 4 },
-          { t: "AI로 도구나 서비스를 직접 만들었다", s: 5 },
-          { t: "AI가 스스로 돌아가는 시스템을 운영했다", s: 6 },
-        ],
-      },
-      {
-        q: "AI에게 일을 맡길 때, 당신과 AI의 관계에 가장 가까운 건?",
-        opts: [
-          { t: "맡길 일이 없다 / 안 맡긴다", s: 1 },
-          { t: "내가 일하다 막히면 물어보는 정도", s: 2 },
-          { t: "단발 작업을 던지고 결과를 받아 쓴다", s: 3 },
-          { t: "내 업무 흐름의 일부를 아예 AI에 넘겼다", s: 4 },
-          { t: "AI가 할 일을 내가 코드/도구로 설계한다", s: 5 },
-          { t: "AI들이 서로 일을 주고받게 구성했다", s: 6 },
-        ],
-      },
-      {
-        q: '"이 일을 AI에 맡겨도 될까?" 할 때 당신은?',
-        opts: [
-          { t: "그런 고민을 해본 적 없다", s: 1 },
-          { t: "답이 맞나 정도만 눈으로 확인한다", s: 2 },
-          { t: "결과물을 받아 내가 손봐서 쓴다", s: 3 },
-          { t: "검증 없이 맡기는 구간을 만들어 신뢰한다", s: 4 },
-          { t: "맡길 부분/내 부분을 분해해 시스템화한다", s: 5 },
-          { t: "검증조차 다른 AI에게 교차로 시킨다", s: 6 },
-        ],
-      },
-      {
-        q: 'AI로 무언가를 "만들어" 본 경험은?',
-        opts: [
-          { t: "없다", s: 2 },
-          { t: "프롬프트로 글·이미지 결과물을 받은 정도", s: 3 },
-          { t: "노코드/바이브코딩으로 간단한 걸 만들어봤다", s: 4 },
-          { t: "웹·앱·자동화 도구를 직접 완성했다", s: 5 },
-          { t: "에이전트나 자동화 시스템까지 구축했다", s: 6 },
-        ],
-      },
-      {
-        q: "당신이 AI에 대해 통제하는 대상은 주로?",
-        opts: [
-          { t: "딱히 없다", s: 1 },
-          { t: "그때그때 내 질문", s: 2 },
-          { t: "맡길 작업의 지시문(프롬프트)", s: 3 },
-          { t: "업무 프로세스 어디를 AI에 넘길지", s: 4 },
-          { t: "AI가 돌아가는 도구·코드 자체", s: 5 },
-          { t: "여러 에이전트의 역할·위임·견제 구조", s: 6 },
-        ],
-      },
-    ];
-
-    const stages: Record<StageKey, Stage> = {
-      1: {
-        name: "1단계 · 안 쓴다",
-        cls: "s1",
-        desc: "아직 AI를 일상에 들이지 않은 단계입니다. 나쁜 게 아니라, 가장 큰 점프가 남아있는 자리예요. 다음 한 칸은 의외로 쉽습니다 — 검색하던 걸 한 번 AI에 물어보는 것부터.",
-      },
-      2: {
-        name: "2단계 · 묻는다",
-        cls: "s2",
-        desc: "검색 대신 AI에게 묻기 시작한 단계. AI를 '더 똑똑한 검색창'으로 쓰고 있습니다. 다음 칸은 묻기에서 시키기로 — 답을 받는 걸 넘어, 초안·요약 같은 작업을 맡겨보세요.",
-      },
-      3: {
-        name: "3단계 · 시킨다",
-        cls: "s3",
-        choke: true,
-        desc: "단발 작업을 AI에 맡기는 단계. 여기서 체감 생산성이 확 오르죠. 그래서 대부분 여기 머뭅니다. 바로 다음 칸이 가장 넘기 어려운 벽입니다 — 아래를 꼭 읽어보세요.",
-      },
-      4: {
-        name: "4단계 · 일을 맡긴다",
-        cls: "s4",
-        desc: "가장 많은 사람이 못 넘는 벽을 넘었습니다. 단발 작업을 넘어 업무 흐름 자체를 AI 중심으로 재설계한 단계. 도구를 쓰는 걸 넘어 일하는 방식을 바꾼 거예요. 다음은 직접 만들기입니다.",
-      },
-      5: {
-        name: "5단계 · 만든다",
-        cls: "s5",
-        desc: "AI로 도구·서비스를 직접 만드는 단계. 소비자에서 생산자로 넘어왔습니다. 개발자는 코드로, 비개발자는 노코드로 오는 길이 다를 뿐 같은 단계예요. 마지막 칸은 'AI가 스스로 일하게' 만드는 것.",
-      },
-      6: {
-        name: "6단계 · AI가 일하게 만든다",
-        cls: "s6",
-        desc: "꼭대기입니다. AI가 스스로 작업하는 시스템을 구축한 단계. 다만 여기도 폭이 넓어요 — 자동화 하나를 끼운 것부터, 여러 에이전트가 서로 일을 주고받는 조직까지. 같은 6단계 안에서도 층이 있습니다.",
-      },
-    };
-
-    // 앵커는 ai-six-stages.mdx의 "### **N단계: ...**" 헤딩에서
-    // github-slugger가 생성하는 id와 일치해야 한다 (콜론 제거, 공백→하이픈, AI→ai).
-    const stageLinks: Record<StageKey, string> = {
-      1: "#1단계-안-쓴다",
-      2: "#2단계-묻는다",
-      3: "#3단계-시킨다",
-      4: "#4단계-일을-맡긴다",
-      5: "#5단계-만든다",
-      6: "#6단계-ai가-일하게-만든다",
-    };
+    const wrap = document.getElementById("diagnostic") as HTMLElement | null;
+    if (!wrap) return;
+    const lang = wrap.dataset.lang === "en" ? "en" : "ko";
+    const T = STR[lang];
+    const questions = T.questions;
+    const stages = T.stages;
 
     let current = 0;
+    let locked = false;
     const answers: number[] = [];
     const intro = document.getElementById("intro") as HTMLElement;
     const quiz = document.getElementById("quiz") as HTMLElement;
@@ -247,89 +421,189 @@
     const counter = document.getElementById("counter") as HTMLElement;
     const startBtn = document.getElementById("start-btn") as HTMLButtonElement;
 
-    startBtn!.addEventListener("click", function () {
-      intro!.classList.add("hidden");
-      quiz!.classList.remove("hidden");
+    startBtn.addEventListener("click", function () {
+      intro.classList.add("hidden");
+      quiz.classList.remove("hidden");
       render();
     });
 
     function render() {
+      locked = false;
       const item = questions[current];
-      qText!.textContent = item.q;
-      counter!.textContent = (current + 1) + "/" + questions.length;
-      bar!.style.width = (((current + 1) / questions.length) * 100) + "%";
-      optionsEl!.innerHTML = "";
+      qText.textContent = item.q;
+      counter.textContent = current + 1 + "/" + questions.length;
+      bar.style.width = ((current + 1) / questions.length) * 100 + "%";
+      optionsEl.innerHTML = "";
       item.opts.forEach(function (o) {
         const b = document.createElement("button");
-        b.textContent = o.t;
+        b.className = "opt";
+        b.setAttribute("role", "radio");
+        b.setAttribute("aria-checked", "false");
+        const dot = document.createElement("span");
+        dot.className = "dot";
+        const label = document.createElement("span");
+        label.className = "opt-t";
+        label.textContent = o.t;
+        b.appendChild(dot);
+        b.appendChild(label);
         b.addEventListener("click", function () {
+          if (locked) return;
+          locked = true;
+          // 선택 피드백: 고른 항목 강조 후 잠깐 보여주고 다음으로
+          b.classList.add("selected");
+          b.setAttribute("aria-checked", "true");
+          Array.from(optionsEl.querySelectorAll("button")).forEach(function (el) {
+            (el as HTMLButtonElement).disabled = true;
+          });
           answers.push(o.s);
-          current++;
-          if (current < questions.length) {
-            render();
-          } else {
-            finish();
-          }
+          window.setTimeout(function () {
+            current++;
+            if (current < questions.length) {
+              render();
+            } else {
+              finish();
+            }
+          }, 320);
         });
-        optionsEl!.appendChild(b);
+        optionsEl.appendChild(b);
       });
     }
 
     function finish() {
-      quiz!.classList.add("hidden");
-      const avg = answers.reduce(function (a, b) {
-        return a + b;
-      }, 0) / answers.length;
+      quiz.classList.add("hidden");
+      const avg =
+        answers.reduce(function (a, b) {
+          return a + b;
+        }, 0) / answers.length;
       const s = Math.max(1, Math.min(6, Math.round(avg))) as StageKey;
       const st = stages[s];
-      resultEl!.classList.remove("hidden");
+      resultEl.classList.remove("hidden");
 
       let chokeHtml = "";
       if (st.choke) {
         chokeHtml =
-          '<div class="choke"><p class="ct">3 → 4, 대부분이 여기서 멈춥니다</p>' +
-          "<p class=\"cb\">시키기는 'AI가 도구, 내가 주체'입니다. 맡기기는 '일 자체를 AI가 하도록 다시 짜기'예요. " +
-          "능력이 아니라 사고방식이 바뀌어야 해서, AI를 잘 쓰는 사람도 평생 안 넘기도 합니다.</p></div>";
+          '<div class="choke"><p class="ct">' +
+          T.chokeTitle +
+          '</p><p class="cb">' +
+          T.chokeBody +
+          "</p></div>";
       }
 
-      const shareText = encodeURIComponent("나는 AI 활용 " + s + "단계. 당신은?");
-      const shareUrl = encodeURIComponent(location.href);
+      // 공유 URL은 항상 진단 앵커를 달아, 받은 사람이 바로 설문에 착지하게.
+      const shareUrl = location.origin + location.pathname + "#diagnostic";
+      const shareText = T.shareText(s);
+      const xHref =
+        "https://twitter.com/intent/tweet?text=" +
+        encodeURIComponent(shareText) +
+        "&url=" +
+        encodeURIComponent(shareUrl);
+      const liHref =
+        "https://www.linkedin.com/sharing/share-offsite/?url=" +
+        encodeURIComponent(shareUrl);
 
-      resultEl!.innerHTML =
+      const canNativeShare = typeof navigator !== "undefined" && !!navigator.share;
+      const nativeBtn = canNativeShare
+        ? '<button id="nshare" class="icon-btn">' + T.shareNative + "</button>"
+        : "";
+
+      resultEl.innerHTML =
         '<div class="result-card ' +
         st.cls +
-        '">' +
-        '<p class="pos">당신의 현재 위치</p>' +
-        '<p class="stage">' +
+        '"><p class="pos">' +
+        T.pos +
+        '</p><p class="stage">' +
         st.name +
-        "</p>" +
-        '<p class="desc">' +
+        '</p><p class="desc">' +
         st.desc +
         "</p></div>" +
         chokeHtml +
         '<div class="actions">' +
-        '<button id="retry">↻ 다시 진단</button>' +
+        '<button id="retry">' +
+        T.retry +
+        "</button>" +
         '<a href="' +
-        (stageLinks[s] || "#") +
+        (T.stageLinks[s] || "#") +
         '"><button>' +
-        s +
-        "단계 더 알아보기</button></a>" +
-        '<a href="https://twitter.com/intent/tweet?text=' +
-        shareText +
-        "&url=" +
-        shareUrl +
-        '" target="_blank" rel="noopener"><button>결과 공유</button></a>' +
+        T.learnMore(s) +
+        "</button></a>" +
+        '<p class="share-label">' +
+        T.shareHint +
+        "</p>" +
+        '<button id="copy" class="icon-btn">' +
+        T.copy +
+        "</button>" +
+        '<a href="' +
+        xHref +
+        '" target="_blank" rel="noopener"><button class="icon-btn">X</button></a>' +
+        '<a href="' +
+        liHref +
+        '" target="_blank" rel="noopener"><button class="icon-btn">LinkedIn</button></a>' +
+        nativeBtn +
         "</div>";
 
       const retryBtn = document.getElementById("retry") as HTMLButtonElement;
-      retryBtn!.addEventListener("click", function () {
+      retryBtn.addEventListener("click", function () {
         answers.length = 0;
         current = 0;
-        resultEl!.classList.add("hidden");
-        resultEl!.innerHTML = "";
-        quiz!.classList.remove("hidden");
+        resultEl.classList.add("hidden");
+        resultEl.innerHTML = "";
+        quiz.classList.remove("hidden");
         render();
       });
+
+      const copyBtn = document.getElementById("copy") as HTMLButtonElement | null;
+      if (copyBtn) {
+        copyBtn.addEventListener("click", function () {
+          const flash = function (label: string) {
+            copyBtn.textContent = label;
+            window.setTimeout(function () {
+              copyBtn.textContent = T.copy;
+            }, 1500);
+          };
+          // 실제 복사가 됐을 때만 "복사됨"을 표시한다 — 권한 거부/비보안
+          // 컨텍스트에서 거짓 성공이 뜨지 않도록. legacy execCommand 폴백 후
+          // 그래도 실패하면 실패 상태를 표시.
+          const legacyCopy = function (): boolean {
+            const ta = document.createElement("textarea");
+            ta.value = shareUrl;
+            ta.setAttribute("readonly", "");
+            ta.style.position = "fixed";
+            ta.style.top = "-9999px";
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+              return document.execCommand("copy");
+            } catch {
+              return false;
+            } finally {
+              // execCommand가 throw해도 숨은 textarea가 DOM에 남지 않도록
+              document.body.removeChild(ta);
+            }
+          };
+          const onFail = function () {
+            if (legacyCopy()) flash(T.copied);
+            else flash(T.copyFail);
+          };
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(shareUrl).then(function () {
+              flash(T.copied);
+            }).catch(onFail);
+          } else {
+            onFail();
+          }
+        });
+      }
+
+      const nshare = document.getElementById("nshare") as HTMLButtonElement | null;
+      if (nshare) {
+        nshare.addEventListener("click", function () {
+          if (navigator.share) {
+            navigator
+              .share({ title: shareText, text: shareText, url: shareUrl })
+              .catch(function () {});
+          }
+        });
+      }
     }
   })();
 </script>
