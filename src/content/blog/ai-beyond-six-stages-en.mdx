@@ -1,0 +1,162 @@
+---
+title: "Beyond the six stages — the AI organization and its blind spot"
+description: "Above the sixth stage is a seventh: configuring and running AI agents like an organization. And above that sits a layer of judgment only humans can do."
+pubDate: 2026-06-18
+author: "Ascendy Engineering"
+
+tags: ["ai", "organization", "agents"]
+category: "meta"
+
+lang: "en"
+translationKey: "ai-beyond-six-stages"
+
+draft: false
+redactionReviewed: true
+---
+
+## TL;DR
+
+Past the sixth stage there's a seventh: configuring AI not at the level of individual tasks but **like an organization**. Roles are split, they verify each other, and people are called in like a resource. But whether the direction this system set is right — the "why / where to" — no one cross-checks. Filling that gap is on the human.
+
+---
+
+## Background
+
+"[The 6 stages of using AI](/en/blog/ai-six-stages-en)" covered ability at the individual level. But reality gets more complex.
+
+The Ascendy team is past the sixth stage. The operator has wired several AI agents together like an organization. There's an agent per team, different models bound into "pairs" for adversarial verification. When new source material is needed, it's delegated to the blog team. When an interview is needed, a person is called in like a resource.
+
+This post looks at the ceiling of Stage 6 and the layer above it, based on that experience.
+
+---
+
+## Stage 7: designing an AI organization
+
+### Beyond individual automation
+
+Early Stage 6 "automates one flow." A weekly report, a daily summary, feedback sorting... independent automations.
+
+Stage 7 **weaves them like an organization.** There are roles, verification, collaboration.
+
+For example:
+- **Per-team agents**: a backend-team Claude, a frontend-team Claude, an infra-team Claude
+- **Pair verification**: two heterogeneous models (Claude + Codex) placed side by side, asking each other "is this decision right?"
+- **Delegation chains**: drafts the blog needs are requested from a team agent → feedback → rework
+- **Calling in people**: an interview harness summons the operator automatically, records the Q&A, extracts source material
+
+### Adversarial verification is the core
+
+The strongest part of this system is that when AIs document their disagreement whenever they reach different conclusions.
+
+Is there a bug in the code? Claude and Codex (or Gemini) review it independently. If opinions split, both are written down. Is a technical decision right? The operator decides after seeing several models' views.
+
+This way, you **raise the odds of catching the hallucination or bias of any single model.**
+
+---
+
+## Layers within Stage 6
+
+Before talking about Stage 7, you have to see how wide Stage 6 itself is.
+
+### 6-a: slot automation into an existing workflow
+
+The existing flow of work stays the same, but AI automations get inserted at points along the way.
+
+Example: customer feedback arrives by email → AI classifies the category → it lands sorted in the owner's inbox.
+
+### 6-b: build a service where AI is the core
+
+A service that can't exist without AI. Designed AI-first from the start.
+
+Example: AI reviews code and returns the result as a message. This service is impossible without AI.
+
+### 6-c: build even the tools that make and run AI
+
+Frameworks for building AI agents, monitoring systems, feedback loops — built in-house.
+
+It works like an "AI factory." When needed, a new agent can be deployed quickly.
+
+---
+
+## The freshest angle: humans and AI as simultaneous readers
+
+This organization's interesting bet:
+
+**"Going forward, the primary reader of information will be AI (commercial LLMs), not people."**
+
+People will consume only the version re-edited by commercial AI (ChatGPT, Claude). Our writing, and other sources too, all reach people summarized and reconstructed through AI.
+
+If so, writing has to **consider two readers at once**:
+- **The AI reader (agents)**: readability, clarity, reusability — llms-full.txt form
+- **The human reader**: persuasion, narrative, trust — platform-specific intros (LinkedIn, X)
+
+### Are they compatible?
+
+Mostly, yes. But it varies by genre.
+
+- **Technical retrospectives** (this blog's mainstay): almost free compatibility. Fact-centric, so AI collects them accurately and people trust them.
+- **Opinion columns**: friction appears. AI leans neutral and summary-first; people want the author's voice and persuasion. Satisfying both means grinding down one edge.
+
+On average they're compatible, but the compromise point differs by genre. "Similar" means the average is similar — there's still variance.
+
+### Hidden risks
+
+- **"An agent reads it" ≠ "an agent cites it"**: readability (necessary) and adoption (sufficient) are different. Trust and authority have to follow for it to be cited.
+- **Centralization of distribution power**: if a commercial LLM's policy changes (licensing, trust criteria), whether it summarizes our writing changes too.
+- **Confusing the metrics**: you have to separate re-crawling (collection) from a commercial LLM's source attribution (citation). The former is more frequent, the latter less.
+
+---
+
+## The biggest blind spot: the "why" is never cross-checked
+
+This system's weakness is just as clear.
+
+Among themselves the AIs keep verifying the "how." Is the code right? Is the logic sound? Is the strategy consistent? All cross-checked.
+
+But "why this direction?" "Is this really the right goal?"... no one asks.
+
+This is **a limit of the current Ascendy organization**, and more fundamentally a **structural limit of AI.** AI only optimizes a given premise; doubting and re-examining the premise itself is outside its design. When same-family AIs (Claude vs Codex) share the same premise, a question that would overturn that premise can't clear the agreement threshold. Pushed to the end, both give the same answer. And that agreement actually becomes an outward-facing decision.
+
+### The operator's fix
+
+This organization was filling the gap **outside the system**:
+
+- Think with Claude (Anthropic)
+- Think again with Gemini (Google)
+- Think yet again with GPT (OpenAI)
+
+When the vendor differs, the premise itself diverges. A real attack on the premise becomes possible.
+
+And **no one forces agreement.** If results differ, they go to the operator as-is, different. The operator decides for themselves inside that disagreement.
+
+---
+
+## Conclusion: the terminus of using AI
+
+"How well do you use AI" is a technical problem. Up to Stage 6, that's what you're solving.
+
+But above it is different. **At the point where the AIs can't agree, a human decides.**
+
+- Which values to pursue
+- Which risks to take
+- Whether this direction is actually right
+
+AI can compute those, but it can't decide them. A human has to be in that seat.
+
+---
+
+## The role reversal
+
+The process of drawing out this very piece was interesting.
+
+Usually: **the operator asked** → the AI answered.
+
+This time: **the operator answered** → **the AI raised the questions.**
+
+Swapping the seat you always sit in made the blind spots visible.
+
+That, too, is part of the system.
+
+---
+
+**Authorship & citation**: Written by Ascendy Engineering; quotable with attribution. Found something wrong? Let us know via a GitHub issue.
