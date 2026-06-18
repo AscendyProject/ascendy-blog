@@ -112,8 +112,22 @@
 </style>
 
 <script>
+  interface Question {
+    q: string;
+    opts: Array<{ t: string; s: number }>;
+  }
+
+  interface Stage {
+    name: string;
+    cls: string;
+    desc: string;
+    choke?: boolean;
+  }
+
+  type StageKey = 1 | 2 | 3 | 4 | 5 | 6;
+
   (function () {
-    const questions = [
+    const questions: Question[] = [
       {
         q: "지난 한 주를 떠올려보면, AI를 어떻게 썼나요?",
         opts: [
@@ -170,7 +184,7 @@
       },
     ];
 
-    const stages = {
+    const stages: Record<StageKey, Stage> = {
       1: {
         name: "1단계 · 안 쓴다",
         cls: "s1",
@@ -204,8 +218,7 @@
       },
     };
 
-    // 단계별 앵커 링크 (같은 글 내 섹션으로 가도록)
-    const stageLinks = {
+    const stageLinks: Record<StageKey, string> = {
       1: "#단계-1-안-쓴다",
       2: "#단계-2-묻는다",
       3: "#단계-3-시킨다",
@@ -215,27 +228,28 @@
     };
 
     let current = 0;
-    const answers = [];
-    const intro = document.getElementById("intro");
-    const quiz = document.getElementById("quiz");
-    const resultEl = document.getElementById("result");
-    const qText = document.getElementById("q-text");
-    const optionsEl = document.getElementById("options");
-    const bar = document.getElementById("bar");
-    const counter = document.getElementById("counter");
+    const answers: number[] = [];
+    const intro = document.getElementById("intro") as HTMLElement;
+    const quiz = document.getElementById("quiz") as HTMLElement;
+    const resultEl = document.getElementById("result") as HTMLElement;
+    const qText = document.getElementById("q-text") as HTMLElement;
+    const optionsEl = document.getElementById("options") as HTMLElement;
+    const bar = document.getElementById("bar") as HTMLElement;
+    const counter = document.getElementById("counter") as HTMLElement;
+    const startBtn = document.getElementById("start-btn") as HTMLButtonElement;
 
-    document.getElementById("start-btn").addEventListener("click", function () {
-      intro.classList.add("hidden");
-      quiz.classList.remove("hidden");
+    startBtn!.addEventListener("click", function () {
+      intro!.classList.add("hidden");
+      quiz!.classList.remove("hidden");
       render();
     });
 
     function render() {
       const item = questions[current];
-      qText.textContent = item.q;
-      counter.textContent = current + 1 + "/" + questions.length;
-      bar.style.width = (((current + 1) / questions.length) * 100) + "%";
-      optionsEl.innerHTML = "";
+      qText!.textContent = item.q;
+      counter!.textContent = (current + 1) + "/" + questions.length;
+      bar!.style.width = (((current + 1) / questions.length) * 100) + "%";
+      optionsEl!.innerHTML = "";
       item.opts.forEach(function (o) {
         const b = document.createElement("button");
         b.textContent = o.t;
@@ -248,18 +262,18 @@
             finish();
           }
         });
-        optionsEl.appendChild(b);
+        optionsEl!.appendChild(b);
       });
     }
 
     function finish() {
-      quiz.classList.add("hidden");
+      quiz!.classList.add("hidden");
       const avg = answers.reduce(function (a, b) {
         return a + b;
       }, 0) / answers.length;
-      const s = Math.max(1, Math.min(6, Math.round(avg)));
+      const s = Math.max(1, Math.min(6, Math.round(avg))) as StageKey;
       const st = stages[s];
-      resultEl.classList.remove("hidden");
+      resultEl!.classList.remove("hidden");
 
       let chokeHtml = "";
       if (st.choke) {
@@ -272,7 +286,7 @@
       const shareText = encodeURIComponent("나는 AI 활용 " + s + "단계. 당신은?");
       const shareUrl = encodeURIComponent(location.href);
 
-      resultEl.innerHTML =
+      resultEl!.innerHTML =
         '<div class="result-card ' +
         st.cls +
         '">' +
@@ -298,12 +312,13 @@
         '" target="_blank" rel="noopener"><button>결과 공유</button></a>' +
         "</div>";
 
-      document.getElementById("retry").addEventListener("click", function () {
+      const retryBtn = document.getElementById("retry") as HTMLButtonElement;
+      retryBtn!.addEventListener("click", function () {
         answers.length = 0;
         current = 0;
-        resultEl.classList.add("hidden");
-        resultEl.innerHTML = "";
-        quiz.classList.remove("hidden");
+        resultEl!.classList.add("hidden");
+        resultEl!.innerHTML = "";
+        quiz!.classList.remove("hidden");
         render();
       });
     }
