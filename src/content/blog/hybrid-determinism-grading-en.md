@@ -18,7 +18,7 @@ redactionReviewed: true
 - Ask an LLM to "score this" and **the same input yields different numbers.** `temperature=0` doesn't guarantee otherwise.
 - **portfolio** (a grounded-portfolio harness, Apache-2.0, v0.2.0) solves this in `/fit` and `/rating` with a **2-tier hybrid** — *deterministic code* locks the grade and score band first, and the *LLM* produces a fine score only **inside** that band.
 - The key insight: **the reproducibility guarantee is the band (deterministically locked), not temperature.** Even when the model wobbles, it *can't exaggerate past its tier.*
-- This isn't a portfolio-only trick — it's a **general solution to "LLMs produce inconsistent scores"**, transferable to any evaluation system.
+- This isn't a portfolio-only trick — it's a **reusable pattern for "LLMs produce inconsistent scores"**, transferable to other evaluation systems.
 
 > **Source note.** Distilled from the portfolio team's intake (command series ④/fit and ⑤/rating). It's all public OSS (`AscendyProject/portfolio`), so the cutoffs, bands, and scores below were verified against current `main` on 2026-06-19. The bigger picture of the tool is in [the portfolio public-launch post](/en/blog/portfolio-public-launch-en/), and the grounding principle it stands on is in [the intro post](/en/blog/portfolio-harness-launch-en/).
 
@@ -68,7 +68,7 @@ Deterministic (rating/profile.py) — each metric cites the evidence ref it's co
   volume (merged PRs):       High 20+ →2pt · Steady 5–19 →1 · Low 0–4 →0
   breadth (distinct files):  Wide 30+ →2 · Moderate 10–29 →1 · Narrow 0–9 →0
   stack diversity (langs):   Polyglot 4+ →2 · Versatile 2–3 →1 · Focused 0–1 →0
-  points total → grade:      6→S  4→A  2→B  1→C  0→D   (same score band)
+  points total → grade (≥ threshold):  ≥6→S  ≥4→A  ≥2→B  ≥1→C  0→D   (same score band)
 
 Agent (rating/grade.py):
   temperature=0 grader, clamped to band
@@ -82,7 +82,7 @@ Exactly the same skeleton as `/fit` — determinism locks the grade, the agent w
 
 The thing I most want to say about `/rating` is what it **refuses to do.**
 
-`/rating` does not make population comparisons like "you're in the **top N%** of all developers." To say that you'd need *data comparing you to others*, and there isn't any. **Saying what you don't have is just making it up.** So the grade is strictly about *your own evidence*, not a ranking against others, and the renderer blocks percentile / population / ranking vocabulary in the output — not loosely, but **enforced by a test** (`test_no_percentile_lexicon_in_rendered_output`).
+`/rating` does not make population comparisons like "you're in the **top N%** of all developers." To say that you'd need *data comparing you to others*, and there isn't any. **Saying what you don't have is just making it up.** So the grade is strictly about *your own evidence*, not a ranking against others — with no population data to compare against, a percentile *isn't even computed.* The scorecard states in its body that it's "not a position in any population," and the deterministic renderer's own output carries no percentile / rank vocabulary. A regression test (`test_no_percentile_lexicon_in_rendered_output`) keeps the default rendered output free of it. (It doesn't post-scrub the model's reasoning text, though — what makes percentile *impossible* isn't a word filter, it's the structural absence of population data.)
 
 That's the tool's tone — rather than fabricate a basis for an impressive-sounding number, **promise less and keep it exactly.**
 

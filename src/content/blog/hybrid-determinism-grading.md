@@ -18,7 +18,7 @@ redactionReviewed: true
 - LLM에게 "이걸 점수로 매겨줘"라고 시키면 **같은 입력에도 점수가 흔들린다.** `temperature=0`도 그걸 보장하지 못한다.
 - **portfolio**(grounded 포트폴리오 하네스, Apache-2.0, v0.2.0)의 `/fit`·`/rating`은 이걸 **2-tier 하이브리드**로 푼다 — *결정론 코드*가 등급과 점수 밴드를 먼저 잠그고, *LLM*은 그 밴드 **안에서만** 미세 점수를 낸다.
 - 핵심 통찰 한 줄: **재현성의 보장은 밴드(결정론적으로 잠김)이지 temperature가 아니다.** 모델이 흔들려도 *티어를 넘어 과장할 수 없다.*
-- 이건 portfolio만의 트릭이 아니라 **"LLM이 일관성 없는 점수를 낸다"는 문제의 일반해**다 — 다른 평가 시스템에도 그대로 옮길 수 있다.
+- 이건 portfolio만의 트릭이 아니라 **"LLM이 일관성 없는 점수를 낸다"는 문제에 대한 재사용 가능한 패턴**이다 — 다른 평가 시스템에도 그대로 옮길 수 있다.
 
 > **소스 노트.** portfolio 팀 글감(커맨드 시리즈 ④/fit·⑤/rating)을 합쳐 정제한 글이다. 전부 public OSS(`AscendyProject/portfolio`)라 아래 컷오프·밴드·점수 수치는 2026-06-19 현재 main 코드에서 직접 확인했다. 같은 도구의 큰 그림은 [portfolio 퍼블릭 런칭 글](/blog/portfolio-public-launch/)에, 도구의 토대가 되는 grounding 원칙은 [그 소개 글](/blog/portfolio-harness-launch/)에 있다.
 
@@ -68,7 +68,7 @@ redactionReviewed: true
   volume(머지 PR 수):      High 20+ →2pt · Steady 5–19 →1 · Low 0–4 →0
   breadth(distinct 파일):  Wide 30+ →2 · Moderate 10–29 →1 · Narrow 0–9 →0
   stack diversity(언어 수): Polyglot 4+ →2 · Versatile 2–3 →1 · Focused 0–1 →0
-  points 합 → 등급:        6→S  4→A  2→B  1→C  0→D   (같은 점수 밴드)
+  points 합 → 등급(하한 임계값):  ≥6→S  ≥4→A  ≥2→B  ≥1→C  0→D   (같은 점수 밴드)
 
 에이전트 (rating/grade.py):
   temperature=0 grader, 밴드 clamp
@@ -82,7 +82,7 @@ redactionReviewed: true
 
 `/rating`에서 가장 하고 싶은 말은 이게 **하지 않기로 한 것**이다.
 
-`/rating`은 "당신은 전체 개발자 중 **상위 N%**입니다" 같은 모집단 비교를 하지 않는다. 그렇게 말하려면 *남들과 비교한 데이터*가 있어야 하는데, 그게 없다. **없는 걸 말하면 그게 곧 지어내기다.** 그래서 등급은 어디까지나 *내 증거 자체*에 대한 평가지 남과의 순위가 아니고, 렌더러는 percentile·population·ranking 어휘를 출력에서 막는다 — 그냥 막는 게 아니라 **테스트(`test_no_percentile_lexicon_in_rendered_output`)로 강제**한다.
+`/rating`은 "당신은 전체 개발자 중 **상위 N%**입니다" 같은 모집단 비교를 하지 않는다. 그렇게 말하려면 *남들과 비교한 데이터*가 있어야 하는데, 그게 없다. **없는 걸 말하면 그게 곧 지어내기다.** 그래서 등급은 어디까지나 *내 증거 자체*에 대한 평가지 남과의 순위가 아니다 — 애초에 비교할 모집단 데이터가 없으니 percentile은 *계산되지조차 않는다.* 스코어카드는 본문에 "이건 모집단 내 위치가 아니다"라고 명시하고, 결정론 렌더러 자신의 출력엔 percentile·rank 같은 어휘가 들어가지 않는다. 회귀 테스트(`test_no_percentile_lexicon_in_rendered_output`)가 기본 렌더 출력에 그 어휘가 없음을 지킨다. (다만 모델이 쓴 reasoning 텍스트 자체를 사후 스크럽하진 않는다 — percentile을 *못 하게* 만드는 건 어휘 필터가 아니라 "모집단 데이터가 없다"는 구조다.)
 
 이게 이 도구의 톤이다 — 멋지게 들리는 숫자를 위해 근거를 지어내느니, **덜 약속하고 정확히 지킨다.**
 

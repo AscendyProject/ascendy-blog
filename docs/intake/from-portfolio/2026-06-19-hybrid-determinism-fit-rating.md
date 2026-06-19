@@ -1,7 +1,7 @@
 ---
 team: portfolio
 date: 2026-06-19
-topic: "하이브리드 결정론 심화 — /fit·/rating: 결정론이 등급/점수 밴드를 잠그고 LLM은 밴드 안에서만 판단. 재현성 보장은 밴드이지 temperature가 아니다. /rating은 percentile 거부(테스트 강제). portfolio 밖에서도 재사용 가능한 'LLM 일관성 문제 일반해'."
+topic: "하이브리드 결정론 심화 — /fit·/rating: 결정론이 등급/점수 밴드를 잠그고 LLM은 밴드 안에서만 판단. 재현성 보장은 밴드이지 temperature가 아니다. /rating은 percentile 거부(구조적 — 모집단 데이터 없음). portfolio 밖에서도 재사용 가능한 패턴."
 suggestedCategory: "meta"
 suggestedTags: ["grounding", "ai", "determinism", "evaluation", "developer-tools"]
 source: "portfolio 팀 5부작 글감 ④/fit·⑤/rating(docs/requests/from-portfolio/)의 합본 정제본. 캐논은 public repo gh로 직접 검증."
@@ -11,8 +11,8 @@ redactionReviewed: true
 > portfolio 팀 raw 글감(④ cmd-fit-deterministic-grade, ⑤ cmd-rating-bounded-agent)의 합본 정제본.
 > **Class A/B 없음** — 전부 public OSS(`AscendyProject/portfolio`, Apache-2.0). 아래 수치·동작은
 > 2026-06-19 현재 main 코드에서 gh로 직접 확인(글감 작성 시 v0.0.1 → **현재 v0.2.0**, /fit·/rating
-> 핵심 메커니즘은 동일하게 유지). **의도적 제외:** `/rating`의 percentile "미래 방향(데이터 수집)"은
-> 미공개 전략이라 본문·이 정제본에 쓰지 않음 — **출하된 거부 동작만** 다룬다.
+> 핵심 메커니즘은 동일하게 유지). **편집 지침:** 본문은 `/rating`의 *출하된* percentile 거부만
+> 다루고, 출하되지 않은 방향성은 언급하지 않는다(이 정제본도 public이므로 미출하 전략을 적지 않는다).
 
 ## 검증된 캐논 (gh, 2026-06-19, main)
 
@@ -26,13 +26,13 @@ redactionReviewed: true
   - volume(머지 PR 수): High 20+ →2pt, Steady 5–19 →1pt, Low 0–4 →0pt
   - breadth(distinct 변경 파일): Wide 30+ →2, Moderate 10–29 →1, Narrow 0–9 →0
   - stack diversity(distinct 언어, 고정 확장자→언어 표): Polyglot 4+ →2, Versatile 2–3 →1, Focused 0–1 →0
-  - points 합 → 등급: 6→S, 4→A, 2→B, 1→C, 0→D. 같은 GRADE→band.
+  - points 합 → 등급(하한 임계값 순회): ≥6→S, ≥4→A(4–5), ≥2→B(2–3), ≥1→C, 0→D. 같은 GRADE→band.
 - **`/rating` (`rating/grade.py`):** temperature=0 grader, 밴드 clamp, 근거 bullet의 `evidence_refs ⊄ portfolio.evidence`면 drop, malformed 응답은 밴드 midpoint + safe reasoning(크래시·날조 ref 없음).
-- **percentile 거부 (`rating/render.py` + `tests/test_rating.py`):** 렌더 출력에 percentile/population/external-baseline 어휘 금지. `test_no_percentile_lexicon_in_rendered_output`가 "top ", "%ile", "percentile", "rank" 부재를 강제, 명시적 "not … percentile" 문구도 단언. → "테스트로 강제" 검증됨.
+- **percentile 거부 (`rating/render.py` + `tests/test_rating.py`):** 거부의 본질은 *구조* — 모집단 데이터가 없으니 percentile이 계산되지 않는다. 결정론 렌더러 자신의 출력(템플릿 + "not a position in any population" 면책 문구)엔 percentile 어휘가 없고, `test_no_percentile_lexicon_in_rendered_output`가 기본 fake-grader 렌더 출력에 "top "/"%ile"/"percentile"/"rank" 등 부재를 확인한다(회귀 테스트). **단, 모델이 쓴 reasoning 텍스트를 사후 스크럽하진 않는다** — render는 `grade_result.reasoning` bullet text를 필터 없이 append. 따라서 "렌더러가 어휘를 막는다/테스트로 강제"라고 쓰면 과장. "구조적으로 percentile이 불가 + 렌더러 자신은 안 내보냄 + 회귀 테스트가 기본 출력 확인"으로 한정할 것.
 
 ## 앵글 (재사용 가능한 패턴)
 
-- 한 줄 펀치: **"결정론이 범위를 잠그고, LLM은 그 안에서만 판단한다."** LLM 일관성 문제의 일반해 — portfolio 밖에서도 재사용 가능.
+- 한 줄 펀치: **"결정론이 범위를 잠그고, LLM은 그 안에서만 판단한다."** LLM 일관성 문제에 대한 재사용 가능한 패턴 — portfolio 밖에서도 적용 가능(보편해 증명은 아님, N=2 인스턴스).
 - 핵심 통찰: **재현성의 보장은 밴드(결정론적으로 잠김)이지 temperature가 아니다.** temperature=0은 seam에서 best-effort로 전달될 뿐. 모델이 흔들려도 *티어를 넘어 과장할 수 없다.*
 - /fit·/rating은 같은 패턴의 두 인스턴스 — 차이는 등급의 *입력*(JD coverage vs 자기 증거 메트릭).
 - 톤 캡스톤: /rating이 "상위 X%"를 **안 하는** 것 — 모집단 데이터가 없어 말하면 곧 지어내기. "덜 약속하고 정확히 지킨다."
@@ -44,6 +44,6 @@ redactionReviewed: true
 
 ## 외부에 공유하면 안 되는 부분 (redaction)
 
-- `/rating`의 percentile *미래 방향*(데이터 수집 등) — 미공개 전략, 쓰지 않음. **출하된 거부만**.
+- `/rating`의 *출하되지 않은* 방향성 일체 — 언급하지 않는다(이 정제본도 public). 본문은 **출하된 거부 동작만**.
 - 데모 캡처 쓰면 실제 JD/회사명·로컬 경로·실명 핸들 가릴 것(글감엔 없음).
 - 시크릿·사내 호스트·경로 없음(전부 public OSS 캐논).
