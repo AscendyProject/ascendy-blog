@@ -78,11 +78,13 @@ Agent (rating/grade.py):
 
 Exactly the same skeleton as `/fit` — determinism locks the grade, the agent works only within the band. The point is that **the pattern is reusable.**
 
-## What it won't do — `/rating` refuses "top X%"
+## What it's designed not to do — `/rating` and "top X%"
 
-The thing I most want to say about `/rating` is what it **refuses to do.**
+The thing I most want to say about `/rating` is what it's **designed not to do.**
 
-`/rating` does not make population comparisons like "you're in the **top N%** of all developers." To say that you'd need *data comparing you to others*, and there isn't any. **Saying what you don't have is just making it up.** So the grade is strictly about *your own evidence*, not a ranking against others — with no population data to compare against, a percentile *isn't even computed.* The scorecard states in its body that it's "not a position in any population," and the deterministic renderer's own output carries no percentile / rank vocabulary. A regression test (`test_no_percentile_lexicon_in_rendered_output`) keeps the default rendered output free of it. (It doesn't post-scrub the model's reasoning text, though — what makes percentile *impossible* isn't a word filter, it's the structural absence of population data.)
+By design, `/rating` doesn't make population comparisons like "you're in the **top N%** of all developers." To say that you'd need *data comparing you to others*, and there isn't any. **Saying what you don't have is just making it up.** So the grade is strictly about *your own evidence*, not a ranking against others — with no population data to compare against, a *legitimate* percentile isn't even computed, the prompt forbids that phrasing, and the deterministic renderer's own output (template + a "not a position in any population" disclaimer) carries no percentile / rank vocabulary. A regression test (`test_no_percentile_lexicon_in_rendered_output`) keeps the default rendered output free of it.
+
+To be honest about the limit, though — **the model's reasoning text isn't post-validated.** The renderer prints that text as-is, so if the model writes an unfounded "top 1%," it can land in the scorecard. The absence of population data only makes a *legitimate* percentile impossible to compute; it isn't a hard guarantee against the model's output. "It doesn't do this" is the intent of the design, prompt, and deterministic path — not a guarantee sealed at the output level.
 
 That's the tool's tone — rather than fabricate a basis for an impressive-sounding number, **promise less and keep it exactly.**
 

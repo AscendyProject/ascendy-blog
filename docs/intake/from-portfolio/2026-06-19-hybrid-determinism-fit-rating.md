@@ -28,7 +28,7 @@ redactionReviewed: true
   - stack diversity(distinct 언어, 고정 확장자→언어 표): Polyglot 4+ →2, Versatile 2–3 →1, Focused 0–1 →0
   - points 합 → 등급(하한 임계값 순회): ≥6→S, ≥4→A(4–5), ≥2→B(2–3), ≥1→C, 0→D. 같은 GRADE→band.
 - **`/rating` (`rating/grade.py`):** temperature=0 grader, 밴드 clamp, 근거 bullet의 `evidence_refs ⊄ portfolio.evidence`면 drop, malformed 응답은 밴드 midpoint + safe reasoning(크래시·날조 ref 없음).
-- **percentile 거부 (`rating/render.py` + `tests/test_rating.py`):** 거부의 본질은 *구조* — 모집단 데이터가 없으니 percentile이 계산되지 않는다. 결정론 렌더러 자신의 출력(템플릿 + "not a position in any population" 면책 문구)엔 percentile 어휘가 없고, `test_no_percentile_lexicon_in_rendered_output`가 기본 fake-grader 렌더 출력에 "top "/"%ile"/"percentile"/"rank" 등 부재를 확인한다(회귀 테스트). **단, 모델이 쓴 reasoning 텍스트를 사후 스크럽하진 않는다** — render는 `grade_result.reasoning` bullet text를 필터 없이 append. 따라서 "렌더러가 어휘를 막는다/테스트로 강제"라고 쓰면 과장. "구조적으로 percentile이 불가 + 렌더러 자신은 안 내보냄 + 회귀 테스트가 기본 출력 확인"으로 한정할 것.
+- **percentile 거부 (`rating/render.py` + `tests/test_rating.py`):** 설계·프롬프트 차원의 거부. 모집단 데이터가 없으니 *정당한* percentile은 계산되지 않고, 프롬프트가 그 표현을 금지하며, 결정론 렌더러 자신의 출력(템플릿 + "not a position in any population" 면책 문구)엔 percentile 어휘가 없다. `test_no_percentile_lexicon_in_rendered_output`가 기본 fake-grader 렌더 출력에 "top "/"%ile"/"percentile"/"rank" 등 부재를 확인한다(회귀 테스트). **단, 모델이 쓴 reasoning 텍스트는 사후 검증하지 않는다** — render는 `grade_result.reasoning` bullet text를 필터 없이 append하므로, 모델이 근거 없이 "top 1%"를 쓰면 출력에 남을 수 있다. 따라서 "렌더러가 어휘를 막는다/테스트로 강제/구조적으로 불가능"이라고 쓰면 과장. **한정 표현:** "정당한 percentile 계산 불가(모집단 데이터 없음) + 프롬프트 금지 + 렌더러 자신은 안 내보냄 + 회귀 테스트가 기본 출력 확인. 단 모델 reasoning 사후 검증 없어 출력 부재는 보장 못 함."
 
 ## 앵글 (재사용 가능한 패턴)
 
