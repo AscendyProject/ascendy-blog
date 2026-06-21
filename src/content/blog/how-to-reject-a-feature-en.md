@@ -49,17 +49,9 @@ Small gain, large cost. So they rejected it. **Rejecting is a legitimate enginee
 
 The detail that sank step 5 is small and general. redteam has a **guard against self-review collapse** — it fail-closed refuses to let a model from the same provider review its own code (an adversarial pair must stay cross-provider).
 
-The problem was that the guard compared the two sides *in different formats.* The worker that wrote the code was identified by **provider family** (`"claude"`, `"codex"`), while the reviewer was identified by **raw adapter key.** So the moment you add a new key like `"claude-subagent"`:
+The problem was that the guard compared the two sides *in different formats.* One side (the worker that wrote the code) was identified by a **normalized provider family**, while the other (the reviewer) was identified by a **raw adapter identifier.** With a format-mismatched comparison, introducing a new adapter could let that identity check pass *as if it were cross-provider* — letting a **same-provider self-review slip past the guard.** Attaching the sub-agent adapter would have opened exactly this gap. It was caught as a **HIGH in plan review**, and pinned into the decision record as a *hard precondition*: **normalize both sides to the same canonical form (family) before comparing.**
 
-```text
-worker family = "claude"
-reviewer key  = "claude-subagent"
-"claude-subagent" != "claude"   → passes as if it were cross-provider
-```
-
-That is, **Claude reviewing Claude — a self-review — slips past the guard.** Attaching the sub-agent adapter would have opened exactly this hole. It was caught as a **HIGH in plan review**, and pinned into the decision record as a *hard precondition*: any sub-agent result must be **key→family normalized** before it can pass the automatic review gate.
-
-Generalized: **in an equality/identity check, comparing a normalized form (family) on one side against a raw value (key) on the other means one added value defeats the check.** Normalize *both* sides to the same canonical form *before* comparing. It applies everywhere you compare identifiers — auth, permissions, dedup, self-review guards.
+Generalized: **in an equality/identity check, comparing a normalized form on one side against a raw value on the other means a single input exploiting that format gap can defeat the check.** Normalize *both* sides to the same canonical form *before* comparing. It applies everywhere you compare identifiers — auth, permissions, dedup, self-review guards.
 
 ## Honestly — there was no fierce debate this time
 
