@@ -63,7 +63,7 @@ So the crux is that a **different model — blind to the author's reasoning and 
 
 It's right not to overclaim. This is **one project's one cycle**, not a controlled study. The claim is "this caught real, expensive-to-find defects here," not "cross-provider review is statistically proven superior." Stating the sample size plainly is on-tone for this post.
 
-And to keep roadmap separate from shipped — the work to make the reviewer more pluggable (a sub-agent reviewer adapter, rejecting terminal-multiplexer screen-scraping) **isn't built yet.** What landed in 0.3 is the **fallback-ladder step** of it (issue #37). The rest is roadmap, not "it exists."
+And to keep shipped separate from not — what landed in 0.3 is the reviewer **fallback-ladder step** (issue #37 step 4). The other two branches of the same #37 (a sub-agent reviewer adapter, a terminal-multiplexer screen-scraping transport) were then **rejected by design** (decision merged in PR #68; #37 and #67 both CLOSED). So it's not "still roadmap" — it's **"decided not to build."** The post about that rejection itself is [How to reject a feature](/en/blog/how-to-reject-a-feature-en/).
 
 ## Takeaways
 
