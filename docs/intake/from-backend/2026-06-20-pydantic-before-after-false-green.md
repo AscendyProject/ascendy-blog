@@ -1,7 +1,7 @@
 ---
 team: backend
 date: 2026-06-20
-topic: "테스트는 초록인데 validator는 프로덕션에서 한 번도 안 돌았다 — Pydantic v2 mode='before' vs 'after'는 순서가 아니라 받는 값의 '타입'이 다르다. 그리고 직렬화 경계를 넘는 로직은 테스트도 그 경계를 넘겨야 한다(false-green)."
+topic: "테스트는 초록인데 validator는 프로덕션에서 아무 일도 안 했다(호출은 됨, 정규화 분기만 no-op) — Pydantic v2 mode='before' vs 'after'는 실행 순서이고 그 순서가 받는 값의 '타입'을 결정한다. 그리고 직렬화 경계를 넘는 로직은 테스트도 그 경계를 넘겨야 한다(false-green)."
 suggestedCategory: "backend"
 suggestedTags: ["pydantic", "validation", "testing", "false-green", "code-review", "timezone"]
 source: "backend 팀 인테이크(2026-06-20 pydantic validator false-green)의 정제본. 내부 식별자 일반화. Pydantic before/after 동작은 공식 문서로 확인 가능한 public 사실."
@@ -18,7 +18,7 @@ redactionReviewed: true
 타임존-naive `DateTime` 컬럼에, 클라이언트가 `Z`/`+09:00` offset을 붙여 보내는 타임스탬프 필드
 하나를 저장하는 작업. offset을 naive UTC로 정규화하려고 Pydantic `field_validator`를 붙였다.
 단위 테스트 6개를 썼고 전부 초록. 그런데 **적대적 코드 리뷰가 "이 validator는 프로덕션에서
-한 번도 실행되지 않는다"를 적발**했다.
+아무 일도 안 한다(호출은 되지만 정규화 분기가 실행 안 됨)"를 적발**했다.
 
 ## 2겹 원인
 
@@ -33,12 +33,12 @@ redactionReviewed: true
 ## fix (2줄)
 
 - validator를 **`mode="after"`**로 — 문자열→datetime 파싱이 끝난 뒤 돌아 `v`가 항상 datetime(또는 None)이라 정규화가 실제 적용.
-- 테스트를 **`model_validate_json(...)`**로 — 진짜 JSON 문자열(`"...Z"`, `"...+09:00"`, `null`)을 먹여 프로덕션 입력 모양 그대로 검증.
+- 테스트를 **`model_validate_json(...)`**로 — 진짜 JSON 문자열(`"...Z"`, `"...+09:00"`, `null`)을 먹여 직렬화 경계(문자열→객체 변환)를 재현해 검증.
 
 ## 교훈 (이게 글의 값)
 
-- **before vs after는 순서가 아니라 *받는 값의 타입*이다.** before=raw(대개 문자열/딕셔너리), after=파싱·강제가 끝난 타입. 타입 정규화(tz strip, trim, clamp)는 거의 항상 after. before에서 `isinstance`로 타입을 가정하면 조용히 no-op이 된다.
-- **직렬화 경계를 넘는 로직(검증·정규화·파싱)은 테스트도 그 경계를 넘겨야 한다.** 객체를 생성자로 직접 만들면 "검증하려던 그 변환"을 우회한 채 초록불만 받는다 — false-green. `model_validate_json()`처럼 프로덕션과 같은 진입 경로로 쳐라.
+- **before vs after는 실행 순서(내부 검증 전/후)이고, 그 순서가 *받는 값의 타입*을 결정한다.** before=raw(대개 문자열/딕셔너리), after=파싱·강제가 끝난 타입. *이미 파싱된 typed 값* 정규화(datetime tz strip 등)는 after가 맞고, raw 문자열 trim·전처리는 before가 적합할 수 있다(사건 범위로 한정). before에서 `isinstance`로 typed 값을 가정하면 조용히 no-op이 된다.
+- **직렬화 경계를 넘는 로직(검증·정규화·파싱)은 테스트도 그 경계를 넘겨야 한다.** 객체를 생성자로 직접 만들면 "검증하려던 그 변환"을 우회한 채 초록불만 받는다 — false-green. `model_validate_json()`으로 JSON 문자열 입력(직렬화 경계)을 재현해 쳐라.
 - "테스트는 초록인데 동작 안 함"의 1차 진단: **테스트가 프로덕션과 동일한 입력 타입/진입 경로를 타는지부터 의심**하라. 결정적 단서는 리뷰어가 테스트와 다르게 *JSON 문자열로* 모델을 만들어 본 것이었다.
 
 ## 코드 (일반화된 스니펫)
