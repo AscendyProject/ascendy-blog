@@ -10,10 +10,11 @@ redactionReviewed: true
 
 > 운영자 인터뷰로 추출한 1차 소스의 정제본(provenance용). 오피니언이라 **단정/추측 분리**가 핵심:
 > "AI 이력서는 부정행위 아님 / 이력서를 보지 말자"는 운영자의 *단언*, 공신력 기관 마스킹·보증 같은
-> 제도 메커니즘은 *추측*. Sakana AI 사례는 **1차 출처(sakana.ai)로 정정**: CV+cover letter 서류전형 →
-> 직군별 take-home(기술/에세이) → 면접이며, 자체 가이드는 "understanding over implementation"를 강조.
-> ("한 달"·"이력서 안 봄"은 secondary 출처/오해라 폐기.) "AI 시대 채용의 정답"은 운영자 관점.
-> **Class A/B 없음**(공개 회사·일반 관점, 사내 데이터 없음).
+> 제도 메커니즘은 *추측*. Sakana AI 사례는 **1차 출처(sakana.ai)로 정정**: 지원은 CV+cover letter 제출
+> ([sakana.ai/careers/](https://sakana.ai/careers/)), 그리고 연구직 지원 가이드
+> ([sakana.ai/unofficial-guide/](https://sakana.ai/unofficial-guide/), 저자 Druga·Darlow·Llion Jones)가
+> "Understanding over implementation"를 핵심 원칙으로 명시. (take-home 절차·"한 달"·"이력서 안 봄"은
+> 1차 출처로 재현 안 돼 폐기.) "AI 시대 채용의 정답"은 운영자 관점. **Class A/B 없음**(공개 회사·일반 관점, 사내 데이터 없음).
 
 ## 주장 (운영자 1인칭)
 
@@ -44,9 +45,11 @@ AI 시대에 사람을 뽑는 방식·기준은 완전히 바뀌어야 한다. �
 ## 사례 (web 검증) + 운영자 해석
 
 - **검증된 사실(sakana.ai 1차 출처):** Sakana AI(도쿄, 창업자 David Ha 前 Google Brain · Llion Jones —
-  Transformer 공저자)의 채용은 **CV+cover letter 서류전형 → 직군별 take-home(기술/에세이) → 면접**.
-  자체 채용 가이드가 **"understanding over implementation"**(만들기보다 *왜*를 설명하는 능력) 강조.
-  → 이력서를 *안 보는* 게 아니라 **무게중심이 실제 결과물·이해도로 이동**하는 사례로 한정해 인용.
+  Transformer 공저자). 지원은 **CV+cover letter 제출**([careers](https://sakana.ai/careers/)). 연구직 지원
+  가이드([unofficial-guide](https://sakana.ai/unofficial-guide/), 저자 Druga·Darlow·Llion Jones)가
+  **"Understanding over implementation"**(만들기보다 *왜*를 설명하는 능력)를 핵심 원칙으로 명시.
+  (take-home 절차는 1차 출처로 재현 안 돼 미언급.) → 이력서를 *안 보는* 게 아니라 **무게중심이
+  실제 결과물·이해도로 이동**하는 사례로 한정해 인용.
 - **운영자 해석(단정 아님):** 이게 AI 시대에 일 잘하는 사람을 뽑는 가장 맞는 채용 방법이다.
 
 ## 더 큰 함의
