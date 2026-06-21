@@ -1,6 +1,6 @@
 ---
-title: "Using AI to write your résumé isn't cheating — we should stop reading résumés"
-description: "Is using AI to write your résumé cheating? People have always padded theirs. A single résumé is forgeable no matter who wrote it — so stop reading résumés, and hire by the timestamped record instead."
+title: "Using AI to write your résumé isn't cheating — so what do you read instead?"
+description: "Is using AI to write your résumé cheating? People have always padded theirs. A single résumé is forgeable no matter who wrote it — so don't judge by it alone; read the timestamped record instead, and hire by that."
 pubDate: 2026-06-21
 author: "Ascendy Engineering"
 tags: ["ai", "hiring", "career", "opinion", "future-of-work"]
@@ -16,11 +16,11 @@ redactionReviewed: true
 ## TL;DR
 
 - **Using AI to write a résumé isn't cheating.** People have always exaggerated and padded. A single résumé is a document *anyone* — human or AI — can inflate and forge.
-- So the real conclusion is this: **we should stop *reading* résumés.** Instead, look at the **timestamped, accumulating record** (for developers, that's GitHub PRs and commits). An accumulated record is harder to fake than a single document — so it's more trustworthy.
+- So the real question is this: **if you won't trust the résumé, what do you read instead?** The answer is the **timestamped, accumulating record** (for developers, that's GitHub PRs and commits). An accumulated record is harder to fake than a single document — so it's more trustworthy.
 - Same for non-developers — just as developers manage code, you should *timestamp and keep a record* of what you make. Faked it? It gives you **more chances to verify** than a single document — it tends to surface in the interview, and if not there, in a short trial of working together.
 - The hiring criteria change. From *which school, which certificate, which company* → to **what this person actually *built*, and the data they've accumulated.** We couldn't process that data before; now it's becoming possible to, with agents.
 
-> **About this piece.** A first-person column drawn — via an interview (`/interview`) — from an operator who built a "don't fabricate" portfolio tool while job-hunting. Throughout, I deliberately separate *assertion* ("stop reading résumés") from *speculation* (a vouching institution, etc.). Same *record-as-trust* vein as [the story of a tool that builds a grounded portfolio from real GitHub work](/en/blog/portfolio-public-launch-en/).
+> **About this piece.** A first-person column drawn — via an interview (`/interview`) — from an operator who built a "don't fabricate" portfolio tool while job-hunting. Throughout, I deliberately separate *assertion* ("don't judge by the résumé alone — read the record") from *speculation* (a vouching institution, etc.). Same *record-as-trust* vein as [the story of a tool that builds a grounded portfolio from real GitHub work](/en/blog/portfolio-public-launch-en/).
 
 ## "Did you write this with AI?"
 
@@ -30,9 +30,9 @@ But step back. **Was the résumé a human wrote ever honest?** We always exagger
 
 So "was it AI?" misses the point. The cheating isn't in the *tool.* The problem is the **structure of judging a person by one unverifiable document.**
 
-## So — stop *reading* résumés
+## So — read the record, not the résumé
 
-The conclusion is simple. If you won't trust the résumé, don't *read* it.
+The conclusion is simple. If you won't trust the résumé, don't judge by *that one page* alone. So what do you look at?
 
 Look at the **timestamped, accumulating record** instead. Developers already have one — GitHub PRs and commits, what you built and when, stacked in time order. Yes, this can be gamed too. But *touching up a one-page résumé once* and *forging years of consistent accumulated history* are different difficulties. And whether that record was written **by a human or an agent**, the accumulated trail itself beats a single claim.
 
