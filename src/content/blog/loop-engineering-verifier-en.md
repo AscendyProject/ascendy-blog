@@ -1,6 +1,6 @@
 ---
 title: "The heart of loop engineering is verification — and the verifier must be a different model"
-description: "Prompt → context → harness → loop engineering. The 2026 axis is the loop, and its key condition is the verifier. A model judges its own work poorly — so the verifier must be a different model, even a different provider."
+description: "Prompt → context → harness → loop engineering. The 2026 axis is the loop; its core is the verifier. A model judges its own work poorly — verify with a different agent (canon); this post argues for a different provider."
 pubDate: 2026-06-22
 author: "Ascendy Engineering"
 tags: ["loop-engineering", "agents", "adversarial-review", "redteam", "oss"]
@@ -39,7 +39,7 @@ A loop is usually described as: a **trigger** (schedule/event), a **verifiable g
 
 **The verification gate.** The line from one writeup ([Cobus Greyling](https://cobusgreyling.medium.com/loop-engineering-62926dd6991c)) that captures it:
 
-> *"In an unattended loop, the verifier is what lets you walk away *with some confidence.*"*
+> "In an unattended loop, the verifier is what lets you walk away *with some confidence.*"
 
 Of course. If the agent runs for hours *without you,* the only thing that makes its output trustworthy is *verification.* When the verifier is weak — *"without verification, loops either run forever or stop too early."* The entire value of autonomy rides on one verifier.
 
@@ -79,7 +79,7 @@ One telling detail. The loop-engineering writeups say to *use* sub-agents — bu
 ## Takeaways
 
 - **The more autonomous the loop, the more the verifier is the key condition.** What lets you walk away and delegate *with some confidence* is verification.
-- **If that verifier is *the same model,* it collapses quietly into self-review — and this post extends that risk to the *same provider* too.** Same-family models can share blind spots; it *feels* like consensus, but the check is empty.
+- **If that verifier is *the same agent checking its own output,* it collapses quietly into self-review — and this post's argument is that the *same model or provider* risks sharing blind spots too.** What the canon rules out is *self-review*; that *same model/provider* is risky is the extra step this post takes. Same-family models can share blind spots; it *feels* like consensus, but the check is empty.
 - **So the next frontier of loop engineering, *as I see it,* is *cross-provider adversarial verification.*** Make the checker a *different vendor,* told to *refute,* and you catch the defects self-review would likely pass.
 - redteam is *one* example that wires that into the engine. Not a claim to be *the best* — just a checkable example of what building the *heart* of a loop seriously produces.
 

@@ -32,8 +32,8 @@ redactionReviewed: true
 - **검증 게이트(★ 핵심):** "*다른* 모델이 diff를 **적대적으로** 리뷰" — **기본은 Claude 작성·Codex 리뷰**(설정으로 반대 가능). **self-review guard**가 *같은 프로바이더* 자기리뷰를 **fail-closed로 거부**. findings는 pass/fail이 아니라 **tiered**. → 캐논의 maker/checker(분리+다른 지시, 종종 다른 모델)를 *cross-provider 적대*로 더 민 redteam의 설계 선택(캐논이 provider 경계를 요구하는 건 아님 — 이 글의 주장).
 - **메모리/상태:** 각 phase 후 **`state.json` 영속**(dispatch-time 스냅샷 invariant); 길거나 detached run용 운영자 progress 화면.
 - **fail-safe/정지조건:** blocker가 review 라운드를 넘겨 지속되면 **`human_gate_rescue`** → PR 전에 사람 검토. **reviewer fallback ladder**(1차 리뷰어가 *인프라*로 실패하면 fail-closed로 degrade).
-- **위험별 라우팅:** **tier-aware routing**(opt-in `config.toml`, 프로파일 토글=`review/gates/models`) — guarded/strategic 변경엔 사람 게이트를 자동 add-back, production-critical엔 *롤백 플랜을 요구하는 운영 정책*과 결합(인지적 항복 방지와 일치).
-- **루프 설계 = '안 만들기'도 포함:** in-session **서브에이전트 리뷰어 어댑터를 *거부***(#37/#67 CLOSED, 결정문 PR #68 머지) — 같은 프로바이더 자기리뷰 붕괴 위험 때문에 headless cross-provider를 택함. ([기능을 거부하는 법](/blog/how-to-reject-a-feature/))
+- **위험별 라우팅:** **tier-aware routing**(opt-in `config.toml`, 프로파일 토글=`review/gates/models`) — 운영자가 *설정한* 프로파일/트리거가 어떤 변경을 production-critical로 분류하면 그에 맞는 게이트를 붙인다(기본 guarded 경로는 여전히 페어+검증, 사람 게이트 없음). production-critical엔 *롤백 플랜을 요구하는 별도 운영 정책*과 결합(인지적 항복 방지와 일치).
+- **루프 설계 = '안 만들기'도 포함:** in-session **서브에이전트 리뷰어 어댑터를 *거부***(#37/#67 CLOSED, 결정문 PR #68 머지) — *한계 효용은 작은데*(headless 리뷰어가 이미 cross-provider 커버) **새 실행 표면**과 **보안 선결조건**(같은 세션 서브에이전트의 자기-리뷰 우회 위험 등)을 떠안아야 해서, headless cross-provider를 택함. ([기능을 거부하는 법](/blog/how-to-reject-a-feature/))
 
 ## 받침 증거 (gh)
 
@@ -42,7 +42,7 @@ redactionReviewed: true
 
 ## 앵글
 
-- **루프가 자율적일수록 verifier가 핵심이다** — verifier가 *같은 모델*이면 self-review로 무너지고, *같은 프로바이더*까지 그 위험을 넓혀 본다는 게 이 글의 주장(이번 세션 [who-does-ai-replace]의 "AI는 너에게 동조한다"와 같은 결).
+- **루프가 자율적일수록 verifier가 핵심이다** — verifier가 *자기 출력을 검증하는 같은 에이전트*면 self-review로 무너지고(캐논), *같은 모델/프로바이더*까지 가면 맹점을 공유할 위험이 있다는 게 이 글의 한 걸음 더 민 주장(이번 세션 [who-does-ai-replace]의 "AI는 너에게 동조한다"와 같은 결).
 - 그래서 *이 글이 보는* 다음 프론티어는 **cross-provider 적대 검증**이고, redteam은 그걸 엔진 레벨로 박은 사례.
 - 정직: 최고/유일 단정 금지. "검증을 cross-provider 적대로 가장 진지하게 구현한 한 사례"로.
 
