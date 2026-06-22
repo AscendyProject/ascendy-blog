@@ -27,12 +27,12 @@ redactionReviewed: true
 
 ## redteam → 루프 구성요소 매핑 (gh 검증, v0.5.1·Apache-2.0)
 
-- **트리거/자율:** common path에 human gate 없이 도는 agent-pair 루프 + **auto-merge**("적대적 페어 + 검증 *자체*가 신뢰"). headless `claude -p --permission-mode plan` 리뷰어.
+- **트리거/자율:** common path에 human gate 없이 **draft PR 생성까지 자동 진행**("적대적 페어 + 검증 *자체*가 신뢰"). 그 draft PR이 머지 전 사람 체크포인트이고 **never autonomously merges**(자율 머지 안 함). headless `claude -p --permission-mode plan` 리뷰어.
 - **검증 가능한 목표:** 고정 pipeline `plan → implement → review_code → create_pr`; TDD 모드는 `write_test → verify_test`를 front-load(테스트가 목표를 checkable하게).
-- **검증 게이트(★ 핵심):** "*다른* 모델이 diff를 **적대적으로** 리뷰" — 기본 예: **Codex가 쓰고 Claude가 리뷰**(또는 반대). **self-review guard**가 *같은 프로바이더* 자기리뷰를 **fail-closed로 거부**. findings는 pass/fail이 아니라 **tiered**. → 루프 엔지니어링이 말하는 maker/checker를 *cross-provider 적대*로 끝까지 민 형태.
+- **검증 게이트(★ 핵심):** "*다른* 모델이 diff를 **적대적으로** 리뷰" — **기본은 Claude 작성·Codex 리뷰**(설정으로 반대 가능). **self-review guard**가 *같은 프로바이더* 자기리뷰를 **fail-closed로 거부**. findings는 pass/fail이 아니라 **tiered**. → 캐논의 maker/checker(분리+다른 지시, 종종 다른 모델)를 *cross-provider 적대*로 더 민 redteam의 설계 선택(캐논이 provider 경계를 요구하는 건 아님 — 이 글의 주장).
 - **메모리/상태:** 각 phase 후 **`state.json` 영속**(dispatch-time 스냅샷 invariant); 길거나 detached run용 운영자 progress 화면.
 - **fail-safe/정지조건:** blocker가 review 라운드를 넘겨 지속되면 **`human_gate_rescue`** → PR 전에 사람 검토. **reviewer fallback ladder**(1차 리뷰어가 *인프라*로 실패하면 fail-closed로 degrade).
-- **위험별 라우팅:** **tier-aware routing**(opt-in `config.toml`) — guarded/strategic 변경엔 사람 게이트·롤백 플랜을 add-back(인지적 항복 방지와 정확히 일치).
+- **위험별 라우팅:** **tier-aware routing**(opt-in `config.toml`, 프로파일 토글=`review/gates/models`) — guarded/strategic 변경엔 사람 게이트를 자동 add-back, production-critical엔 *롤백 플랜을 요구하는 운영 정책*과 결합(인지적 항복 방지와 일치).
 - **루프 설계 = '안 만들기'도 포함:** in-session **서브에이전트 리뷰어 어댑터를 *거부***(#37/#67 CLOSED, 결정문 PR #68 머지) — 같은 프로바이더 자기리뷰 붕괴 위험 때문에 headless cross-provider를 택함. ([기능을 거부하는 법](/blog/how-to-reject-a-feature/))
 
 ## 받침 증거 (gh)
