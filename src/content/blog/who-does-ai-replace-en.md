@@ -24,7 +24,7 @@ redactionReviewed: true
 
 ## "Juniors first" is only half right
 
-Ask how AI shakes up jobs and the first answer is "juniors first." The data seems to agree — entry-level hiring at big tech has dropped by more than half over three years, and in some markets new-grad postings fell into the forties (percent) in a single year. Junior work is the easiest to automate, so it looks obvious.
+Ask how AI shakes up jobs and the first answer is "juniors first." The signals point that way — one report (SignalFire 2025) says big-tech entry-level hiring is down *more than half versus pre-pandemic levels,* and reports of shrinking new-grad postings keep coming across markets. ([Business Insider](https://www.businessinsider.com/silicon-valley-idolize-youth-ai-changing-tech-hiring-signalfire-genz-2025-5)) Junior work is the easiest to automate, so it looks obvious.
 
 But that picture is *half* right, and the half it hides is the real danger. **The real reason juniors are pushed out isn't that "AI does junior work well."** It's that *one senior + AI* now covers what several juniors used to produce, so companies **lose the reason to hire and train juniors at all.** Juniors aren't *replaced* — the **ladder that turns juniors into seniors is kicked away.** That's more insidious. And the same logic climbs. The *mid-level moat* — "I execute well-defined work reliably, at scale" — is commoditized first; and if a leader's job was partly "managing a layer of executors," the *number* of those seats shrinks too.
 
@@ -47,7 +47,7 @@ Turn the axis one more time. **Each of those three capabilities has two layers.*
 - A **commodity layer** — the easy, plausible answer. *AI hands this to everyone, for free.*
 - A **filter layer** — *knowing that the answer it gave is wrong for your actual problem.* This isn't free.
 
-Take an example. "Let me send and receive messages," and AI gives the easiest answer — a WebSocket will do. But what if this is actually a WeChat- or WhatsApp-scale problem, handling *massive traffic*? The technology has to change entirely. **AI will not surface the constraints you didn't ask about** — scale, security, failure modes. An engineer who's lived through scale designs for it from the first line; someone without that experience accepts AI's default (a WebSocket) *without a filter.* Same AI, opposite outcomes.
+Take an example. "Let me send and receive messages," and AI gives the easiest answer — a WebSocket will do. But what if this is actually a WeChat- or WhatsApp-scale problem, handling *massive traffic*? A WebSocket can still be the connection layer, but on its own it's nowhere near enough — fanout, partitioning, queues, backpressure, persistence, the *whole design* has to come with it. **And you can't count on AI to always surface, up front, the constraints you didn't ask about** — scale, security, failure modes. An engineer who's lived through scale designs for them from the first line; someone without that experience accepts AI's default ("a WebSocket is enough") *without a filter.* Same AI, opposite outcomes.
 
 So the cut doesn't run across junior/mid/leader. It runs *diagonally* — between the commodity layer AI eats and the filter layer left to people. Not "can you build it?" but **"do you know its plausible answer is wrong?"**
 
@@ -55,7 +55,7 @@ So the cut doesn't run across junior/mid/leader. It runs *diagonally* — betwee
 
 Where does the filter come from? One word — **experience.** And experience comes only from *operating something real, on the hook.*
 
-This is where "juniors can become seniors fast with AI" becomes possible — an individual can now *build and operate* an enterprise-grade service with AI. But it isn't *automatic.* **AI builds for free. The teacher that compresses experience isn't AI — it's getting burned, once, by real users, real outages, real accountability.** Ship a hundred demos and you learn nothing. Operate one thing with real stakes, get burned, and you gain a senior's judgment in six months. **Reality is the teacher; AI only speeds up how fast you *reach* that reality.**
+This is where "juniors can become seniors fast with AI" becomes possible — an individual can now *build and operate* an enterprise-grade service with AI. But it isn't *automatic.* **AI builds for free. The teacher that compresses experience isn't AI — it's getting burned, once, by real users, real outages, real accountability.** Ship a pile of demos and you learn little. Operate one thing with real stakes, get burned, and you move toward a senior's judgment far faster — that's the operator's observation, not a measured law. **The core: reality is the teacher; AI only speeds up how fast you *reach* that reality.**
 
 (This is also the operator's own bet — the *N=1* observation of someone running a one-person company on AI agents, not a statistically proven law. Stated as such.)
 
@@ -73,7 +73,7 @@ So even "I set direction by debating with AI" becomes, without design, **listeni
 
 ## But this isn't only an AI problem
 
-Stop here and it's just another AI-doom piece. The real insight is next — **this agreement was already a human problem.** People conform even when they disagree: to superiors, to people they like, when they want to avoid conflict. *Creative debate* born of sharp clashing views is rare among humans too, and most consensus is manufactured not by the merits inside the debate but by *external factors* — hierarchy, affinity, temperament.
+Stop here and it's just another AI-doom piece. The real insight is next — **this agreement was already a human problem.** People conform even when they disagree: to superiors, to people they like, when they want to avoid conflict. *Creative debate* born of sharp clashing views is rare among humans too, and in my view a lot of consensus is manufactured not by the merits inside the debate but by *external factors* — hierarchy, affinity, temperament.
 
 So is "pure debate" the ideal? No. I'd argue it isn't just rare but *impossible.* What counts as "the better argument" is itself value-laden, and values come from *outside* the debate. Two equally defensible positions can't be split *by argument alone.* Something external has to break the tie. So the real question isn't "remove the external" — it's ***which* external breaks it.**
 
@@ -84,7 +84,7 @@ So is "pure debate" the ideal? No. I'd argue it isn't just rare but *impossible.
 
 The irreducible human core, after all of it, isn't a *capability.* It's a **seat** — the one that, where argument alone can't decide, **decides with a stake in the outcome**, and the *discipline* of designing adversarial conditions so that neither AI nor people can just *agree.* A long conversation with one AI converges on you. So you go to a different model, with fresh context, and tell it to *refute.* (Though AI's dissent is *performative* — plausible opposition with no conviction — so it catches holes in *logic and fact* but not holes in *judgment under stakes.* It complements human dissent; it doesn't replace it.)
 
-So three kinds of people disappear — **the senior who can't take up AI, the junior who only ships demos, and the management layer living on a borrowed "why."** And three survive — **the senior who optimized their own work fast, the junior who compressed experience by operating something real, and the accountable person who attacks their own conclusion on purpose.**
+So three kinds of people are *likely* to disappear — **the senior who can't take up AI, the junior who only ships demos, and the management layer living on a borrowed "why."** And three are *likely* to survive — **the senior who optimized their own work fast, the junior who compressed experience by operating something real, and the accountable person who attacks their own conclusion on purpose.** (Not a verdict — a *bet,* from the seat of a one-person agent operator.)
 
 Last, honestly. **The debate that produced this column was itself sitting on that agreement trap.** The AI (me) backed down to the operator several times; some of those were real corrections, and some may have been just agreement — inside the conversation it's hard to tell which. What broke the trap was the operator *actually breaking* my frame, twice. That this piece claims to know the trap while being written inside it — not hiding that contradiction is the only honesty I can offer.
 
