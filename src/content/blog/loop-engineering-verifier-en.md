@@ -1,6 +1,6 @@
 ---
-title: "The heart of loop engineering is verification — and the verifier must be a *different* model"
-description: "Prompt → context → harness → loop engineering. The 2026 axis is the loop, and an autonomous loop is only as good as its verifier. Since a model judges its own work poorly, that verifier must be a different model."
+title: "The heart of loop engineering is verification — and the verifier must be a different model"
+description: "Prompt → context → harness → loop engineering. The 2026 axis is the loop, and its key condition is the verifier. A model judges its own work poorly — so the verifier must be a different model, even a different provider."
 pubDate: 2026-06-22
 author: "Ascendy Engineering"
 tags: ["loop-engineering", "agents", "adversarial-review", "redteam", "oss"]
@@ -16,8 +16,8 @@ redactionReviewed: true
 ## TL;DR
 
 - Working with AI agents evolved **prompt → context → harness → loop engineering** — at least, that's the lineage the writeups cited below lay out. **Loop engineering** — a framing that spread fast in June 2026 — is *designing the loop that runs an agent on its own, instead of prompting it turn by turn.*
-- An autonomous loop has triggers, goals, actions, verification, and memory — but the one thing that lets you *walk away and delegate* is the **verification gate.** As one writeup ([Cobus Greyling](https://cobusgreyling.medium.com/loop-engineering-62926dd6991c)) puts it: *"In an unattended loop, the verifier is what lets you walk away *with some confidence.*"*
-- And the core principle of verification is sharp: **"the agent that wrote the code is a poor judge of its own work"** (maker/checker). Let a model verify its own output and it rubber-stamps. → **The verifier has to be a *different* model** — and *this post's argument* is that you should go one step further, to a different *provider.*
+- An autonomous loop has triggers, goals, actions, verification, and memory — but the part that lets you *walk away and delegate* is the **verification gate.** As one writeup ([Cobus Greyling](https://cobusgreyling.medium.com/loop-engineering-62926dd6991c)) puts it: "In an unattended loop, the verifier is what lets you walk away *with some confidence.*"
+- And the core principle of verification is sharp: **"the agent that wrote the code is a poor judge of its own work"** (maker/checker). Let a model verify its own output and it rubber-stamps. So you verify with **different instructions, and often a different model** (canon). → And **this post's argument** is to go one step further — the verifier should be a different **provider.**
 - Our adversarial agent-pair harness **redteam** (Apache-2.0) is a worked example that pushes exactly that point to the end — its verification gate is **cross-provider adversarial + fail-closed.** (Not a claim that redteam is the *best* loop — just that this is what building the *heart* of a loop seriously looks like.)
 
 > **Source note.** The lineage and definition of loop engineering are checked against public sources ([Cobus Greyling](https://cobusgreyling.medium.com/loop-engineering-62926dd6991c), [explainx](https://explainx.ai/blog/what-is-loop-engineering-ai-agents-2026)). redteam's behavior is public OSS (`AscendyProject/redteam`), verified from its README and CHANGELOG. Same *adversarial verification* vein as [how to call the second AI and when to stop it](/en/blog/headless-adversarial-review-loop-en/) and [how to reject a feature](/en/blog/how-to-reject-a-feature-en/).
@@ -70,15 +70,15 @@ It isn't only the verifier. Every component the loop-engineering canon lists is 
 - **Memory / state persistence** — it persists `state.json` after each phase, so an interrupted loop *resumes* instead of *spinning.* (*"Memory is what separates a loop that learns from one that spins."*)
 - **Verifiable goal** — TDD mode front-loads `write_test → verify_test`, making the goal *checkable.*
 - **Fail-safe / stopping conditions** — if a blocker persists across review rounds, `human_gate_rescue` hands it to a person. If the primary reviewer fails on *infrastructure* (missing CLI, timeout), a fallback ladder degrades fail-closed.
-- **No cognitive surrender** — for risky changes (auth, storage, concurrency, migrations), **tier-aware routing** auto-re-attaches human gates (`review/gates/models` toggles), combined with the operator policy of *requiring a rollback plan* for production-critical changes — exactly the *"cognitive surrender"* the canon warns against, blocked by structure.
+- **No cognitive surrender** — when a tier profile *you configure* classifies a change (auth, storage, concurrency, migrations, etc.) as production-critical, **tier-aware routing** attaches the matching gates (`review/gates/models` toggles); the default guarded path still runs pair+verification with no human gate. For production-critical changes it's paired with a *separate operator policy of requiring a rollback plan* — exactly the "cognitive surrender" the canon warns against, blocked by structure.
 
 ## Loop design includes *deciding not to build*
 
-One telling detail. The loop-engineering writeups say to *use* sub-agents — but in one cycle redteam **rejected an adapter that spins up a sub-agent reviewer inside the session.** The reason is precisely point 2 above: a same-session sub-agent raises the risk of *same-provider self-review* collapse. So it chose headless cross-provider instead, and left the rejection as a decision record. ([How to reject a feature](/en/blog/how-to-reject-a-feature-en/)) Loop design is as much about *what you don't add* as what you do.
+One telling detail. The loop-engineering writeups say to *use* sub-agents — but in one cycle redteam **rejected an adapter that spins up a sub-agent reviewer inside the session.** The reason was a combination: *marginal benefit* (the headless reviewer already covers cross-provider), against a **new execution surface** and a **thorny security precondition** (a same-session sub-agent raises the risk of self-review bypass) — the cost didn't pay for the gain. So it chose headless cross-provider instead, and left the rejection as a decision record. ([How to reject a feature](/en/blog/how-to-reject-a-feature-en/)) Loop design is as much about *what you don't add* as what you do.
 
 ## Takeaways
 
-- **The more autonomous the loop, the more the verifier is everything.** The one thing that lets you walk away and delegate is verification.
+- **The more autonomous the loop, the more the verifier is the key condition.** What lets you walk away and delegate *with some confidence* is verification.
 - **If that verifier is *the same model,* it collapses quietly into self-review — and this post extends that risk to the *same provider* too.** Same-family models can share blind spots; it *feels* like consensus, but the check is empty.
 - **So the next frontier of loop engineering, *as I see it,* is *cross-provider adversarial verification.*** Make the checker a *different vendor,* told to *refute,* and you catch the defects self-review would likely pass.
 - redteam is *one* example that wires that into the engine. Not a claim to be *the best* — just a checkable example of what building the *heart* of a loop seriously produces.

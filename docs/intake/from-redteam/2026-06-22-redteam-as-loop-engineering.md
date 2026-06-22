@@ -1,7 +1,7 @@
 ---
 team: redteam
 date: 2026-06-22
-topic: "루프 엔지니어링(프롬프트→컨텍스트→하네스→루프, 2026.6 메인스트림)의 심장은 *검증 게이트*다('verifier가 있어야 자리를 비운다', maker/checker). redteam은 그 검증을 cross-provider 적대 + fail-closed로 가장 진지하게 구현한 루프 사례. 운영자 지정 주제 + 웹 검증(루프 용어) + gh 검증(redteam 캐논)."
+topic: "루프 엔지니어링(프롬프트→컨텍스트→하네스→루프, 2026.6 빠르게 퍼진 framing)의 심장은 검증 게이트('verifier가 있어야 어느 정도 안심하고 자리를 비운다', maker/checker). redteam은 그 검증을 cross-provider 적대 + fail-closed로 민 루프 사례(최고/유일 아님). 운영자 지정 주제 + 웹 검증(루프 용어) + gh 검증(redteam 캐논)."
 suggestedCategory: "meta"
 suggestedTags: ["loop-engineering", "agents", "adversarial-review", "redteam", "oss"]
 source: "운영자 지정 주제. 루프 엔지니어링 계보/정의는 web 검증(Cobus Greyling, explainx 등). redteam 캐논은 public repo gh 검증."
@@ -15,13 +15,13 @@ redactionReviewed: true
 
 ## 루프 엔지니어링 캐논 (web 검증)
 
-- 계보: **프롬프트 → 컨텍스트(2025, Tobi Lütke/Anthropic) → 하네스(2026 초) → 루프(2026.6 메인스트림).**
+- 계보(2차 출처가 정리한 framing): **프롬프트 → 컨텍스트(2025, Tobi Lütke/Anthropic) → 하네스(2026 초) → 루프(2026.6 빠르게 퍼짐).**
   ([Cobus Greyling](https://cobusgreyling.medium.com/loop-engineering-62926dd6991c), [explainx](https://explainx.ai/blog/what-is-loop-engineering-ai-agents-2026))
 - 정의: *턴마다 직접 프롬프트* 대신 **루프(시스템)를 설계** — 작업 발견 → 에이전트(종종 서브에이전트)에 위임 → 검증 → 상태 보존 → 다음 행동 결정, *스케줄/목표까지*.
 - 구성요소: ① 트리거/자동화(heartbeat) ② **검증 가능한 목표** ③ 액션/툴 ④ **검증 게이트** ⑤ 메모리/상태 보존 (+ 워크트리 병렬, 서브에이전트 maker/checker).
 - 핵심 원칙(1차 인용):
-  - **"무인 루프에서, verifier가 있어야 자리를 비울 수 있다."** ← 검증이 루프의 심장.
-  - **"코드를 쓴 에이전트는 자기 일의 나쁜 심판이다"**(maker/checker 분리, *다른* 모델·다른 지시로 검증).
+  - **"무인 루프에서, verifier가 있어야 *어느 정도 안심하고* 자리를 비울 수 있다."**(Cobus Greyling) ← 검증이 루프의 심장.
+  - **"코드를 쓴 에이전트는 자기 일의 나쁜 심판이다"**(maker/checker 분리, 다른 지시·종종 다른 모델로 검증).
   - "검증이 없으면 루프는 영원히 돌거나 너무 일찍 멈춘다." / "막연한 목표는 막연한 루프를 만든다."
   - "인지적 항복(cognitive surrender) 금지" — 사람이 판단을 통째로 위임하면 안 됨.
 
@@ -37,13 +37,13 @@ redactionReviewed: true
 
 ## 받침 증거 (gh)
 
-- 4-결함 적발: "cross-provider adversarial review가 머지 전 real HIGH 결함 4개를 잡았다"(CHANGELOG 0.3.0). self-review가 rubber-stamp할 종류를 *다른* 모델이 잡은 사례.
+- 4-결함 적발: "cross-provider adversarial review가 머지 전 real HIGH 결함 4개를 잡았다"(CHANGELOG 0.3.0 확증). *self-review라면 통과시켰을 법한* 종류라는 건 이 글의 해석(CHANGELOG는 '다른 모델이 4개 잡음'까지만 확증).
 - 버전 v0.5.1, Apache-2.0. README가 위 매핑 키워드 전부 명시.
 
 ## 앵글
 
-- **루프가 자율적일수록 verifier가 전부다** — 그리고 verifier가 *같은 모델/프로바이더*면 self-review로 조용히 무너진다(이번 세션 [who-does-ai-replace]의 "AI는 너에게 동조한다"와 같은 결).
-- 그래서 루프 엔지니어링의 *다음 프론티어*는 **cross-provider 적대 검증**이고, redteam은 그걸 엔진 레벨로 박은 사례.
+- **루프가 자율적일수록 verifier가 핵심이다** — verifier가 *같은 모델*이면 self-review로 무너지고, *같은 프로바이더*까지 그 위험을 넓혀 본다는 게 이 글의 주장(이번 세션 [who-does-ai-replace]의 "AI는 너에게 동조한다"와 같은 결).
+- 그래서 *이 글이 보는* 다음 프론티어는 **cross-provider 적대 검증**이고, redteam은 그걸 엔진 레벨로 박은 사례.
 - 정직: 최고/유일 단정 금지. "검증을 cross-provider 적대로 가장 진지하게 구현한 한 사례"로.
 
 ## 외부 공유 불가
