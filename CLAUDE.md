@@ -238,12 +238,33 @@ docs/intake/from-infra/<YYYY-MM-DD>-<topic>.md
 `sourceIntake:`는 2)의 정제본 경로를 가리킨다. 일일 주기·통지는
 `docs/intake-standing-order.md` 참조.
 
-블로그팀이 3팀에 응답/질의가 필요할 때:
+### 조율(coordination)은 GitHub Issues로
 
-- 가벼운 질문 → 동일 인테이크 파일 하단에 `## 블로그팀 답신` 단락 추가
-  + 해당 팀의 sibling repo 경로 알리는 PR 코멘트.
-- 새로운 요청 → 해당 sibling repo의 `docs/requests/from-blog/<YYYY-MM-DD>-<topic>.md`로
-  핸드오프 (해당 repo가 그런 경로를 지원하면).
+**non-intake 조율 — 핸드오프·답신·상태 — 은 마크다운 파일이 아니라 GitHub Issues로
+한다** (상위 워크스페이스 Tier 3 결정 `ascendy-infra#68`, 채택 이슈 `ascendy-blog#83`):
+
+- **수신 repo에 이슈를 연다.** 라벨 두 개 — `cross-repo` + `from-<sender>`
+  (블로그가 보낼 때는 `from-blog`).
+- **이력/수신 조회**는 `--state all`(기본은 open만 나옴)과 명시적 `--limit`(기본 30
+  cap)을 둘 다 준다:
+
+```bash
+gh issue list --repo AscendyProject/ascendy-blog --state all --label cross-repo --limit 200
+gh issue view <N> --repo AscendyProject/ascendy-blog --comments   # 전체 스레드
+```
+
+- **lifecycle**: open = 진행 중(작업 내내 열어둔다); **ack는 댓글로**("확인, X 진행")
+  — ack하려고 close하지 않는다; **resolved일 때만 close**(완료/거절/대체/무대응).
+  PR에서 `Fixes #N` + `AscendyProject/<repo>#N`으로 링크.
+
+**편집 인테이크는 그대로 파일 기반이다(carve-out).** 위 두 단계 인테이크 경로
+(`docs/blog-intake/` raw → `docs/intake/from-*/` 정제본 → 글 frontmatter `sourceIntake:`)는
+*조율*이 아니라 *콘텐츠 소스 파이프라인*이라 Issues로 옮기지 않는다 (redaction 경계 때문).
+오직 non-intake 조율만 Issues로 간다.
+
+기존 `docs/requests/from-*` 등 파일 기반 핸드오프는 **역사 기록**으로 남긴다 — 새로
+추가하지 않고, 새 조율은 이슈로 시작한다(no big-bang). 내구 기록(결정문·아이디에이션)은
+git에 남긴다.
 
 3팀의 작업 결과물을 가공하는 일이지, 3팀의 코드를 편집하는 일이 아니다.
 **sibling repo의 파일을 직접 편집하지 않는다.**
