@@ -15,7 +15,7 @@ redactionReviewed: true
 
 ## TL;DR
 
-- Ascendy's photo-preprocessing infra actually went through four stages: **Gemini API direct calls → VKE GPU nodes → RunPod 24/7 → serverless.** Not a hypothetical — the real path.
+- Ascendy's photo-preprocessing infra actually went through four stages: **external multimodal API → self-hosted cluster GPUs → managed GPU → serverless.** (The infra-technical details are already in the [AI serving evolution series](/en/blog/ai-serving-evolution-part1-en/) — this piece is about the *model side* of those decisions: *which model recommended what, and why it hit a wall.*)
 - The heart of it: **the model I trusted most (Claude) recommended a structure that was a dead end.** And it kept circling *inside the structure it had recommended,* never showing me what lay outside it.
 - What broke the deadlock was a model from a *different family.* And the decisive implementation right after was Claude again. **No single model handed me the answer in one shot.**
 - The answer was in none of the models. It was in **moving between them.** Getting tired of doing that by hand is what I automated into [redteam](https://github.com/AscendyProject/redteam).
@@ -24,13 +24,13 @@ redactionReviewed: true
 
 ## 1. The easiest answer broke at scale
 
-I started photo preprocessing with direct Gemini API calls. A few hundred images was fine. But a cloud has to handle thousands, tens of thousands — and at that scale the cost structure blew up and the service simply didn't hold together.
+I started photo preprocessing with direct calls to an external multimodal API. A few hundred images was fine. But a cloud has to handle thousands, tens of thousands — and at that scale the cost structure blew up and the service simply didn't hold together.
 
 Ask one model "how do I process this?" and the easiest, most plausible answer comes first. That answer was perfect at a few hundred images. It just broke at scale.
 
 ## 2. Where trust became a dead end
 
-When I said I wanted to process on GPUs directly, Claude recommended VKE GPU nodes. I trusted Claude most, and I went with it.
+When I said I wanted to process on GPUs directly, Claude recommended standing up GPU nodes on our own cluster. I trusted Claude most, and I went with it.
 
 The result was inefficient sliced GPUs, high cost, and endless OOMs. Running pricey GPU nodes 24/7 with no users yet was overkill. Above all — Claude kept circling *inside the very structure it had recommended.* It told me how to reduce the OOMs, how to slice the GPUs better, but it couldn't show me the outside: "maybe this structure is wrong to begin with."
 
@@ -40,9 +40,9 @@ This is the heart of the piece. **The more you trust a model, the more its field
 
 Stuck, I carried the same problem, unchanged, to GPT and Gemini.
 
-They proposed RunPod — an axis that simply wasn't in the field of view of the model I'd been asking. Instead of always-on GPU nodes, running 24/7 processing closer to a serverless style synced thousands of images, and the OOMs disappeared.
+They proposed a *managed GPU service* — an axis that simply wasn't in the field of view of the model I'd been asking. Instead of self-hosted always-on GPU nodes, moving the processing there ran through thousands of images, and the OOMs disappeared.
 
-The point isn't that RunPod was The Answer. It's that **the axis that got me out of the dead end lay outside the first model's field of view.** A model from a different family filled that gap.
+The point isn't that the service was The Answer. It's that **the axis that got me out of the dead end lay outside the first model's field of view.** A model from a different family filled that gap.
 
 ## 4. Direction and implementation came from different models
 
