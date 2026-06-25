@@ -26,7 +26,7 @@ redactionReviewed: true
 
 As organizations started folding AI usage into evaluation, two opposite cultures emerged.
 
-One is **token efficiency.** Doing more with fewer tokens is read as competence. One large company reportedly measures "how many people's worth of work one AI-using employee does" as a full-time-equivalent figure, and [added *output per token spent* as a secondary metric](https://www.khan.co.kr/en/article/202604290928017/) on top.
+One is **token efficiency.** Doing more with fewer tokens is read as competence. One large company reportedly measures "how many people's worth of work one AI-using employee does" as a full-time-equivalent figure, and [added *output per token spent* as a secondary metric](https://www.newsspace.kr/news/article.html?no=14397) on top. More broadly, [token usage itself is increasingly treated as a performance yardstick](https://www.khan.co.kr/en/article/202604290928017/).
 
 The other is **tokenmaxxing.** In Silicon Valley, token consumption was for a while treated as a measure of innovation capacity, with internal leaderboards built to encourage spending more. The result was [burning through budgets in a few months](https://www.epochtimes.kr/2026/06/753177.html) — waste — and it's now being walked back.
 
