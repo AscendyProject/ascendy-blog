@@ -10,6 +10,7 @@ export const localeTag: Record<Lang, string> = { ko: 'ko-KR', en: 'en-US' };
 export const ui = {
   ko: {
     navPosts: '글',
+    navProjects: '프로젝트',
     navAbout: '소개',
     navRss: 'RSS',
     homeTagline:
@@ -24,6 +25,7 @@ export const ui = {
   },
   en: {
     navPosts: 'Posts',
+    navProjects: 'Projects',
     navAbout: 'About',
     navRss: 'RSS',
     homeTagline:
