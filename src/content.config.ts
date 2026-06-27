@@ -29,6 +29,17 @@ const blog = defineCollection({
       // 예: "docs/intake/from-infra/2026-05-24-vcr-secret.md"
       sourceIntake: z.array(z.string()).optional(),
 
+      // 프로젝트 출처(provenance) — CTA가 아니라 "이 글/도구가 어떤 실제
+      // 문제에서 나왔는가"를 맥락으로 제공한다(A안: 유도가 아니라 출처).
+      // 글 하단에 ProjectOrigin 컴포넌트로 렌더된다. redteam 같은 OSS 글에 적용.
+      origin: z
+        .object({
+          project: z.string(),
+          repo: z.string().url(),
+          summary: z.string(),
+        })
+        .optional(),
+
       // 게재 상태
       draft: z.boolean().default(false),
 
