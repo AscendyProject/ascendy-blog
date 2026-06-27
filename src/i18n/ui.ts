@@ -20,6 +20,7 @@ export const ui = {
     footer: 'Static site, AI crawlers welcome.',
     tags: 'Tags',
     switchLabel: 'EN',
+    originLabel: '이 프로젝트의 출처',
   },
   en: {
     navPosts: 'Posts',
@@ -33,6 +34,7 @@ export const ui = {
     footer: 'Static site, AI crawlers welcome.',
     tags: 'Tags',
     switchLabel: '한국어',
+    originLabel: 'Project origin',
   },
 } as const;
 

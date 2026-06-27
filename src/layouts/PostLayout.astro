@@ -1,6 +1,7 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
 import SchemaOrg from '../components/SchemaOrg.astro';
+import ProjectOrigin from '../components/ProjectOrigin.astro';
 import { defaultLang, localeTag, localizePath, useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
   canonical?: string;
   lang?: Lang;
   alternates?: { lang: Lang; url: string }[];
+  origin?: { project: string; repo: string; summary: string };
 }
 
 const props = Astro.props;
@@ -72,6 +74,7 @@ const siteUrl = Astro.site?.toString() ?? 'https://blog.ascendy.ai';
       </p>
       <hr />
       <slot />
+      {props.origin && <ProjectOrigin origin={props.origin} lang={lang} />}
       <hr />
       <p class="text-xs text-neutral-500">
         {t('tags')}: {props.tags.join(', ')}

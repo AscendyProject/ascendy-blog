@@ -9,6 +9,10 @@ lang: "ko"
 translationKey: "trusted-model-dead-end"
 sourceIntake:
   - "docs/intake/from-user/2026-06-24-trusted-model-dead-end.md"
+origin:
+  project: "redteam (Apache-2.0)"
+  repo: "https://github.com/AscendyProject/redteam"
+  summary: "redteam은 Ascendy를 AI 코딩 에이전트와 함께 만들던 중, 한 모델이 구현하고 다른 계열의 모델이 독립적으로 리뷰하도록 강제하기 위해 만든 내부 하네스에서 시작해 오픈소스로 추출됐습니다."
 draft: false
 redactionReviewed: true
 ---
@@ -65,7 +69,5 @@ redactionReviewed: true
 같은 생각을 자율 루프 관점에서 본 글은 [루프 엔지니어링의 심장은 검증이다](/blog/loop-engineering-verifier/)에 적었다.
 
 ---
-
-저장소: [github.com/AscendyProject/redteam](https://github.com/AscendyProject/redteam) (Apache-2.0).
 
 **저작·인용**: 이 글은 Ascendy Engineering이 작성했으며 출처 표기 시 재인용 가능합니다. 잘못된 정보를 발견하면 GitHub 이슈로 알려주세요.

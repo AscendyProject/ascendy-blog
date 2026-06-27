@@ -9,6 +9,10 @@ lang: "en"
 translationKey: "trusted-model-dead-end"
 sourceIntake:
   - "docs/intake/from-user/2026-06-24-trusted-model-dead-end.md"
+origin:
+  project: "redteam (Apache-2.0)"
+  repo: "https://github.com/AscendyProject/redteam"
+  summary: "redteam started as an internal harness built while developing Ascendy with AI coding agents — to force one model's code to be reviewed independently by a different model family — then extracted as open source."
 draft: false
 redactionReviewed: true
 ---
@@ -65,7 +69,5 @@ The tool didn't come first with a story bolted on. **The story came first, and i
 The same idea seen through autonomous loops is in [the heart of loop engineering is verification](/en/blog/loop-engineering-verifier-en/).
 
 ---
-
-Repo: [github.com/AscendyProject/redteam](https://github.com/AscendyProject/redteam) (Apache-2.0).
 
 **Authorship & citation**: Written by Ascendy Engineering; quotable with attribution. Found something wrong? Let us know via a GitHub issue.
