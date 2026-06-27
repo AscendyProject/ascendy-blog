@@ -52,11 +52,11 @@ Why it matters: people say *"a domain takes years to accrue, and AI handles the 
 
 ## What's scarce has changed
 
-[Vertical AI](https://www.geekwire.com/2026/the-rise-of-vertical-ai-agents-and-the-startups-racing-to-build-them/) — AI specialized to a specific industry or domain — being the hottest current trend fits the same logic. A product that goes *deep into one domain* finds its footing faster and faces less competition than a general tool. That's why investors bet on verticals like legal (Harvey), healthcare, and enterprise search.
+[Vertical AI](https://www.geekwire.com/2026/the-rise-of-vertical-ai-agents-and-the-startups-racing-to-build-them/) — AI specialized to a specific industry or domain — being the hottest current trend fits the same logic. A product that goes *deep into one domain* — owning that domain's data and workflows — is stronger than a general tool, and investors bet on exactly those verticals.
 
 Here a reversal happens. Before, the *person with the skill* (the engineer) was scarce, and the domain was layered on top. Now that the skill's barrier has dropped, the scarce thing has moved to **"the domain sense to know what's worth building" and "the ability to learn something new, fast."**
 
-Which means a career that *looks unrelated to engineering* suddenly becomes an asset. I was on the science track through high school, majored in the humanities in college, studied economics, public administration, and law deeply while preparing for a national exam, and now I live as an engineer. What once looked like an "inconsistent résumé" becomes, in the build-in-studying era, *all raw material for vertical AI.*
+Which means a career that *looks unrelated to engineering* suddenly becomes an asset. My own path was non-traditional too — crossing from the humanities and social sciences deep into engineering. What once looked like an "inconsistent résumé" becomes, in the build-in-studying era, *all raw material for vertical AI.*
 
 ## But not everyone makes it
 
@@ -68,7 +68,7 @@ Build in studying worked for me because I happen to *have no aversion to learnin
 
 ## The same thing happened at work
 
-This isn't only a side-project story. With no course and no book, studying alongside AI, I'm now *building a data-platform AI system, alone, inside the organization I work for.* And colleagues come to me with their AI questions. Somewhere along the way I became the "expert."
+This isn't only a side-project story. With no course and no book, studying alongside AI, I'm now *building an internal domain AI system, alone, inside the organization I work for.* And colleagues come to me with their AI questions. Somewhere along the way I became the "expert."
 
 The funny part is I did nothing special. **I just worked with them for a long time, and learned a new domain — AI — together with AI.** AI is, after all, just another domain; learning it by *building* rather than from a book shortened the time to accrue it. That's build in studying working in real life.
 
