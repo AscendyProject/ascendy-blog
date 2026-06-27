@@ -1,0 +1,32 @@
+---
+// /projects 인덱스의 프로젝트 카드. 제품 유도가 아니라 "무엇을 만드는가"의
+// 기록(A안). 외부 링크는 출처/저장소/관련 글이지 CTA가 아니다.
+interface Props {
+  name: string;
+  tagline: string;
+  body: string;
+  links?: { label: string; href: string }[];
+}
+
+const { name, tagline, body, links = [] } = Astro.props;
+---
+
+<article class="not-prose rounded-lg border border-neutral-200 p-6">
+  <h2 class="text-lg font-semibold text-neutral-900">{name}</h2>
+  <p class="mt-1 text-sm text-neutral-500">{tagline}</p>
+  <p class="mt-3 text-sm leading-relaxed text-neutral-700">{body}</p>
+  {
+    links.length > 0 && (
+      <p class="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+        {links.map((l) => (
+          <a
+            href={l.href}
+            class="font-medium text-neutral-900 underline underline-offset-2 hover:text-neutral-600"
+          >
+            {l.label} →
+          </a>
+        ))}
+      </p>
+    )
+  }
+</article>

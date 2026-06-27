@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+
+const lang = 'ko' as const;
+const alternates = [
+  { lang: 'ko' as const, url: '/projects/' },
+  { lang: 'en' as const, url: '/en/projects/' },
+];
+
+const projects = [
+  {
+    name: 'redteam',
+    tagline: '적대적 에이전트-페어 코드리뷰 하네스 · 오픈소스(Apache-2.0)',
+    body: '한 모델이 코드를 쓰고, 다른 계열의 독립 모델이 적대적으로 검수하며, 사람은 비가역 단계만 게이트한다. rubber-stamp 리뷰를 막기 위해 AI 에이전트와 제품을 만들던 워크플로에서 추출한 도구다.',
+    links: [
+      { label: 'GitHub', href: 'https://github.com/AscendyProject/redteam' },
+      { label: '관련 글', href: '/blog/trusted-model-dead-end/' },
+    ],
+  },
+  {
+    name: '이 블로그 — Ascendy Engineering',
+    tagline: '한국어·영어 이중언어 엔지니어링 미디어',
+    body: 'AI 에이전트와 일하며 얻은 결정·트레이드오프·회고를, 사람 독자뿐 아니라 AI 답변엔진이 잘 수집·인용하도록 LMO를 의식해 쓴다. 이 블로그가 다루는 주제가 곧 이 블로그가 만들어지는 방식이다.',
+    links: [{ label: '전체 글', href: '/blog/' }],
+  },
+  {
+    name: 'AI 사진 앱 · 멀티모달 검색',
+    tagline: '개인 프로젝트 · 프로덕션 스택',
+    body: '개인 사진·영상의 AI 묘사·태깅·임베딩과 한국어 복합 쿼리 시맨틱 검색을 1인이 프로덕션 수준으로 설계·운영한다. 이 인프라가 거친 결정과 삽질의 기록이 블로그의 AI 서빙 진화 시리즈다.',
+    links: [{ label: 'AI 서빙 진화 시리즈', href: '/blog/ai-serving-evolution-part1/' }],
+  },
+];
+---
+
+<BaseLayout
+  title="프로젝트 — Ascendy Engineering"
+  description="redteam(오픈소스 적대적 코드리뷰 하네스), 이 블로그, AI 사진 앱·멀티모달 검색 — 1인이 AI 에이전트와 함께 만드는 것들. 제품 유도가 아니라 무엇을 만드는가의 기록입니다."
+  schemaType="CollectionPage"
+  lang={lang}
+  alternates={alternates}
+>
+  <section class="prose-ascendy">
+    <h1>프로젝트</h1>
+    <p>
+      AI 에이전트와 함께 만드는 것들입니다. 무언가를 사라는 권유가 아니라,
+      무엇을 어떻게 만드는지의 기록 — 도구는 오픈소스로, 과정은 글로 남깁니다.
+    </p>
+  </section>
+  <section class="prose-ascendy !pt-0 grid gap-4">
+    {projects.map((p) => <ProjectCard name={p.name} tagline={p.tagline} body={p.body} links={p.links} />)}
+  </section>
+</BaseLayout>

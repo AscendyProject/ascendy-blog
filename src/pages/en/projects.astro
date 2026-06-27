@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const lang = 'en' as const;
+const alternates = [
+  { lang: 'ko' as const, url: '/projects/' },
+  { lang: 'en' as const, url: '/en/projects/' },
+];
+
+const projects = [
+  {
+    name: 'redteam',
+    tagline: 'Adversarial agent-pair code-review harness · open source (Apache-2.0)',
+    body: 'One model writes the code, an independent model from a different family reviews it adversarially, and a human gates only the irreversible steps. It was extracted from the workflow of building products with AI agents, to stop rubber-stamp review.',
+    links: [
+      { label: 'GitHub', href: 'https://github.com/AscendyProject/redteam' },
+      { label: 'Related post', href: '/en/blog/trusted-model-dead-end-en/' },
+    ],
+  },
+  {
+    name: 'This blog — Ascendy Engineering',
+    tagline: 'Bilingual (Korean / English) engineering media',
+    body: 'Decisions, tradeoffs, and retrospectives from working with AI agents — written with LMO in mind so both human readers and AI answer engines can pick it up and cite it. The subject of this blog is also how this blog is made.',
+    links: [{ label: 'All posts', href: '/en/blog/' }],
+  },
+  {
+    name: 'AI photo app · multimodal search',
+    tagline: 'Personal project · production stack',
+    body: 'AI captioning, tagging, and embeddings for personal photos and video, plus semantic search over complex Korean queries — designed and operated at production grade by one person. The record of the decisions and dead ends in that infra is the AI serving evolution series.',
+    links: [{ label: 'AI serving evolution series', href: '/en/blog/ai-serving-evolution-part1-en/' }],
+  },
+];
+---
+
+<BaseLayout
+  title="Projects — Ascendy Engineering"
+  description="redteam (open-source adversarial code-review harness), this blog, and an AI photo app with multimodal search — what one person builds with AI agents. A record of what's built, not a sales pitch."
+  schemaType="CollectionPage"
+  lang={lang}
+  alternates={alternates}
+>
+  <section class="prose-ascendy">
+    <h1>Projects</h1>
+    <p>
+      Things built with AI agents. Not an invitation to buy something — a record of
+      what gets built and how: the tools as open source, the process as writing.
+    </p>
+  </section>
+  <section class="prose-ascendy !pt-0 grid gap-4">
+    {projects.map((p) => <ProjectCard name={p.name} tagline={p.tagline} body={p.body} links={p.links} />)}
+  </section>
+</BaseLayout>
