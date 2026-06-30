@@ -9,7 +9,7 @@ redactionReviewed: true
 ---
 
 > 인터뷰(/interview)로 도출. **단정/추측 분리:** 사고전환 주장은 운영자 1인칭 경험·견해.
-> **redaction:** 에피소드의 질문자('그분')는 '한 동료'로, 운영자 소속은 암시 없이 일반화(조직 규모 정보 제거),
+> **redaction:** 에피소드의 질문자는 '한 동료'로(원표현 제거), 운영자 소속은 암시 없이 일반화(조직 규모 정보 제거),
 > 사내 하네스 디테일은 일반화하고 redteam(공개 OSS, Apache-2.0)만 구체. 모델명(GPT/Claude/
 > Gemini/Codex)은 협업 주체(공개 범위). **fact:** 젠스파크 모델 교차검증은 web 검증(MoA 구조로
 > orchestrator가 best 모델 라우팅 + mutual verification 교차 체크) — 미검증 제품/런칭 세부는
