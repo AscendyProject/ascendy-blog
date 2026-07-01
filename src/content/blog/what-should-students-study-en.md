@@ -38,7 +38,7 @@ First, a floor that *anyone* should clear.
 
 This is no longer "a developer's skill" but a **basic literacy.** Just as you couldn't really do office work without Word and Excel, being able to automate your own work and build small tools with a bit of Python or vibe coding has become *that grade of fundamental.* If you want an office job, automating your own repetitive work is no longer optional.
 
-I too had a time when I knew nothing about computers — nearly computer-illiterate. If someone back then had told me to "build something with AI," I'd have thought it *absurd.* Too scary to start, no idea where to begin. So I know: this floor is one you can clear *starting from a blank slate,* and one you *have to* clear.
+I too had a time when I knew almost nothing about tech — a complete non-specialist. If someone back then had told me to "build something with AI," I'd have thought it *absurd.* Too scary to start, no idea where to begin. So I know: this floor is one you can clear *starting from a blank slate,* and one you *have to* clear.
 
 ## The ceiling: not credentials, but having solved a problem with AI
 
@@ -62,7 +62,7 @@ And set the bar low. *It doesn't have to be a grand startup.* Something that ann
 
 Here you must strike a balance. I said "ask AI everything," but that doesn't mean delegating *everything.*
 
-The most dangerous trap is **over-trusting AI** — handing your judgment away wholesale, so that whatever the question, it's *"GPT says this is right," "Gemini says this is right."* In Japan, over-reliance on AI is already treated as a social problem, and we won't be different.
+The most dangerous trap is **over-trusting AI** — handing your judgment away wholesale, so that whatever the question, it's *"GPT says this is right," "Gemini says this is right."* In Japan and elsewhere, over-reliance on generative AI is being discussed as a concern, and we won't be different.
 
 The crux is **distinguishing what to deliberate yourself from what to delegate to AI.** *"What should I do with my career?"* — that's yours to wrestle with, not AI's to decide. But *once you've set a direction,* "what problems in this field can I solve with AI, and how" is something you can freely brainstorm with AI.
 
