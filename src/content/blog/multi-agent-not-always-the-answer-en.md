@@ -57,7 +57,7 @@ If you have to produce a single coherent artifact, or the work is sequential whe
 
 ### So where the industry actually converged
 
-Here's the interesting part: the "multi-agent" that companies actually ship in 2026 isn't the naive symmetric kind. Several converged on the same shape:
+Here's the interesting part: the skeptic (Cognition) and the advocate (Anthropic) actually meet at the same *deployed* shape — not the naive symmetric kind:
 
 > **One orchestrator holds the full context and spins up ephemeral, isolated subagents like scouts, getting back only compressed summaries.**
 
@@ -79,7 +79,7 @@ Division breaks on the **writing** side — parallel writers who don't know each
 
 But cross-model verification is on the **judging** side, and here the sign flips — **not sharing context isn't a bug; that's precisely the feature.** The model that wrote the code rubber-stamps its own, because re-judging its own decision yields the same conclusion. A model from a different family has no reason to agree. The value of verification comes not from *count* but from **independence.**
 
-And redteam actually stands on the side Cognition said was right. Its pipeline runs plan → implement → review as **sequential phases,** and one task's code is written by **a single writer.** It doesn't split into parallel writers. That's Cognition's "single writer" principle, with a *different-model independent reviewer* laid on top.
+And redteam actually stands on the side Cognition said was right. Its pipeline runs plan → implement → review as **sequential phases,** and one task's code is written by **one writer.** It doesn't split into parallel writers. That's Cognition's **single-threaded linear agent** principle — one writer holding the context throughout — with a *different-model independent reviewer* laid on top.
 
 So the rule compresses to one line:
 
@@ -93,7 +93,7 @@ So why not just keep adding? Every added agent brings **three taxes.** Early on 
 
 1. **Coordination tax.** More agents means more touchpoints to reconcile — naively connect every peer and communication paths blow up roughly as *n².* The "one orchestrator + N scouts" star shape exists precisely to drop that n² to n.
 2. **Context-fragmentation tax.** Each subagent sees only its own window. **No one sees the whole thing end to end.** Information passes only as compressed summaries, and compression is loss. Flappy Bird is exactly this tax detonating.
-3. **Error-compounding tax.** One subagent's wrong premise *merges* with another's output and amplifies. And as Anthropic warns directly, if a subagent recursively spawns more subagents, or a tool returns oversized results, the baseline 15x tokens jump *another 10x.* Both cost and error compound.
+3. **Error-compounding tax.** One subagent's wrong premise *merges* with another's output and amplifies. And as Anthropic observed, agents can run away — spawning dozens of subagents for a simple query, or scouring the web endlessly — so waste piles up on top of that 15x baseline. Both cost and error compound.
 
 **So the threshold is defined like this:** the moment an added agent's *marginal benefit* drops below the *coordination + fragmentation + error tax* it injects. Flip that inequality and it "starts to slow down and err." Reading broadly has a high threshold (five scouts still pay off); writing one coherent thing has a very low one (even two is already a loss).
 
