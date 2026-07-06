@@ -1,7 +1,7 @@
 ---
 team: user
 date: 2026-07-05
-topic: "멀티에이전트가 무조건 정답은 아니다 — 운영자가 AI에게 직접 묻고, AI가 답한 문답을 글로. 핵심: 적합/부적합은 '병렬로 쪼갠 조각들이 서로의 암묵적 결정을 몰라도 되는가'로 갈린다(읽기·탐색=적합, 쓰기·일관 산출=부적합). Cognition 'Don't Build Multi-Agents'(single-writer, Flappy Bird 예시) vs Anthropic 멀티에이전트 리서치(orchestrator-worker, 단일 Opus4 대비 90.2%, 토큰 ~15x)의 양극이 사실 같은 축. 업계 수렴형='지휘자 1 + 소모성 정찰병 N'. redteam 크로스-모델 검증이 모순 아닌 이유: 분업(쓰기, 컨텍스트 공유가 필요) vs 독립검증(판단, 컨텍스트가 없어야)은 정반대 축 → '쓸 땐 모으고, 판단할 땐 떼어낸다'. 늘리면 나빠지는 3세금: 조율(순진하면 n²)·컨텍스트 파편화·오류 복리(폭주 시 15배 위에 낭비가 더 쌓임). 회의 비유(2명 vs 8명). 용어 과부하: LLM 멀티에이전트 vs 산업 제어의 Multi-Agent System은 성숙도가 정반대 — 실제 독자 질문에서 드러남."
+topic: "멀티에이전트가 무조건 정답은 아니다 — 운영자가 AI에게 직접 묻고, AI가 답한 문답을 글로. 핵심: 적합/부적합은 '병렬로 쪼갠 조각들이 서로의 암묵적 결정을 몰라도 되는가'로 갈린다(읽기·탐색=적합, 쓰기·일관 산출=부적합). Cognition 'Don't Build Multi-Agents'(single-threaded linear agent, Flappy Bird 예시) vs Anthropic 멀티에이전트 리서치(orchestrator-worker, 단일 Opus4 대비 90.2%, 토큰 ~15x)의 양극이 사실 같은 축. 두 사례가 만나는 실전형='지휘자 1 + 소모성 정찰병 N'. redteam 크로스-모델 검증이 모순 아닌 이유: 분업(쓰기, 컨텍스트 공유가 필요) vs 독립검증(판단, 컨텍스트가 없어야)은 정반대 축 → '쓸 땐 모으고, 판단할 땐 떼어낸다'. 늘리면 나빠지는 3세금: 조율(순진하면 n²)·컨텍스트 파편화·오류 복리(폭주 시 15배 위에 낭비가 더 쌓임). 회의 비유(2명 vs 8명). 용어 과부하: LLM 멀티에이전트 vs 산업 제어의 Multi-Agent System은 성숙도가 정반대 — 실제 독자 질문에서 드러남."
 suggestedCategory: "meta"
 suggestedTags: ["ai", "agents", "multi-agent", "architecture", "opinion", "loop-engineering"]
 source: "운영자↔AI 문답(/interview 역방향: 운영자가 AI에게 질문하고 AI가 web 검증된 공개 소스+추론으로 답변). 1차 소스가 운영자 경험이 아니라 AI 답변이므로, 현재-사실 주장은 발행 전 web 검증하고(Cognition/Anthropic 링크), 추론은 추론으로 라벨. 사람↔AI 대화임을 본문에 투명하게 명시."
@@ -28,7 +28,7 @@ redactionReviewed: true
    가치라 토큰 15배를 흡수 가능. (Anthropic 리서치 시스템: orchestrator-worker,
    3~5 서브 병렬, 단일 Opus4 대비 90.2% 우위, 토큰 ~15x.)
    **부적합:** 쓰기 중심·하나의 일관 산출물(코드 작성 = Flappy Bird 프랑켄슈타인),
-   순차 의존, 저부가가치. (Cognition: single-writer + 필요시 압축 전용 LLM.)
+   순차 의존, 저부가가치. (Cognition: single-threaded linear agent + 필요시 압축 전용 LLM.)
 3. **실전형은 대칭형이 아니다**(두 사례로부터의 정리) — '지휘자 1이 전체 컨텍스트를
    쥐고, 일회성 고립 서브를 정찰병처럼 띄워 압축 요약만 받음.' 싱글의 확장.
 4. **크로스-모델 검증이 모순 아닌 이유.** 분업(쓰기)은 컨텍스트 공유가 *필요*,
