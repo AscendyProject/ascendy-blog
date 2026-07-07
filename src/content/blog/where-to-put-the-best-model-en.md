@@ -56,7 +56,7 @@ The funny part: I effectively *put it to a vote among AIs and went with the majo
 
 And in fact, **implementation is usually the most token-hungry stage** — you pour out long stretches of code, fix them, iterate. When the budget is tight, cheaping out *there* has the biggest saving leverage. Plan is low-token and high-leverage, so a good model; review has to catch failures, so a good model; the cheap model goes on what's left — implementation. That's what my camp 2 really is.
 
-Even **which model I use for implementation is decided by budget, not quality.** On personal projects I implement with Claude Sonnet; at work, with [Gemini 3.5 Flash](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/) (whose official positioning is literally "faster and cheaper for agents and coding"). Not because one is better — just *which budget I'm running on.*
+Even **which model I use for implementation is decided by budget, not quality.** On personal projects I implement with Claude Sonnet; at work, with [Gemini 3.5 Flash](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/) (which Google positions as a faster, cheaper model for agents and coding). Not because one is better — just *which budget I'm running on.*
 
 ## Why I won't go back — the top model gets caught in review anyway
 
@@ -77,7 +77,7 @@ So the cost constraint didn't force a *compromise* on me. It taught me that **us
 
 The conclusion of this story isn't "camp 2 is best." If anything, the opposite.
 
-The colleagues who chose camps 1 and 3 probably didn't do so because *their opinion differs from mine* — but because **their constraints differ from mine.** Someone running fewer parallel agents who never hits the limit; someone with a generous budget; someone whose tasks are ambiguous enough that implementation needs a lot of judgment too — each person's constraints decide each person's layout.
+I can't claim to know *why* the colleagues chose camps 1 and 3. But what my own experience clearly shows is that **a layout is driven far more by constraints than by opinion.** If you run fewer agents in parallel and never hit the limit, or have a generous budget, or your tasks are ambiguous enough that implementation needs a lot of judgment too — the optimal layout shifts. So if someone's layout differs from yours, ask whether the *constraints* differ before concluding the *opinion* does.
 
 So when someone says "this combination is the answer," you should ask back: *"under which constraints?"* What to put on plan, implement, and review isn't decided by a benchmark table. It's decided by **your budget, your rate limits, your parallelism, the shape of your work.** Even I won't go back to camp 3 if tokens go unlimited — and your situation differs from mine anyway.
 
