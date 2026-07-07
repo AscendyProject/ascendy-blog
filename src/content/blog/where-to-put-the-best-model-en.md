@@ -42,7 +42,7 @@ Each layout encodes a belief — an answer to *"if a limited budget let you spen
 - Bet on implement — "in the end, writing good code is what matters."
 - Bet on review — "mistakes will happen anyway. Catching them at the end is what matters."
 
-Each has a plausible logic. But the more I talked with people, the clearer it got that the real reason each of them picked their bet wasn't *logic.* It was **constraints.** And I learned that from my own experience.
+Each has a plausible logic. But the real reason *I* landed on my own layout wasn't *logic.* It was **constraints.** I learned that from my own experience.
 
 ## My path: top everywhere → a wall → cheap implementation
 
