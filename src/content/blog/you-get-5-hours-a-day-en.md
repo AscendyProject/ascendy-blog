@@ -41,7 +41,7 @@ Even under the fairly harsh assumption that you do *nothing else,* the time you 
 
 This is where AI comes in. Put AI to work and you can use **those 19 hours you couldn't.** Code runs while you sleep, while you eat, while you're doing your day job.
 
-Look at the cost. All these subscriptions together run about **$140/month** — Claude Max around $100, plus two $20 subscriptions (ChatGPT, Gemini). Divide by the day and it's **about $5.** *(Mid-2026 prices, which change often.)*
+Look at the cost. All these subscriptions together run about **$150/month** — Claude Max about $110 (that's with Korea's 10% VAT), plus ChatGPT and Gemini subscriptions at roughly $20 each. Divide by the day and it's **about $5.** *(Mid-2026, VAT-inclusive in Korea; prices change often.)*
 
 At $5 a day for 19 extra hours, that's **under 30 cents an hour — a few hundred won.** If someone asked "I'll get you one extra hour a day, will you pay a few hundred won," most people would pay *far* more; time is that precious. And this isn't one hour — it's **19.** There's no reason not to.
 
