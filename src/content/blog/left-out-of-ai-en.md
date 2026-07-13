@@ -24,11 +24,11 @@ redactionReviewed: true
 
 ## A friend who won't use it even for free
 
-Talking with a friend who's currently out of work, AI came up. He said he **barely uses it.** No work occasion to use it, doesn't feel much need, and grudges the subscription cost — so he uses the free tier now and then, search-style.
+Talking with a friend who's currently out of work, AI came up. They said they **barely use it.** No work occasion to use it, don't feel much need, and grudge the subscription cost — so they use the free tier now and then, search-style.
 
-Of course I didn't brag *"here's how much I use it."* I just listened quietly, and one thought landed. **The gap between me — employed, using AI at work, running it on my own dime — and this friend will widen even more in ten years.**
+Of course I didn't brag *"here's how much I use it."* I just listened quietly, and one thought landed. **The gap between me — employed, using AI at work, running it on my own dime — and this friend could widen even more in ten years.**
 
-Here's what I almost missed. At first I thought "so it's a money problem." It wasn't. He can actually **use AI for free** — the free tier exists. And he still doesn't. Because — *he has no reason to.*
+Here's what I almost missed. At first I thought "so it's a money problem." It wasn't. They can actually **use AI for free** — the free tier exists. And they still don't. Because — *they have no reason to.*
 
 ## The barrier isn't money — it's a reason
 
@@ -42,9 +42,9 @@ So the gap splits somewhere deeper than "those who can pay the subscription vs. 
 
 If it were just my one friend, it'd end as a personal anecdote. It doesn't.
 
-Korea's **"resting youth"** — young people who report neither working nor job-hunting, just resting — hit [469,000 in January 2026, a five-year high](https://biz.heraldcorp.com/article/10674465). And [the Bank of Korea's issue note](https://www.bok.or.kr/portal/bbs/P0002353/view.do?nttId=10095939) points to **"AI-driven technological change and a preference for experienced hires"** as structural factors worsening the youth labor market.
+Korea's **"resting youth"** — young people who report neither working nor job-hunting, just resting — hit [469,000 in January 2026, a five-year high](https://biz.heraldcorp.com/article/10674465). And the Bank of Korea, in one issue note, points to **"AI-driven technological change and a preference for experienced hires"** as among the structural factors worsening the youth labor market.
 
-So AI works doubly here. On one side it shrinks the entry-level slots juniors would take (pushing youth out of the labor market); on the other it grows the productivity of those already working, as leverage. **The distance between the pushed-out and the riding-on gets widened by AI from both sides.**
+So AI works doubly here. On one side it shrinks the entry-level slots juniors would take (pushing youth out of the labor market); on the other it grows the productivity of those already working, as leverage. **The distance between the pushed-out and the riding-on is, in effect, widened by AI from both sides.**
 
 ## I've been there too
 
@@ -60,7 +60,7 @@ So the real question is this. *If access (free AI) isn't the answer, what pulls 
 
 **First, a spark.** Back when I was studying for that exam, I watched [the 2016 match between AlphaGo and Lee Sedol](/en/blog/have-you-even-tried-it-en/). Just watching, the thought came: *"building something like that would be fun."* Not a grand resolution — one small flicker of interest.
 
-**Second, an on-ramp.** After failing and drifting as an out-of-work young man, while looking into "maybe I'll become a developer," I found the [SC IT Master program at the Korea International Trade Association's academy](http://www.itmasters.org/) — a 20-plus-year government-funded course geared to IT employment in Japan (its graduates number in the thousands). **A complete computer illiterate, I switched careers to developer there and even landed a job in Japan.**
+**Second, an on-ramp.** After failing and drifting as an out-of-work young man, while looking into "maybe I'll become a developer," I found the SC IT Master program at the Korea International Trade Association's academy — a 20-plus-year government-funded course geared to IT employment in Japan (its graduates number in the thousands). **A complete computer illiterate, I switched careers to developer there and even landed a job in Japan.**
 
 Here's the point. What pulled me out wasn't a *cheaper AI.* It was **a reason to pick it up (the spark) and a structured path that carries a beginner to an actual job (the on-ramp).** And only once that job existed did I get an *occasion* to use AI at all. The order is reversed — not the tool first, but the reason first.
 
@@ -75,7 +75,7 @@ One thing is clear, though. I'm standing on the side that holds this leverage, a
 ## Takeaways
 
 - **People won't use it even for free.** The barrier to the AI gap isn't only money — it's whether you have the *occasion and will* to use AI.
-- **AI widens the gap from both sides.** It shrinks entry-level slots and pushes people out, while growing working people's productivity as leverage.
+- **AI can widen the gap from both sides.** It shrinks entry-level slots and pushes people out, while growing working people's productivity as leverage.
 - **I've been there.** Out of work, I had no reason to pick up even a powerful tool. This is about a *state,* not a person's worth.
 - **The reason comes before the access.** What pulled me out wasn't cheaper AI but a spark (interest) and an on-ramp (a structured path). You can't hand over drive, but you can make sparks and on-ramps.
 
