@@ -1,6 +1,6 @@
 ---
 title: "The people left out of AI — I was unemployed once too"
-description: "Some won't use AI even for free — the barrier isn't money but having no reason to use it. AI widens the gap by will, not just money. You can subsidize access, not drive; but you can make sparks and on-ramps."
+description: "Some won't use AI even for free — the barrier isn't money but having no reason to use it. AI can widen the gap by will, not just money. You can subsidize access, not drive; but you can make sparks and on-ramps."
 pubDate: 2026-07-13
 author: "Ascendy Engineering"
 tags: ["ai", "inequality", "career", "society", "opinion", "future-of-work"]
