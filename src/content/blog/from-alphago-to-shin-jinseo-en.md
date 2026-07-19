@@ -16,7 +16,7 @@ redactionReviewed: true
 ## TL;DR
 
 - I became a developer because of 2016, [when AlphaGo beat Lee Sedol](/en/blog/have-you-even-tried-it-en/). Watching it, I thought *"building something like that would be fun."* But the mood in the world was one thing — **"humans can't beat AI at Go anymore."**
-- Then this week, the opposite scene arrived. World number one Shin Jinseo **won a two-stone handicap game against KataGo, the strongest Go AI in existence.** KataGo is built on that same AlphaGo — an engine that has grown far stronger over a decade.
+- Then this week, the opposite scene arrived. World number one Shin Jinseo **won a two-stone handicap game against KataGo, the strongest Go AI in existence.** KataGo carries on the lineage AlphaGo opened — an engine that has grown far stronger over a decade.
 - I don't read this as **"humans caught up to AI."** Through the lens of AI, *the way we see Go changed, and human Go evolved to follow that changed vision.*
 - And I think it's the same for developers — **AI evolves. Humans evolve too.** Not by *preserving the same skill,* but by *relocating the skill they hone.*
 
@@ -32,9 +32,9 @@ But the message the world read in that match was much heavier. *Go* had been som
 
 In July 2026, [world number one Shin Jinseo won a two-stone handicap game against KataGo, the strongest Go AI in existence](https://www.hankyung.com/article/202607192656i). A close fight to move 290, won by 4.5 points.
 
-To be honest, this isn't a clean-sweep story. **Over a two-day match he lost the first game outright and won the second — 1–1.** Even so, what makes the win special is *which* AI it was against. **KataGo is the strongest Go AI that exists today, built on the very AlphaGo that toppled Lee Sedol a decade ago.** Its algorithms and training are beyond comparison with back then. Against that, a human laid down two stones and won.
+To be honest, this isn't a clean-sweep story. **Over a two-day match he lost the first game outright and won the second — 1–1.** Even so, what makes the win special is *which* AI it was against. **KataGo is the strongest Go AI today, carrying on the lineage AlphaGo opened — the AlphaGo Zero / AlphaZero line of techniques — the lineage of the AlphaGo that toppled Lee Sedol a decade ago.** Its algorithms and training are beyond comparison with back then. Against that, a human laid down two stones and won.
 
-People who know Go rate this win as *comparable to Lee Sedol's single game.* (With engines so much stronger now, exactly what level "Shin taking two stones from KataGo" meets "the AlphaGo of back then" at is hard to measure precisely — that's the realm of estimate. But the direction is clear.)
+At a point where AI has grown this strong, these two stones read as *symbolic enough to stand beside Lee Sedol's single game.* (Though with engines so much stronger now, exactly what level "Shin taking two stones from KataGo" meets "the AlphaGo of back then" at is hard to measure precisely — that's the realm of estimate. But the direction is clear.)
 
 ## Not "caught up" — the lens changed, and humans evolved
 
