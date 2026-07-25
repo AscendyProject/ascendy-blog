@@ -32,11 +32,11 @@ If it ended at the individual level, fine. The problem is when it becomes *socie
 
 You might say "isn't that a conspiracy theory?" No. The *capability* already exists, and is already deployed.
 
-The clearest example is China's AI models. As widely reported, [one Chinese open-source model deflects or refuses on sensitive topics like Tiananmen, Taiwan, and criticism of Xi Jinping](https://www.forbes.com/sites/maryroeloffs/2025/01/27/does-deepseek-censor-its-answers-we-asked-5-questions-on-sensitive-china-topics/). In [one study it avoided answering about 85% of sensitive prompts](https://techcrunch.com/2025/01/29/deepseeks-ai-avoids-answering-85-of-prompts-on-sensitive-topics-related-to-china), and to "Where is Taiwan?" it echoed the official line, *"Taiwan is an inalienable part of China."* Analyses suggest this isn't a filter applied after the fact but censorship *built into the model* from the training stage.
+The clearest example is China's AI models. As widely reported, [one Chinese open-source model deflects or refuses on sensitive topics like Tiananmen, Taiwan, and criticism of Xi Jinping](https://www.forbes.com/sites/maryroeloffs/2025/01/27/does-deepseek-censor-its-answers-we-asked-5-questions-on-sensitive-china-topics/). In [one study it avoided answering about 85% of sensitive prompts](https://techcrunch.com/2025/01/29/deepseeks-ai-avoids-answering-85-of-prompts-on-sensitive-topics-related-to-china), and to "Where is Taiwan?" it echoed the official line, *"Taiwan is an inalienable part of China."* Analyses suggest this isn't a surface filter on a few topics but *censorship boundaries woven into the model's responses themselves.*
 
 Don't misread it. This isn't about which country is bad. I raise it only as **evidence that embedding a particular ideology or boundary into an AI is technically possible, and has actually been deployed.**
 
-So what about the mainstream models we use? Fortunately, right now, thanks to safety guards in the system prompt, they mostly appear politically neutral. But here's what we mustn't miss — **that neutrality is a *choice,* not an *absence of capability.*** The capability is structural, and the choice can change anytime. Leaning your defense on *goodwill* is not a defense.
+So what about the mainstream models we use? Fortunately, right now, thanks to safety guards and policies, they mostly appear politically neutral. But here's what we mustn't miss — **that neutrality is a *choice,* not an *absence of capability.*** The capability is structural, and the choice can change anytime. Leaning your defense on *goodwill* is not a defense.
 
 ## Defense 1: philosophy lets you see the frame from outside
 
