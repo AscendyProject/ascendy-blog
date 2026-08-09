@@ -1,23 +1,53 @@
 @import "tailwindcss";
 
 /* ── 디자인 토큰 ────────────────────────────────────────────────
-   미니멀하되 사람이 읽기 좋게. 외부 폰트/추적 없이 시스템 폰트 + 단일 악센트. */
+   미니멀하되 사람이 읽기 좋게. 외부 폰트/추적 없이 시스템 폰트 + 단일 악센트.
+   accent와 배경 톤은 본 서비스(ascendy.ai)의 브랜드 팔레트에 맞춘다 —
+   라이트 primary #1867C0, 다크 primary #F3A169(로고의 앰버), 다크 배경 #121212.
+
+   라이트가 기본이고 다크는 두 경로로 켜진다:
+     1) OS 설정(prefers-color-scheme)
+     2) 헤더 토글의 명시적 선택 — html[data-theme]에 기록되고 OS 설정을 이긴다
+   그래서 다크 값은 두 군데에 정의한다. 미디어 쿼리 쪽에 :not([data-theme="light"])
+   가드가 없으면 "OS는 다크인데 토글로 라이트를 골랐다"가 무시된다. */
 :root {
+  color-scheme: light;
   --content-max: 70ch;
-  --accent: #4f46e5;        /* indigo-600 */
-  --accent-hover: #4338ca;  /* indigo-700 */
+  --bg: #ffffff;
+  --fg: #171717;            /* neutral-900 */
+  --fg-soft: #404040;       /* neutral-700 — 카드 본문처럼 살짝 눌린 텍스트 */
+  --surface: #fafafa;       /* neutral-50 — 카드/보조 표면 */
+  --accent: #1867c0;        /* ascendy.ai light primary */
+  --accent-hover: #12508f;
   --rule: #e5e5e5;          /* neutral-200 */
   --muted: #6b7280;         /* neutral-500 */
   --code-bg: #f4f4f5;       /* zinc-100 */
 }
 @media (prefers-color-scheme: dark) {
-  :root {
-    --accent: #a5b4fc;        /* indigo-300 */
-    --accent-hover: #c7d2fe;  /* indigo-200 */
-    --rule: #27272a;          /* zinc-800 */
-    --muted: #9ca3af;         /* neutral-400 */
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121212;            /* ascendy.ai dark background */
+    --fg: #f2f2f2;
+    --fg-soft: #c8c8c8;
+    --surface: #212121;       /* ascendy.ai dark surface */
+    --accent: #f3a169;        /* ascendy.ai dark primary */
+    --accent-hover: #f8bd91;
+    --rule: #2e2e2e;
+    --muted: #9a9a9a;
     --code-bg: #1e1e22;
   }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121212;
+  --fg: #f2f2f2;
+  --fg-soft: #c8c8c8;
+  --surface: #212121;
+  --accent: #f3a169;
+  --accent-hover: #f8bd91;
+  --rule: #2e2e2e;
+  --muted: #9a9a9a;
+  --code-bg: #1e1e22;
 }
 
 html {
@@ -27,15 +57,23 @@ html {
 }
 
 body {
-  @apply bg-white text-neutral-900 antialiased;
+  @apply antialiased;
+  background: var(--bg);
+  color: var(--fg);
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     "Helvetica Neue", "Apple SD Gothic Neo", "Pretendard", sans-serif;
   font-size: 1.0625rem;   /* 17px 본문 */
   line-height: 1.7;
 }
-@media (prefers-color-scheme: dark) {
-  body { @apply bg-neutral-950 text-neutral-100; }
-}
+
+/* ── 크롬(헤더·푸터·카드) 공용 유틸 ─────────────────────────────
+   Tailwind의 neutral-* 를 컴포넌트에 하드코딩하면 한쪽 테마에서만 맞고
+   다른 쪽에서는 글자가 배경에 묻힌다(/projects 카드가 다크에서 안 보이던
+   원인). 크롬 색은 전부 이 토큰 유틸을 거친다. */
+.u-fg      { color: var(--fg); }
+.u-fg-soft { color: var(--fg-soft); }
+.u-muted   { color: var(--muted); }
+.u-card    { border: 1px solid var(--rule); background: var(--surface); }
 
 /* ── 본문 컨테이너 + 타이포 ─────────────────────────────────── */
 .prose-ascendy {
