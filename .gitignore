@@ -40,3 +40,9 @@ docs/requests/
 public/llms.txt
 public/llms-full.txt
 public/sitemap-*.xml
+
+# redteam 하네스(로컬 전용). /redteam:review 를 돌리려고 vendor하는 파일들로,
+# public repo에 올리지 않는다 — 필요한 환경에서 `redteam-install .` 로 다시 깐다.
+# `.claude/commands/` 는 계속 추적한다(인터뷰 하네스 등 편집 워크플로).
+.redteam/
+.claude/agents/
