@@ -1,0 +1,71 @@
+---
+// 라이트/다크 토글. 기본값은 OS 설정(prefers-color-scheme)을 그대로 따르고,
+// 사용자가 한 번 누른 순간부터 그 선택이 localStorage에 남아 OS 설정을 이긴다.
+// 첫 페인트 전에 선택을 적용하는 일(깜빡임 방지)은 BaseHead의 인라인
+// 스크립트가 맡는다 — 이 컴포넌트의 스크립트는 클릭 처리만 한다.
+import { defaultLang, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<button id="theme-toggle" type="button" class="theme-toggle" aria-label={t('themeToggle')} title={t('themeToggle')}>
+  <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+  </svg>
+  <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+  </svg>
+</button>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 9999px;
+    border: 1px solid var(--rule);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .theme-toggle:hover {
+    color: var(--fg);
+    border-color: var(--muted);
+  }
+
+  /* 아이콘은 "누르면 가는 곳"을 보여준다 — 라이트에선 달, 다크에선 해.
+     global.css의 토큰과 같은 3갈래 선택자를 써야 토글이 양방향으로 이긴다. */
+  .icon-sun { display: none; }
+  .icon-moon { display: block; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .icon-sun { display: block; }
+    :root:not([data-theme="light"]) .icon-moon { display: none; }
+  }
+  :root[data-theme="dark"] .icon-sun { display: block; }
+  :root[data-theme="dark"] .icon-moon { display: none; }
+</style>
+
+<script>
+  const root = document.documentElement;
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    // data-theme이 아직 없으면 지금 보이는 테마는 OS 설정이 정한 것이다.
+    const osDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const current = root.dataset.theme ?? (osDark ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      /* 프라이빗 모드 등 localStorage 차단 — 이번 페이지에서만 적용되고 끝난다. */
+    }
+  });
+</script>

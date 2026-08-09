@@ -2,6 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import SchemaOrg from '../components/SchemaOrg.astro';
 import ProjectOrigin from '../components/ProjectOrigin.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
 import { defaultLang, localeTag, localizePath, useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -58,15 +59,19 @@ const siteUrl = Astro.site?.toString() ?? 'https://blog.ascendy.ai';
     />
   </head>
   <body>
-    <header class="prose-ascendy !py-6 flex items-baseline justify-between">
-      <a href={localizePath('/', lang)} class="text-sm text-neutral-500 hover:text-neutral-900">← Ascendy</a>
-      {other && <a href={other.url} class="text-sm text-neutral-500 hover:text-neutral-900">{t('switchLabel')}</a>}
+    <header class="prose-ascendy !py-6 flex items-center justify-between gap-4">
+      <a href={localizePath('/', lang)} class="text-sm">← Ascendy</a>
+      <nav class="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 text-sm">
+        <a href="https://ascendy.ai" target="_blank" rel="noopener">{t('navService')}</a>
+        {other && <a href={other.url}>{t('switchLabel')}</a>}
+        <ThemeToggle lang={lang} />
+      </nav>
     </header>
 
     <article class="prose-ascendy">
-      <p class="text-xs uppercase tracking-wide text-neutral-500">{props.category}</p>
+      <p class="text-xs uppercase tracking-wide u-muted">{props.category}</p>
       <h1>{props.title}</h1>
-      <p class="text-sm text-neutral-500">
+      <p class="text-sm u-muted">
         <time datetime={props.pubDate.toISOString()}>
           {props.pubDate.toISOString().slice(0, 10)}
         </time>
@@ -76,7 +81,7 @@ const siteUrl = Astro.site?.toString() ?? 'https://blog.ascendy.ai';
       <slot />
       {props.origin && <ProjectOrigin origin={props.origin} lang={lang} />}
       <hr />
-      <p class="text-xs text-neutral-500">
+      <p class="text-xs u-muted">
         {t('tags')}: {props.tags.join(', ')}
       </p>
     </article>

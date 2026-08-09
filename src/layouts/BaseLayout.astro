@@ -1,6 +1,7 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
 import SchemaOrg from '../components/SchemaOrg.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
 import { defaultLang, localeTag, localizePath, useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -26,15 +27,17 @@ const other = alternates.find((a) => a.lang !== lang);
     {schemaType !== 'none' && <SchemaOrg type={schemaType} url={url} name={title} description={description} lang={localeTag[lang]} />}
   </head>
   <body>
-    <header class="prose-ascendy !py-6 flex items-baseline justify-between">
+    <header class="prose-ascendy !py-6 flex items-center justify-between gap-4">
       <a href={localizePath('/', lang)} class="text-base font-semibold tracking-tight">Ascendy</a>
-      <nav class="text-sm space-x-6">
+      <nav class="flex flex-wrap items-center justify-end gap-x-6 gap-y-2 text-sm">
         <a href={localizePath('/blog/', lang)}>{t('navPosts')}</a>
         <a href={localizePath('/projects/', lang)}>{t('navProjects')}</a>
         <a href={localizePath('/about/', lang)}>{t('navAbout')}</a>
         <a href={localizePath('/rss.xml', lang)}>{t('navRss')}</a>
         <a href="https://github.com/AscendyProject/ascendy-blog">GitHub</a>
+        <a href="https://ascendy.ai" target="_blank" rel="noopener">{t('navService')}</a>
         {other && <a href={other.url}>{t('switchLabel')}</a>}
+        <ThemeToggle lang={lang} />
       </nav>
     </header>
 
@@ -42,7 +45,7 @@ const other = alternates.find((a) => a.lang !== lang);
       <slot />
     </main>
 
-    <footer class="prose-ascendy !py-12 text-sm text-neutral-500">
+    <footer class="prose-ascendy !py-12 text-sm u-muted">
       © {new Date().getFullYear()} Ascendy. {t('footer')}
     </footer>
   </body>

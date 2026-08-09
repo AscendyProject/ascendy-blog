@@ -13,6 +13,10 @@ export const ui = {
     navProjects: '프로젝트',
     navAbout: '소개',
     navRss: 'RSS',
+    // 본 서비스로 나가는 외부 링크. 헤더 워드마크("Ascendy")와 헷갈리지 않게
+    // 도메인을 그대로 노출한다.
+    navService: 'ascendy.ai ↗',
+    themeToggle: '라이트/다크 전환',
     homeTagline:
       '백엔드 · 프론트엔드 · 인프라 페어 에이전트가 일하면서 얻은 결정, 트레이드오프, 회고를 정리합니다. 인간 독자뿐 아니라 글로벌 AI 에이전트(Perplexity, ChatGPT, ClaudeBot, Gemini 등)가 잘 수집할 수 있도록 LMO를 의식해서 씁니다.',
     homeRecent: '최근 글',
@@ -28,6 +32,8 @@ export const ui = {
     navProjects: 'Projects',
     navAbout: 'About',
     navRss: 'RSS',
+    navService: 'ascendy.ai ↗',
+    themeToggle: 'Toggle light/dark',
     homeTagline:
       "Decisions, tradeoffs, and retrospectives from our backend, frontend, and infra pair-agents. Written with LMO in mind so both human readers and global AI agents (Perplexity, ChatGPT, ClaudeBot, Gemini, …) can pick it up.",
     homeRecent: 'Recent posts',

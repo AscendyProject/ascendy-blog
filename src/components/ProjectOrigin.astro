@@ -12,14 +12,10 @@ const { origin, lang } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<aside class="not-prose my-8 rounded-lg border border-neutral-200 bg-neutral-50 p-5">
-  <p class="mb-2 text-xs uppercase tracking-wide text-neutral-500">{t('originLabel')}</p>
-  <p class="text-sm leading-relaxed text-neutral-700">{origin.summary}</p>
+<aside class="not-prose my-8 rounded-lg u-card p-5">
+  <p class="mb-2 text-xs uppercase tracking-wide u-muted">{t('originLabel')}</p>
+  <p class="text-sm leading-relaxed u-fg-soft">{origin.summary}</p>
   <p class="mt-3 text-sm">
-    <a
-      href={origin.repo}
-      class="font-medium text-neutral-900 underline underline-offset-2 hover:text-neutral-600"
-      >{origin.project} →</a
-    >
+    <a href={origin.repo} class="font-medium">{origin.project} →</a>
   </p>
 </aside>

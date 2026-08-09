@@ -74,8 +74,12 @@ const ui = {
     scroll-margin-top: 1.5rem;
     color: var(--text);
   }
+  /* 이 위젯은 자체 팔레트를 쓰므로 다크 전환도 자체적으로 걸어야 한다.
+     global.css의 토큰과 같은 3갈래 선택자를 써야 헤더 토글이 위젯에도
+     먹는다 — 미디어 쿼리만 두면 "OS는 다크인데 토글로 라이트"일 때
+     본문만 밝아지고 위젯 혼자 어두운 채로 남는다. */
   @media (prefers-color-scheme: dark) {
-    #diagnostic {
+    :root:not([data-theme="light"]) #diagnostic {
       --bg: #1f1f1d;
       --surface: #2a2a27;
       --surface-2: #34332f;
@@ -85,6 +89,16 @@ const ui = {
       --accent: #85b7eb;
       --accent-soft: rgba(133, 183, 235, 0.16);
     }
+  }
+  :root[data-theme="dark"] #diagnostic {
+    --bg: #1f1f1d;
+    --surface: #2a2a27;
+    --surface-2: #34332f;
+    --text: #f0efe9;
+    --text-muted: #b4b2a9;
+    --border: rgba(255, 255, 255, 0.15);
+    --accent: #85b7eb;
+    --accent-soft: rgba(133, 183, 235, 0.16);
   }
   #diagnostic .card {
     background: var(--bg);
@@ -194,13 +208,19 @@ const ui = {
   #diagnostic .s5 { background: #faece7; color: #4a1b0c; }
   #diagnostic .s6 { background: #fbeaf0; color: #4b1528; }
   @media (prefers-color-scheme: dark) {
-    #diagnostic .s1 { background: #444441; color: #f1efe8; }
-    #diagnostic .s2 { background: #0c447c; color: #e6f1fb; }
-    #diagnostic .s3 { background: #085041; color: #e1f5ee; }
-    #diagnostic .s4 { background: #3c3489; color: #eeedfe; }
-    #diagnostic .s5 { background: #712b13; color: #faece7; }
-    #diagnostic .s6 { background: #72243e; color: #fbeaf0; }
+    :root:not([data-theme="light"]) #diagnostic .s1 { background: #444441; color: #f1efe8; }
+    :root:not([data-theme="light"]) #diagnostic .s2 { background: #0c447c; color: #e6f1fb; }
+    :root:not([data-theme="light"]) #diagnostic .s3 { background: #085041; color: #e1f5ee; }
+    :root:not([data-theme="light"]) #diagnostic .s4 { background: #3c3489; color: #eeedfe; }
+    :root:not([data-theme="light"]) #diagnostic .s5 { background: #712b13; color: #faece7; }
+    :root:not([data-theme="light"]) #diagnostic .s6 { background: #72243e; color: #fbeaf0; }
   }
+  :root[data-theme="dark"] #diagnostic .s1 { background: #444441; color: #f1efe8; }
+  :root[data-theme="dark"] #diagnostic .s2 { background: #0c447c; color: #e6f1fb; }
+  :root[data-theme="dark"] #diagnostic .s3 { background: #085041; color: #e1f5ee; }
+  :root[data-theme="dark"] #diagnostic .s4 { background: #3c3489; color: #eeedfe; }
+  :root[data-theme="dark"] #diagnostic .s5 { background: #712b13; color: #faece7; }
+  :root[data-theme="dark"] #diagnostic .s6 { background: #72243e; color: #fbeaf0; }
 
   #diagnostic .lmo { margin-top: 2.5rem; font-size: 13px; color: var(--text-muted); }
   #diagnostic .lmo summary { cursor: pointer; }
