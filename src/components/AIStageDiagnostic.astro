@@ -63,8 +63,10 @@ const ui = {
     --text: #1a1a18;
     --text-muted: #5f5e5a;
     --border: rgba(0, 0, 0, 0.12);
-    --accent: #185fa5;
-    --accent-soft: rgba(24, 95, 165, 0.1);
+    /* 위젯은 자체 팔레트(따뜻한 종이색)를 쓰지만 accent만은 사이트 브랜드 색과
+       같이 간다 — 안 그러면 페이지의 링크는 주황인데 이 안의 버튼만 파랗다. */
+    --accent: #b24709;
+    --accent-soft: rgba(178, 71, 9, 0.1);
     --radius: 12px;
     --radius-sm: 8px;
     max-width: 640px;
@@ -86,8 +88,8 @@ const ui = {
       --text: #f0efe9;
       --text-muted: #b4b2a9;
       --border: rgba(255, 255, 255, 0.15);
-      --accent: #85b7eb;
-      --accent-soft: rgba(133, 183, 235, 0.16);
+      --accent: #f3a169;
+      --accent-soft: rgba(243, 161, 105, 0.16);
     }
   }
   :root[data-theme="dark"] #diagnostic {
@@ -97,8 +99,8 @@ const ui = {
     --text: #f0efe9;
     --text-muted: #b4b2a9;
     --border: rgba(255, 255, 255, 0.15);
-    --accent: #85b7eb;
-    --accent-soft: rgba(133, 183, 235, 0.16);
+    --accent: #f3a169;
+    --accent-soft: rgba(243, 161, 105, 0.16);
   }
   #diagnostic .card {
     background: var(--bg);
