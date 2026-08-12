@@ -1,5 +1,5 @@
 ---
-title: "Making search honest revealed the real bug — it was searching 1% of the index"
+title: "Making search honest revealed the real bug — it was probing 1% of the clusters"
 description: "An agent returned the wrong photos and said 'Found 30.' The first fix wasn't search quality but making search admit when it found nothing — and that honesty flag became a probe that exposed two deeper causes."
 pubDate: 2026-08-12
 author: "Ascendy Engineering"
@@ -19,7 +19,7 @@ redactionReviewed: true
 - The first diagnosis wasn't search quality — it was **honesty.** Top-k nearest-neighbor search fills k results regardless of relevance as long as candidates exist; it **cannot say "none."** When every filter fired and the candidate set hit zero, a fallback returned a raw nearest-N with no threshold — and because the return type was a plain list, **the caller couldn't tell a fallback from a properly ranked result.**
 - So the fix wasn't to the search; it was to the **return shape.** One fallback flag, propagated through the whole pipeline. **The result IDs are byte-for-byte identical. Only the way it speaks changed.**
 - Then that flag turned into an **observability probe.** With it on, nearly *every* search was falling through to fallback. The threshold sat almost twice as high as this embedding model's actual match band — and even after recalibrating it, the candidate count was still single digits.
-- The real culprit sat a layer deeper: **the ANN index parameters.** The index had been built with many clusters but configured to probe only a tiny fraction of them — **sweeping barely 1% of the index's clusters.** At this scale the team judged that probing every cluster costs little enough, and an exhaustive probe is by definition not an approximation. *The time the approximation could save was small to begin with, while the recall it cost was not.*
+- The real culprit sat a layer deeper: **the ANN index parameters.** The index had been built with many clusters but configured to probe only a tiny fraction of them — **sweeping barely 1% of all clusters.** At this scale the team judged that probing every cluster costs little enough, and probing all of them at least removes the loss that comes from *never looking at a list.* *The time the approximation could save was small to begin with, while the recall it cost was not.*
 
 > **Source note.** Written from two backend-team intakes (fallback honesty / ANN parameter starvation) merged into one piece — they are the front and back of a single incident. Internal code identifiers, infrastructure and serving configuration, and absolute figures that would pin down scale are generalized; personal photo content is not described. The prior decision in this same search stack is in [we dropped the reranker](/en/blog/dropping-the-reranker-en/).
 
@@ -86,9 +86,9 @@ We suspected index coverage — maybe many photos never got embedded? A recount 
 
 The culprit was the **IVF index parameters.** IVF-family ANN indexes partition vectors into clusters (`nlist`) and, at query time, probe only some of them (`nprobe`). A standard trade — give up a little accuracy for speed.
 
-But this index had been built with **many clusters while probing only a sliver of them.** As a ratio: about **1% of the index.** The other 99% may as well not have existed on any given query.
+But this index had been built with **many clusters while probing only a sliver of them.** As a ratio: about **1% of all clusters.** The vectors sitting in the rest may as well not have existed on any given query. (List lengths are uneven, so this does not mean "99% of the vectors" — that is a separate number you have to measure.)
 
-Where that setting came from was obvious. It was **a recipe for millions of vectors, copied onto a far smaller collection.** At that scale the values are reasonable. At this one, **the team judged that probing every cluster costs little enough.** And an exhaustive probe is by definition not an approximation — it skips no list, so for the vectors in the index there is no approximation-induced recall loss.
+Where that setting came from was obvious. It was **a recipe for millions of vectors, copied onto a far smaller collection.** At that scale the values are reasonable. At this one, **the team judged that probing every cluster costs little enough.** And probing every cluster **removes the loss that comes from never looking at a list.** (If the index stores compressed vectors, quantization loss remains, separately — what disappears here is the list-selection axis.)
 
 Which means the time the approximation could save was small to begin with, while the recall it cost was not.
 
@@ -106,7 +106,7 @@ That estimate **landed in the same order of magnitude as the observed candidate 
 
 But it's worth stepping back here. **This is a consistency check, not a proof.** The formula assumes vectors are spread evenly across clusters, whereas IVF list lengths are in fact uneven, and `nprobe` doesn't take a random sample — it picks the centroids *nearest the query.* All the order-of-magnitude agreement tells you is "this is not inconsistent with the index-parameter hypothesis," not "this is the cause."
 
-It still earned its keep, though, because **it reordered the hypotheses.** Coverage had already been erased by measurement; the parameter hypothesis was consistent with what we saw. So the next move was exhaustive probing — sweep every cluster and *the approximation drops out as a variable,* so if candidates still don't recover, the hypothesis is immediately shown to be wrong.
+It still earned its keep, though, because **it reordered the hypotheses.** Coverage had already been erased by measurement; the parameter hypothesis was consistent with what we saw. So the next move was exhaustive probing — sweep every cluster and *list selection drops out as a variable,* so if candidates still don't recover, the hypothesis is immediately shown to be wrong.
 
 This is a tool worth reaching for constantly. **When you have an observation and a hypothesis, compute the number your hypothesis predicts and check it against the observation.** If it doesn't match, either the hypothesis is wrong or there's another layer. If it does — you don't have a diagnosis; you have *a reason to test that hypothesis first.* Blur that distinction and a consistency check gets promoted to a proof.
 
