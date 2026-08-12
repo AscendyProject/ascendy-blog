@@ -16,7 +16,7 @@ redactionReviewed: true
 ## TL;DR
 
 - We asked the photo platform's AI agent for photos in a specific category. It returned **30 photos from an entirely different category and confidently said "Found 30 photos."**
-- The first diagnosis wasn't search quality — it was **honesty.** Top-k nearest-neighbor search always returns k results regardless of relevance; it **cannot say "none."** When every filter fired and the candidate set hit zero, a fallback returned a raw nearest-N with no threshold — and because the return type was a plain list, **the caller couldn't tell a fallback from a properly ranked result.**
+- The first diagnosis wasn't search quality — it was **honesty.** Top-k nearest-neighbor search fills k results regardless of relevance as long as candidates exist; it **cannot say "none."** When every filter fired and the candidate set hit zero, a fallback returned a raw nearest-N with no threshold — and because the return type was a plain list, **the caller couldn't tell a fallback from a properly ranked result.**
 - So the fix wasn't to the search; it was to the **return shape.** One fallback flag, propagated through the whole pipeline. **The result IDs are byte-for-byte identical. Only the way it speaks changed.**
 - Then that flag turned into an **observability probe.** With it on, nearly *every* search was falling through to fallback. The threshold sat almost twice as high as this embedding model's actual match band — and even after recalibrating it, the candidate count was still single digits.
 - The real culprit sat a layer deeper: **the ANN index parameters.** The index had been built with many clusters but configured to probe only a tiny fraction of them — **sweeping barely 1% of the index's clusters.** At this scale the team judged that probing every cluster costs little enough, and an exhaustive probe is by definition not an approximation. *The time the approximation could save was small to begin with, while the recall it cost was not.*
@@ -35,7 +35,7 @@ What matters here isn't *that* it was wrong but **how** it was wrong. Not an err
 
 The first layer of cause lives in the structure of vector search itself.
 
-Top-k nearest-neighbor search **always returns k results, regardless of relevance.** If the library holds nothing on that subject, then the "least far" thing from that query becomes **whatever dominates the library.** The distance is large but the rank is still first. For top-k, the output "nothing suitable here" simply does not exist.
+Top-k nearest-neighbor search **fills k results regardless of relevance, as long as there are candidates to fill them with.** It returns fewer only when the searchable population is smaller than k — never because relevance was too low. If the library holds nothing on that subject, then the "least far" thing from that query becomes **whatever dominates the library.** The distance is large but the rank is still first. For top-k, the output "nothing suitable here" simply does not exist.
 
 There were, of course, two lines of defense against this:
 
@@ -120,13 +120,13 @@ Looking back, the most practical lesson from this incident was sequencing.
 2. **Measure coverage** — a read-only script an operator runs, 0 deploys
 3. **Fix the parameters** — 1 deploy
 
-Each step **cut the next step's hypothesis space by at least half.** Step 2 in particular erased an entire hypothesis with no deploy at all ("it isn't missing data"). In production debugging, deploys are expensive and slow. Eliminate the hypotheses you can eliminate without one, and the remaining deploy budget goes to the actual fix.
+Each step **noticeably narrowed what the next one had to check.** Step 2 in particular erased an entire hypothesis with no deploy at all ("it isn't missing data"). In production debugging, deploys are expensive and slow. Eliminate the hypotheses you can eliminate without one, and the remaining deploy budget goes to the actual fix.
 
 Finally, a small convention. **Next to a threshold constant, leave a comment recording the measured distribution that justified it.** A constant with no stated basis is one the next person can't touch, and one that silently becomes wrong the moment you change models.
 
 ## Takeaways
 
-- **Top-k cannot say "none."** It always returns k, so when nothing matches, whatever dominates the dataset comes first. Thresholds are not optional.
+- **Top-k cannot say "none."** It fills k while candidates exist and never rejects on relevance, so when nothing matches, whatever dominates the dataset comes first. Thresholds are not optional.
 - **Honesty is an axis separate from search quality, and usually cheaper.** Returning the same results while saying "no matches; here's what's similar" is enough to protect trust.
 - **If you build a fallback, propagate the fact to the caller** — especially when the final consumer is an LLM, which amplifies the tone of its tool output.
 - **An honesty flag is an observability probe in its own right.** Naming a silent failure path makes its frequency measurable, and that measurement is what pulled out the real causes.
