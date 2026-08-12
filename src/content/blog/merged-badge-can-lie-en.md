@@ -91,11 +91,13 @@ But the test is **asymmetric**, and you have to know that to use it.
 - **True is conclusive.** That PR's merge result is reachable from `main`.
 - **False is a flag, not a verdict.** It may be lost — but a *healthy stacked PR* also comes back false: if it merged into the lower branch first and that branch was then squashed, its content is safely in `main` while its merge commit stays on the discarded lineage.
 
-So when it comes back false, confirm by content. For a PR that adds new files, an existence check is enough.
+So when it comes back false, confirm by content. For a PR that adds new files, a path-existence check is the cheapest first pass.
 
 ```bash
 git ls-tree -r main --name-only | grep '<expected/path>'
 ```
+
+This too is conclusive in one direction only. **Absence proves it didn't land**, but **presence does not prove your PR's content landed** — another PR may have created the same path first, or a placeholder version may be sitting there. If the path exists, you still have to look at the content.
 
 For a PR that modifies or deletes existing files, don't compare final contents — if `main` edited the same files after landing, the difference misleads you. Ask whether *that PR's patch* is contained in `main`.
 
@@ -103,14 +105,15 @@ For a PR that modifies or deletes existing files, don't compare final contents �
 # Reverse-apply is evaluated against the current worktree. Run it on the PR
 # branch and it trivially succeeds against its own patch, so you must ask it
 # from a worktree checked out at main.
-git worktree add /tmp/main-check main
-git diff "$(git merge-base <base> <head>)" <head> -- <paths> > /tmp/pr.patch
+# Use mktemp for scratch paths — a fixed name under /tmp can be pre-created.
+tmp="$(mktemp -d)"; trap 'git worktree remove --force "$tmp/main" 2>/dev/null; rm -rf "$tmp"' EXIT
 
-git -C /tmp/main-check apply --check --reverse /tmp/pr.patch \
+git worktree add "$tmp/main" main
+git diff "$(git merge-base <base> <head>)" <head> -- <paths> > "$tmp/pr.patch"
+
+git -C "$tmp/main" apply --check --reverse "$tmp/pr.patch" \
   && echo "main already contains this patch" \
   || echo "inconclusive — a human has to look"
-
-git worktree remove /tmp/main-check
 ```
 
 This too fails when the files changed further after landing, so **a failure is not proof of loss.**

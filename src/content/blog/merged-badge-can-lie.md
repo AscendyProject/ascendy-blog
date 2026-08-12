@@ -91,25 +91,28 @@ git merge-base --is-ancestor \
 - **참이면 확정이다.** 그 PR의 머지 결과가 `main`에서 도달 가능하다.
 - **거짓이면 확정이 아니라 플래그다.** 유실일 수도 있지만, *정상적인 스택 PR*도 거짓이 나온다 — 아래 브랜치에 먼저 머지된 뒤 그 브랜치가 squash되면 위 PR의 내용은 `main`에 잘 들어가지만 그 머지 커밋은 버려진 계보에 남기 때문이다.
 
-그래서 거짓이 나오면 내용으로 한 번 더 확인한다. 파일을 새로 추가하는 PR이라면 존재 확인으로 충분하다.
+그래서 거짓이 나오면 내용으로 한 번 더 확인한다. 파일을 새로 추가하는 PR이라면 경로 존재 확인이 가장 싼 1차 선별이다.
 
 ```bash
 git ls-tree -r main --name-only | grep '<있어야 할 경로>'
 ```
+
+이것도 한쪽으로만 결정적이다. **없으면 확실히 안 들어간 것**이지만, **있다고 그 PR의 내용이 들어갔다는 뜻은 아니다** — 다른 PR이 같은 경로를 먼저 만들었거나 자리만 잡아둔 버전이 들어 있을 수 있다. 경로가 있으면 내용까지 봐야 한다.
 
 기존 파일을 고치거나 지우는 PR이라면 최종 내용을 비교하면 안 된다 — 반영된 뒤 `main`이 같은 파일을 더 고쳤을 때 차이가 나서 오판한다. *그 PR의 패치가 `main`에 담겼는지*를 물어야 한다.
 
 ```bash
 # 역적용은 "현재 워크트리" 기준이다. PR 브랜치에서 그냥 돌리면 자기 패치라
 # 항상 성공하니, 반드시 main을 체크아웃한 워크트리에서 물어야 한다.
-git worktree add /tmp/main-check main
-git diff "$(git merge-base <base> <head>)" <head> -- <경로들> > /tmp/pr.patch
+# 작업 경로는 mktemp로 — /tmp에 고정 이름을 쓰면 남이 미리 만들어 둘 수 있다.
+tmp="$(mktemp -d)"; trap 'git worktree remove --force "$tmp/main" 2>/dev/null; rm -rf "$tmp"' EXIT
 
-git -C /tmp/main-check apply --check --reverse /tmp/pr.patch \
+git worktree add "$tmp/main" main
+git diff "$(git merge-base <base> <head>)" <head> -- <경로들> > "$tmp/pr.patch"
+
+git -C "$tmp/main" apply --check --reverse "$tmp/pr.patch" \
   && echo "main이 이 패치를 이미 담고 있다" \
   || echo "판정 불가 — 사람이 내용을 봐야 한다"
-
-git worktree remove /tmp/main-check
 ```
 
 이것도 반영 후 파일이 더 바뀌면 실패하므로, **실패가 곧 유실은 아니다.**
