@@ -18,11 +18,13 @@ redactionReviewed: true
 - A PR had been reviewed and GitHub showed it as **MERGED.** None of its code was in `main`.
 - The badge didn't lie. It just means **"the head was merged into *this PR's* base,"** not **"reachable from main."** When the base isn't `main`, a gap opens between those two.
 - The margin was **16 seconds.** PR-A's base wasn't `main` but another feature branch (PR-B's head) — and **that branch had already been squash-merged into `main` 16 seconds before PR-A merged into it.** Nobody merged that branch again, so PR-A's change had no route to `main` at all.
-- And **detecting it after the fact is harder than it looks.** In a squash repo, commit reachability reports a healthy landing as lost, and comparing final contents reports anything `main` edited afterwards as lost too. So the real answer isn't a detection recipe — it's **prevention**: remove the path that lets you merge into an already-merged branch.
+- To detect it, ask whether **the PR's merge commit is an ancestor of `main`.** The test is asymmetric: **true means landed, for certain; false is a "needs checking" flag** (a healthy stacked PR also comes back false). Cheaper still is prevention — if the PR you're merging has a base other than `main`, check first whether that base already merged.
 
 > **About this piece.** A postmortem distilled from a backend-team intake. The lost change has already been re-landed by a follow-up PR. **Its nature and domain, the constants involved, and internal branch names and PR numbers are generalized** — the lesson is intact without them.
 >
-> The draft explained the cause as *"the squash dropped the commits stacked on top."* **An adversarial review pointed out that this doesn't match how git behaves, so we re-examined the commit graph and corrected it.** The real cause was the ordering problem described below. Without that review we'd have shipped a wrong mental model. Same vein as [why a simple change took 12 rounds](/en/blog/why-a-simple-change-took-12-rounds-en/), and the deploy-side version of "what did the green signal actually measure?" in [the deploy that deployed nothing](/en/blog/deploy-that-deployed-nothing-en/).
+> The draft explained the cause as *"the squash dropped the commits stacked on top."* **An adversarial review pointed out that this doesn't match how git behaves, so we re-examined the commit graph and corrected it.** The real cause was the ordering problem described below. Without that review we'd have shipped a wrong mental model.
+>
+> One more confession: the detection method below flipped once, too. Mid-review we were told that merge-commit reachability has no discriminating power under squash, and the whole section came out. The next round said the opposite — and only **running the check against the actual PRs** settled it in favor of the original method. That was the price of accepting a review note without verifying it. Same vein as [why a simple change took 12 rounds](/en/blog/why-a-simple-change-took-12-rounds-en/), and the deploy-side version of "what did the green signal actually measure?" in [the deploy that deployed nothing](/en/blog/deploy-that-deployed-nothing-en/).
 
 ## The symptom — green light, missing code
 
@@ -61,30 +63,41 @@ The role of the squash needs to be stated precisely too. **The squash did not dr
 
 What the squash did do is different. Instead of attaching the branch's commits to `main`, it **rewrote the result as a new commit.** So that branch is not an ancestor of `main`, and the fact that "this branch has already landed" is nowhere to be seen in the commit graph. The branch looks perfectly alive, and merging into it succeeds without a word of warning.
 
-## Why after-the-fact detection is hard
+## Ask the commit graph, not the badge
 
-The first thing you want after an incident like this is "so how do I check from now on?" And here's the honest part — **mechanically deciding "did this PR land in `main`?" is harder than it looks in a squash repo.**
+What you need after an incident like this is a way for a **machine** to decide "this is done," instead of a human eye.
 
-Start with what you must *not* use.
+The single most useful line is this — **is the PR's merge commit an ancestor of `main`?**
 
 ```bash
-# Don't — this has no discriminating power in a squash repo
-git merge-base --is-ancestor "$(gh pr view <N> --json mergeCommit -q .mergeCommit.oid)" main
+git merge-base --is-ancestor \
+  "$(gh pr view <N> --json mergeCommit -q .mergeCommit.oid)" main \
+  && echo "landed (certain)" \
+  || echo "needs checking — not reachable from main"
 ```
 
-In a repository that merges by squash, **the merge commit of a perfectly landed PR is also not an ancestor of `main`**, because the squash rewrote the result as a new commit. That check labels both healthy and lost as "lost."
+There's an easy point of confusion to clear up. With squash-merge the branch's original commits are discarded, but the `mergeCommit` GitHub reports is **not the discarded head — it's the squash commit created at merge time.** That commit sits on the base branch. So when the base was `main`, this check comes back true as it should.
 
-So compare final contents instead? Not directly, either. Diffing `main` against the branch's final tree also flags **every case where the PR landed fine and `main` then edited the same files.** On an actively changing path that's almost always non-empty, which collapses into the same degeneracy as the check above.
+Run it against the three PRs in our incident and they separate cleanly:
 
-What actually holds up mechanically is narrow.
+```text
+healthy squash (base=main)         → ancestor      ✅ landed, certain
+the lost PR    (base=feature br.)  → not ancestor  ⚠️ flagged
+the re-land    (base=main)         → ancestor      ✅ landed, certain
+```
 
-**If the PR adds new files,** an existence check is an honest first pass.
+But the test is **asymmetric**, and you have to know that to use it.
+
+- **True is conclusive.** That PR's merge result is reachable from `main`.
+- **False is a flag, not a verdict.** It may be lost — but a *healthy stacked PR* also comes back false: if it merged into the lower branch first and that branch was then squashed, its content is safely in `main` while its merge commit stays on the discarded lineage.
+
+So when it comes back false, confirm by content. For a PR that adds new files, an existence check is enough.
 
 ```bash
 git ls-tree -r main --name-only | grep '<expected/path>'
 ```
 
-**If the PR modifies or deletes existing files,** you have to ask whether *that PR's patch* is contained in `main`, not whether the final contents match. Reverse-applying the patch against `main` is the better approximation.
+For a PR that modifies or deletes existing files, don't compare final contents — if `main` edited the same files after landing, the difference misleads you. Ask whether *that PR's patch* is contained in `main`.
 
 ```bash
 git diff "$(git merge-base <base> <head>)" <head> -- <paths> > /tmp/pr.patch
@@ -93,9 +106,9 @@ git apply --check --reverse /tmp/pr.patch \
   || echo "inconclusive — a human has to look"
 ```
 
-This needs a caveat to stay honest: if the files changed further in `main` after landing, the reverse-apply fails too. **A failure does not mean the change was lost** — it means "this can't be decided automatically; go look."
+This too fails when the files changed further after landing, so **a failure is not proof of loss.**
 
-Which is why the real answer to this incident lives on the **prevention** side. Happily, prevention is both easier and fully mechanical: **if the PR you're about to merge has a base other than `main`, check first whether that base branch has already been merged.** That condition was precisely this incident's trigger, and asking it once before merging is the whole check.
+And the cheapest option isn't detection at all — it's **prevention.** **If the PR you're about to merge has a base other than `main`, check first whether that base branch has already been merged.** That condition was precisely this incident's trigger, and asking it once before merging is the whole check.
 
 ## Recovery — re-land without overwriting
 
@@ -136,7 +149,8 @@ One thing worth adding: this isn't a flaw in squash. Squash *deliberately* rewri
 - **A MERGED badge ≠ the code is in `main`.** It means "the head merged into its own base." If that base isn't `main`, a gap exists.
 - **Merging into an already-merged branch is a dead end.** The merge succeeds and the badge lights up, but no later merge will carry that branch to `main`.
 - **The squash doesn't drop commits.** It rewrites the result as a new commit — which is what erases "this branch already landed" from the graph and makes the dead end look alive.
-- **After-the-fact detection is narrow — so prevention is the answer.** Reachability has no discriminating power in a squash repo, and final-content comparison false-positives whenever `main` edited the files later. Existence checks cover additions; patch reverse-apply is a first pass for edits, and its failure means "go look."
+- **Ask whether the merge commit is an ancestor of `main` — asymmetrically.** True means landed, for certain; false is a flag (healthy stacked PRs also come back false). Only on false do you confirm by content.
+- **Don't judge by comparing final contents.** If `main` edited the same files after landing, it misleads. Use existence checks for additions and patch reverse-apply for edits.
 - **Re-land file by file, and check the `main`-side diff is empty first.** Otherwise recovery becomes a second incident.
 - **Delete branches right after merging.** Remove the wrong path instead of relying on people to remember the order.
 
