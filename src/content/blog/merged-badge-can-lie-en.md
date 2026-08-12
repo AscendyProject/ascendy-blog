@@ -18,7 +18,7 @@ redactionReviewed: true
 - A PR had been reviewed and GitHub showed it as **MERGED.** None of its code was in `main`.
 - The badge didn't lie. It just means **"the head was merged into *this PR's* base,"** not **"reachable from main."** When the base isn't `main`, a gap opens between those two.
 - The margin was **16 seconds.** PR-A's base wasn't `main` but another feature branch (PR-B's head) — and **that branch had already been squash-merged into `main` 16 seconds before PR-A merged into it.** Nobody merged that branch again, so PR-A's change had no route to `main` at all.
-- To detect it, ask whether **the PR's merge commit is an ancestor of `main`.** The test is asymmetric: **true means landed, for certain; false is a "needs checking" flag** (a healthy stacked PR also comes back false). Cheaper still is prevention — if the PR you're merging has a base other than `main`, check first whether that base already merged.
+- To detect it, ask whether **the PR's merge commit is an ancestor of `main`.** But it's a question about *history*, so neither answer is complete — **false is a strong signal of this incident** (though healthy stacked PRs also come back false), and **true doesn't mean the code is in the tree today**, since it may have been reverted since. Cheaper still is prevention — if the PR you're merging has a base other than `main`, check first whether that base already merged.
 
 > **About this piece.** A postmortem distilled from a backend-team intake. The lost change has already been re-landed by a follow-up PR. **Its nature and domain, the constants involved, and internal branch names and PR numbers are generalized** — the lesson is intact without them.
 >
@@ -72,7 +72,7 @@ The single most useful line is this — **is the PR's merge commit an ancestor o
 ```bash
 git merge-base --is-ancestor \
   "$(gh pr view <N> --json mergeCommit -q .mergeCommit.oid)" main \
-  && echo "landed (certain)" \
+  && echo "the merge is in main's history" \
   || echo "needs checking — not reachable from main"
 ```
 
@@ -81,15 +81,17 @@ There's an easy point of confusion to clear up. With squash-merge the branch's o
 Run it against the three PRs in our incident and they separate cleanly:
 
 ```text
-healthy squash (base=main)         → ancestor      ✅ landed, certain
-the lost PR    (base=feature br.)  → not ancestor  ⚠️ flagged
-the re-land    (base=main)         → ancestor      ✅ landed, certain
+healthy squash (base=main)         → ancestor      ✅
+the lost PR    (base=feature br.)  → not ancestor  ⚠️
+the re-land    (base=main)         → ancestor      ✅
 ```
 
-But the test is **asymmetric**, and you have to know that to use it.
+But you have to be precise about **what it asks.** This is a question about *commit history*, not about the *current tree*.
 
-- **True is conclusive.** That PR's merge result is reachable from `main`.
-- **False is a flag, not a verdict.** It may be lost — but a *healthy stacked PR* also comes back false: if it merged into the lower branch first and that branch was then squashed, its content is safely in `main` while its merge commit stays on the discarded lineage.
+- **True** means that PR's merge entered `main`'s history. It may have been reverted since, so it does **not** tell you the code is in the tree today.
+- **False** is a strong signal of this incident — but not a verdict either. A *healthy stacked PR* also comes back false: if it merged into the lower branch first and that branch was then squashed, its content is safely in `main` while its merge commit stays on the discarded lineage.
+
+In short it's a **cheap screening tool.** Either way, if you need certainty about whether the code is in `main` right now, you look at the content.
 
 So when it comes back false, confirm by content. For a PR that adds new files, a path-existence check is the cheapest first pass.
 
@@ -159,7 +161,7 @@ One thing worth adding: this isn't a flaw in squash. Squash *deliberately* rewri
 - **A MERGED badge ≠ the code is in `main`.** It means "the head merged into its own base." If that base isn't `main`, a gap exists.
 - **Merging into an already-merged branch is a dead end.** The merge succeeds and the badge lights up, but no later merge will carry that branch to `main`.
 - **The squash doesn't drop commits.** It rewrites the result as a new commit — which is what erases "this branch already landed" from the graph and makes the dead end look alive.
-- **Ask whether the merge commit is an ancestor of `main` — asymmetrically.** True means landed, for certain; false is a flag (healthy stacked PRs also come back false). Only on false do you confirm by content.
+- **Ask whether the merge commit is an ancestor of `main` — knowing it's a question about history.** False is a strong signal (healthy stacked PRs also come back false); true doesn't mean the code is in the tree today, since it could have been reverted. Screen with it; confirm with content.
 - **Don't judge by comparing final contents.** If `main` edited the same files after landing, it misleads. Use existence checks for additions and patch reverse-apply for edits.
 - **Re-land file by file, and check the `main`-side diff is empty first.** Otherwise recovery becomes a second incident.
 - **Delete branches right after merging.** Remove the wrong path instead of relying on people to remember the order.
