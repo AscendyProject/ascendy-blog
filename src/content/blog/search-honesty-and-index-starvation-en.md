@@ -19,7 +19,7 @@ redactionReviewed: true
 - The first diagnosis wasn't search quality — it was **honesty.** Top-k nearest-neighbor search always returns k results regardless of relevance; it **cannot say "none."** When every filter fired and the candidate set hit zero, a fallback returned a raw nearest-N with no threshold — and because the return type was a plain list, **the caller couldn't tell a fallback from a properly ranked result.**
 - So the fix wasn't to the search; it was to the **return shape.** One fallback flag, propagated through the whole pipeline. **The result IDs are byte-for-byte identical. Only the way it speaks changed.**
 - Then that flag turned into an **observability probe.** With it on, nearly *every* search was falling through to fallback. The threshold sat almost twice as high as this embedding model's actual match band — and even after recalibrating it, the candidate count was still single digits.
-- The real culprit sat a layer deeper: **the ANN index parameters.** The index had been built with many clusters but configured to probe only a tiny fraction of them — **searching about 1% of the index.** At this scale an exhaustive search finishes in milliseconds. *An approximation made for speed was buying no speed at all, and only costing recall.*
+- The real culprit sat a layer deeper: **the ANN index parameters.** The index had been built with many clusters but configured to probe only a tiny fraction of them — **sweeping barely 1% of the index's clusters.** At this scale the team judged that probing every cluster costs little enough, and an exhaustive probe is by definition not an approximation. *The time the approximation could save was small to begin with, while the recall it cost was not.*
 
 > **Source note.** Written from two backend-team intakes (fallback honesty / ANN parameter starvation) merged into one piece — they are the front and back of a single incident. Internal code identifiers, infrastructure and serving configuration, and absolute figures that would pin down scale are generalized; personal photo content is not described. The prior decision in this same search stack is in [we dropped the reranker](/en/blog/dropping-the-reranker-en/).
 
@@ -88,23 +88,27 @@ The culprit was the **IVF index parameters.** IVF-family ANN indexes partition v
 
 But this index had been built with **many clusters while probing only a sliver of them.** As a ratio: about **1% of the index.** The other 99% may as well not have existed on any given query.
 
-Where that setting came from was obvious. It was **a recipe for millions of vectors, copied onto a far smaller collection.** At that scale the values are reasonable. At this one, **an exhaustive search finishes in milliseconds with zero recall loss.**
+Where that setting came from was obvious. It was **a recipe for millions of vectors, copied onto a far smaller collection.** At that scale the values are reasonable. At this one, **the team judged that probing every cluster costs little enough.** And an exhaustive probe is by definition not an approximation — it skips no list, so for the vectors in the index there is no approximation-induced recall loss.
 
-Which means the approximation was buying nothing. *An approximation made for speed was buying no speed at all, and only costing recall.*
+Which means the time the approximation could save was small to begin with, while the recall it cost was not.
 
-## Expected-value math turns a hypothesis into a diagnosis
+## Expected-value math reorders your hypotheses
 
-"nprobe looks low" is still a suspicion. What turned it into certainty was **one line of arithmetic.**
+"the probe fraction looks low" is still a suspicion. What moved it to the front of the queue was **one line of arithmetic.**
 
-If you know the fraction of clusters probed and roughly how large the candidate pool is, you get an expected number of vectors the search will actually touch.
+If you know the fraction of clusters probed and roughly how large the candidate pool is, you get a rough count of the vectors the search will actually touch.
 
 ```text
 expected candidates ≈ pool size × (clusters probed / total clusters)
 ```
 
-That expectation **landed in the same order of magnitude as the observed candidate count.** At that moment, "the index parameters look suspicious" became "the index parameters are the cause."
+That estimate **landed in the same order of magnitude as the observed candidate count.**
 
-This is a tool worth reaching for constantly. **When you have an observation and a hypothesis, compute the number your hypothesis predicts and check it against the observation.** If it matches, you have a diagnosis; if not, either the hypothesis is wrong or there's another layer.
+But it's worth stepping back here. **This is a consistency check, not a proof.** The formula assumes vectors are spread evenly across clusters, whereas IVF list lengths are in fact uneven, and `nprobe` doesn't take a random sample — it picks the centroids *nearest the query.* All the order-of-magnitude agreement tells you is "this is not inconsistent with the index-parameter hypothesis," not "this is the cause."
+
+It still earned its keep, though, because **it reordered the hypotheses.** Coverage had already been erased by measurement; the parameter hypothesis was consistent with what we saw. So the next move was exhaustive probing — sweep every cluster and *the approximation drops out as a variable,* so if candidates still don't recover, the hypothesis is immediately shown to be wrong.
+
+This is a tool worth reaching for constantly. **When you have an observation and a hypothesis, compute the number your hypothesis predicts and check it against the observation.** If it doesn't match, either the hypothesis is wrong or there's another layer. If it does — you don't have a diagnosis; you have *a reason to test that hypothesis first.* Blur that distinction and a consistency check gets promoted to a proof.
 
 There was one embarrassing side trip too. An **aggregate query run during diagnosis omitted the owner filter**, and we nearly read a total across all users as one user's figure. That very nearly burned a whole round. **The measurement queries you use while diagnosing are also subject to review** — if they're wrong, every inference built on them is wrong.
 
@@ -126,8 +130,8 @@ Finally, a small convention. **Next to a threshold constant, leave a comment rec
 - **Honesty is an axis separate from search quality, and usually cheaper.** Returning the same results while saying "no matches; here's what's similar" is enough to protect trust.
 - **If you build a fallback, propagate the fact to the caller** — especially when the final consumer is an LLM, which amplifies the tone of its tool output.
 - **An honesty flag is an observability probe in its own right.** Naming a silent failure path makes its frequency measurable, and that measurement is what pulled out the real causes.
-- **Validate ANN parameters against your data's scale.** Copy a large-scale recipe onto a small collection and the approximation buys no speed while costing recall.
-- **Expected-value math turns a hypothesis into a diagnosis** — and the measurement queries used while diagnosing are themselves subject to review.
+- **Validate ANN parameters against your data's scale.** Copy a large-scale recipe onto a small collection and the time the approximation saves is small while the recall it costs is not.
+- **Expected-value math reorders hypotheses — it does not prove one.** Write down the assumptions the formula rests on (even distribution, and so on) so a consistency check doesn't get promoted to a proof. And the measurement queries used while diagnosing are themselves subject to review.
 
 After peeling all three layers, the impression that stayed was this: what we fixed first wasn't a bug, it was **a posture.** And without that change of posture, the two layers beneath it would still be nothing more than a vague sense that search is sometimes off.
 
