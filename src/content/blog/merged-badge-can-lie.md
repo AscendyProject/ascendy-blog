@@ -100,10 +100,16 @@ git ls-tree -r main --name-only | grep '<있어야 할 경로>'
 기존 파일을 고치거나 지우는 PR이라면 최종 내용을 비교하면 안 된다 — 반영된 뒤 `main`이 같은 파일을 더 고쳤을 때 차이가 나서 오판한다. *그 PR의 패치가 `main`에 담겼는지*를 물어야 한다.
 
 ```bash
+# 역적용은 "현재 워크트리" 기준이다. PR 브랜치에서 그냥 돌리면 자기 패치라
+# 항상 성공하니, 반드시 main을 체크아웃한 워크트리에서 물어야 한다.
+git worktree add /tmp/main-check main
 git diff "$(git merge-base <base> <head>)" <head> -- <경로들> > /tmp/pr.patch
-git apply --check --reverse /tmp/pr.patch \
+
+git -C /tmp/main-check apply --check --reverse /tmp/pr.patch \
   && echo "main이 이 패치를 이미 담고 있다" \
   || echo "판정 불가 — 사람이 내용을 봐야 한다"
+
+git worktree remove /tmp/main-check
 ```
 
 이것도 반영 후 파일이 더 바뀌면 실패하므로, **실패가 곧 유실은 아니다.**

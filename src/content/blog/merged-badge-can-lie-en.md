@@ -100,10 +100,17 @@ git ls-tree -r main --name-only | grep '<expected/path>'
 For a PR that modifies or deletes existing files, don't compare final contents — if `main` edited the same files after landing, the difference misleads you. Ask whether *that PR's patch* is contained in `main`.
 
 ```bash
+# Reverse-apply is evaluated against the current worktree. Run it on the PR
+# branch and it trivially succeeds against its own patch, so you must ask it
+# from a worktree checked out at main.
+git worktree add /tmp/main-check main
 git diff "$(git merge-base <base> <head>)" <head> -- <paths> > /tmp/pr.patch
-git apply --check --reverse /tmp/pr.patch \
+
+git -C /tmp/main-check apply --check --reverse /tmp/pr.patch \
   && echo "main already contains this patch" \
   || echo "inconclusive — a human has to look"
+
+git worktree remove /tmp/main-check
 ```
 
 This too fails when the files changed further after landing, so **a failure is not proof of loss.**
