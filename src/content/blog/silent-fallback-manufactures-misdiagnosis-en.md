@@ -108,10 +108,21 @@ const itemsOf = (bucket, field) => {
 
   // This is the point. Unknown shapes (null, a string, {}, { items: null } …)
   // do not quietly become an empty array — they always leave a signal.
-  reportUnknownShape(field, bucket)
+  // But what gets left is the shape, never the value.
+  reportUnknownShape({ field, shape: describeShape(bucket) })
   return []
 }
+
+// A response body can carry user identifiers and signed storage URLs.
+// So keep only the structure needed to diagnose, and never the values.
+const describeShape = (v) =>
+  Array.isArray(v)      ? `array(len=${v.length})` :
+  v === null            ? "null" :
+  typeof v === "object" ? `object(hasItems=${"items" in v}, itemsIsArray=${Array.isArray(v.items)})` :
+                          typeof v
 ```
+
+One more thing snags here. **Leaving a signal must not mean dumping the response body into your logs.** This response carried user identifiers and signed storage URLs — ship that to telemetry and you've leaked data while fixing a silent failure. So what you leave is **the shape, not the value**: the field name, the type, whether `items` exists and what type it is, a length.
 
 The lingering `return []` may look wrong. It's deliberate. The goal is **not to white-screen the app while refusing to let the failure stay silent.** What matters here isn't the return value; it's **the line above it.** What cost us days wasn't that the result was an empty array — it was that becoming an empty array **said nothing.**
 
@@ -126,6 +137,7 @@ And we **locked a behavioral test onto the real response shape.** If anyone hard
 - **For "nothing shows up," check the response *shape* before the renderer.** Not the status code or presence of data, but the field structure — array or object. One response body ended days of work.
 - **When a mock copies the code's assumptions, the test verifies itself.** Lock fixtures to real responses.
 - **A spec is not the deployed reality.** Don't hard cut over on another team's breaking-change plan; accept both shapes through the transition and clean up after confirming the deployment.
+- **Leave the shape as your signal, never the value.** A response body can carry identifiers and signed URLs. Diagnosis needs the structure — type, field presence, length — not the contents.
 - **Separate defensive from tolerant parsing.** Not blowing up, and enumerating the possible shapes while surfacing everything else, are different jobs. **The problem was never the empty array — it was the silence.** Return `[]` if you must, but leave a signal.
 
 What cost us days wasn't a hard bug. It was that **nowhere was there a sentence saying we were wrong.**
