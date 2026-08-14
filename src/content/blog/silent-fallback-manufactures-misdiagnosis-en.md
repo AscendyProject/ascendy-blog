@@ -101,18 +101,23 @@ We could have treated the deployed shape as the new "truth" and switched again. 
 Instead we made it accept **both shapes.**
 
 ```ts
-// If the bucket is an array, use it; if it's an object, take its list.
-const itemsOf = (bucket) =>
-  Array.isArray(bucket) ? bucket : (bucket?.items ?? [])
+// Accept only the two known shapes.
+const itemsOf = (bucket, field) => {
+  if (Array.isArray(bucket))        return bucket        // shape ①: a plain array
+  if (Array.isArray(bucket?.items)) return bucket.items  // shape ②: a list inside an object
 
-// Prefer the top-level pagination key; fall back to the bucket's own field.
-const hasMoreOf = (bucket, topLevel) =>
-  topLevel ?? (Array.isArray(bucket) ? false : (bucket?.has_more ?? false))
+  // This is the point. Unknown shapes (null, a string, {}, { items: null } …)
+  // do not quietly become an empty array — they always leave a signal.
+  reportUnknownShape(field, bucket)
+  return []
+}
 ```
 
-And we **locked a behavioral test onto the real response shape.** If anyone hard cuts over to one shape again, that test goes red in CI. We asked the backend to settle on a single canonical response shape; until it's settled, the frontend tolerates both.
+The lingering `return []` may look wrong. It's deliberate. The goal is **not to white-screen the app while refusing to let the failure stay silent.** What matters here isn't the return value; it's **the line above it.** What cost us days wasn't that the result was an empty array — it was that becoming an empty array **said nothing.**
 
-One distinction is worth drawing. **Defensive parsing and tolerant parsing are not the same thing.** `?? []` is defensive — it keeps you from blowing up. But *it doesn't say what it absorbed.* Tolerant parsing **handles the possible shapes explicitly**, and when a shape outside that list arrives, it doesn't pass quietly. In a transition period you want the latter.
+Which is the distinction worth drawing. **Defensive parsing and tolerant parsing are not the same thing.** `?? []` is defensive — it keeps you from blowing up. But *it doesn't say what it absorbed.* Tolerant parsing **enumerates the possible shapes explicitly** and **surfaces anything outside that list as an observable signal.** In a transition period you want the latter.
+
+And we **locked a behavioral test onto the real response shape.** If anyone hard cuts over to one shape again, that test goes red in CI. We asked the backend to settle on a single canonical response shape; until it's settled, the frontend tolerates both.
 
 ## Takeaways
 
@@ -121,7 +126,7 @@ One distinction is worth drawing. **Defensive parsing and tolerant parsing are n
 - **For "nothing shows up," check the response *shape* before the renderer.** Not the status code or presence of data, but the field structure — array or object. One response body ended days of work.
 - **When a mock copies the code's assumptions, the test verifies itself.** Lock fixtures to real responses.
 - **A spec is not the deployed reality.** Don't hard cut over on another team's breaking-change plan; accept both shapes through the transition and clean up after confirming the deployment.
-- **Separate defensive from tolerant parsing.** Not blowing up and explicitly handling the possible shapes are different jobs.
+- **Separate defensive from tolerant parsing.** Not blowing up, and enumerating the possible shapes while surfacing everything else, are different jobs. **The problem was never the empty array — it was the silence.** Return `[]` if you must, but leave a signal.
 
 What cost us days wasn't a hard bug. It was that **nowhere was there a sentence saying we were wrong.**
 
