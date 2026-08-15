@@ -21,7 +21,7 @@ redactionReviewed: true
 - We went through three misdiagnoses along the way, and **two of them were real bugs.** Both were worth fixing and both got fixed. Neither had anything to do with what the user saw. *Fixing a genuine bug is exactly what created the illusion that we'd found the cause.*
 - The breakthrough was **one dump of the actual response body.** Days of flailing ended the moment we looked at it.
 
-> **About this piece.** A retrospective distilled from a frontend-team intake, on an incident that is **already fixed and shipped.** Internal endpoint paths, the real response field names, internal PR numbers, and commit references are generalized; the JSON below keeps only the *shape*, with placeholder key names. The closest sibling is [making search honest revealed the real bug](/en/blog/search-honesty-and-index-starvation-en/).
+> **About this piece.** A retrospective distilled from a frontend-team intake, on an incident that is **already fixed and shipped.** Internal endpoint paths, the real response field names, internal PR numbers, and commit references are generalized; the JSON below keeps only the *shape*, with placeholder key names. The closest sibling is [making search honest revealed the real bug](/en/blog/search-honesty-and-index-starvation-en/); neighboring cases from the same team are [when one name carries two definitions](/en/blog/one-name-two-definitions-en/) and [the cost of half-following a convention](/en/blog/half-followed-convention-en/).
 
 ## The symptom — 200, and zero results
 

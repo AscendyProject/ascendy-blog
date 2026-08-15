@@ -21,7 +21,7 @@ redactionReviewed: true
 - Here's the point of this piece. **Had we fixed only the staleness (b), the number would have updated beautifully — to the wrong value.** It is not at all obvious that *a freshly fetched wrong number* is better than a stale one.
 - The prevention is shared definitions. **The exclusion concept already existed; only the side computing the statistic wasn't consulting it.**
 
-> **About this piece.** A retrospective distilled from a frontend-team intake. **The figures in the text are illustrative** and not the real size of any user's library. The same "fix one layer and the next appears" structure is in [making search honest revealed the real bug](/en/blog/search-honesty-and-index-starvation-en/).
+> **About this piece.** A retrospective distilled from a frontend-team intake. **The figures in the text are illustrative** and not the real size of any user's library. The same "fix one layer and the next appears" structure is in [making search honest revealed the real bug](/en/blog/search-honesty-and-index-starvation-en/), and a neighboring case on misdiagnosis paths from the same team is [three misdiagnoses a silent fallback produced](/en/blog/silent-fallback-manufactures-misdiagnosis-en/).
 
 ## The symptom — finished, and unchanged
 
