@@ -43,7 +43,7 @@ The next clue changed direction. **Same account, and web showed 0 while mobile s
 
 Same API, same display component, two clients showing different numbers. At minimum, one of them **is holding a stale value.**
 
-It was. The native app had a guard that fetched *once, on mount.* On web that's a reasonable optimization — switch tabs and it remounts anyway. But **a native app stays alive for days.** In that app, "once on mount" effectively becomes "once since install."
+It was. The native app had a guard that fetched *once, on mount* — a common optimization borrowed from the web. But **that native app stayed alive for days**, and a value from days earlier sat there unchanged the whole time.
 
 That was a genuine bug and we fixed it. **And fixing it still leaves the number wrong.**
 
@@ -91,11 +91,13 @@ So the rule comes out as: **a count shown on screen must use the same definition
 In practice, two moves:
 
 - Make the aggregate query and the list query **share the same predicate** — the same filter function, the same view, the same spec.
-- If sharing isn't feasible right now, at minimum **pin the difference with a test** so the two definitions can't drift apart quietly later.
+- If sharing isn't feasible right now, **pin with a test the requirement that the two agree** — across all-kept, all-deferred, mixed, and no-decisions, assert that **the count equals the queue length.** That test stays red until it's fixed, which is the point: it keeps the gap visible.
+
+One easy mistake is worth calling out. **Don't pin "the two definitions differ" with a test.** That doesn't expose the gap, it **embalms the cause**, and the next person reads the test as intended behavior. What you pin is not the *difference* but the **requirement that they match.**
 
 ## Two side notes
 
-**① Don't bring web instincts to a long-lived client.** "Fetch once on mount" is a habit from the web. An app that stays alive for days needs different refresh points — screen re-entry, app resume. But **we didn't add polling.** This wasn't a screen that needed a live value; it needed the *right refresh points.*
+**① Don't bring web instincts to a long-lived client.** "Fetch once on mount" is a habit from the web. A client that stays alive for days needs different refresh points — screen re-entry, app resume. But **we didn't add polling.** This wasn't a screen that needed a live value; it needed the *right refresh points.*
 
 **② The completion screen filling in seconds late got fixed in the same batch.** The cause was the statistics fetch queued behind a slow sequential commit. For live-aggregate APIs, a **"fetch once immediately, then again after the commit lands"** double fetch buys both perceived speed and accuracy. Show first, quietly reconcile once it's settled.
 
