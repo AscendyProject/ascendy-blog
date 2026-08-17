@@ -12,9 +12,15 @@ interface Props {
   schemaType?: 'WebSite' | 'CollectionPage' | 'none';
   lang?: Lang;
   alternates?: { lang: Lang; url: string }[];
+  // 섹션별 피드. /stories/ 는 자기 피드를 광고해야 한다.
+  feedPath?: string;
+  feedTitle?: string;
 }
 
-const { title, description, canonical, image, schemaType = 'WebSite', lang = defaultLang, alternates = [] } = Astro.props;
+const {
+  title, description, canonical, image, schemaType = 'WebSite', lang = defaultLang, alternates = [],
+  feedPath, feedTitle,
+} = Astro.props;
 const url = new URL(Astro.url.pathname, Astro.site).toString();
 const t = useTranslations(lang);
 const other = alternates.find((a) => a.lang !== lang);
@@ -23,7 +29,7 @@ const other = alternates.find((a) => a.lang !== lang);
 <!doctype html>
 <html lang={lang}>
   <head>
-    <BaseHead title={title} description={description} canonical={canonical} image={image} lang={lang} alternates={alternates} />
+    <BaseHead title={title} description={description} canonical={canonical} image={image} lang={lang} alternates={alternates} feedPath={feedPath} feedTitle={feedTitle} />
     {schemaType !== 'none' && <SchemaOrg type={schemaType} url={url} name={title} description={description} lang={localeTag[lang]} />}
   </head>
   <body>
