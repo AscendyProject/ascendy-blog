@@ -11,9 +11,17 @@ interface Props {
   lang?: Lang;
   // 이 페이지의 모든 언어판 (자기 자신 포함). hreflang 상호 링크용.
   alternates?: { lang: Lang; url: string }[];
+  // 이 페이지가 광고할 RSS 피드. 기술 블로그와 서비스 블로그는 피드가 갈리므로
+  // 섹션마다 자기 피드를 알려야 한다 — 기본값을 그대로 두면 서비스 글이
+  // 엔지니어링 피드를 구독하라고 안내하게 된다.
+  feedPath?: string;
+  feedTitle?: string;
 }
 
-const { title, description, canonical, image, ogType = 'website', lang = defaultLang, alternates = [] } = Astro.props;
+const {
+  title, description, canonical, image, ogType = 'website', lang = defaultLang, alternates = [],
+  feedPath = '/rss.xml', feedTitle = 'Ascendy Blog',
+} = Astro.props;
 const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).toString();
 const ogImage = image
   ? new URL(image, Astro.site).toString()
@@ -60,4 +68,4 @@ const xDefault = alternates.find((a) => a.lang === defaultLang);
     블로그가 같은 브랜드로 읽힌다. 직전 참조(favicon.svg)는 파일이 없어 404였다. */}
 <link rel="icon" type="image/png" href="/favicon.png" />
 <link rel="apple-touch-icon" href="/favicon.png" />
-<link rel="alternate" type="application/rss+xml" title="Ascendy Blog" href={localizePath('/rss.xml', lang)} />
+<link rel="alternate" type="application/rss+xml" title={feedTitle} href={localizePath(feedPath, lang)} />

@@ -18,6 +18,11 @@ interface Props {
   lang?: Lang;
   alternates?: { lang: Lang; url: string }[];
   origin?: { project: string; repo: string; summary: string };
+  // 섹션 정체성. 서비스 블로그(/stories/)는 "Ascendy Engineering"이 아니라
+  // "Ascendy"로 발행되고, 자기 피드를 광고해야 한다.
+  siteName?: string;
+  feedPath?: string;
+  feedTitle?: string;
 }
 
 const props = Astro.props;
@@ -26,7 +31,9 @@ const alternates = props.alternates ?? [];
 const t = useTranslations(lang);
 const other = alternates.find((a) => a.lang !== lang);
 const url = new URL(Astro.url.pathname, Astro.site).toString();
-const siteName = 'Ascendy Engineering';
+const siteName = props.siteName ?? 'Ascendy Engineering';
+const feedPath = props.feedPath ?? '/rss.xml';
+const feedTitle = props.feedTitle ?? 'Ascendy Blog';
 const siteUrl = Astro.site?.toString() ?? 'https://blog.ascendy.ai';
 ---
 
@@ -41,6 +48,8 @@ const siteUrl = Astro.site?.toString() ?? 'https://blog.ascendy.ai';
       ogType="article"
       lang={lang}
       alternates={alternates}
+      feedPath={feedPath}
+      feedTitle={feedTitle}
     />
     <SchemaOrg
       type="BlogPosting"
