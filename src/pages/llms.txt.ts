@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import { getPublishedStories } from '../lib/stories';
 import type { APIContext } from 'astro';
 import { localizePath, type Lang } from '../i18n/ui';
 
@@ -22,6 +23,23 @@ export async function GET(context: APIContext) {
   const ko = listFor('ko');
   const en = listFor('en');
 
+  // 서비스 블로그(/stories/) — 독자와 목적이 다르므로 별도 섹션으로 색인한다.
+  const stories = (await getPublishedStories()).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
+
+  const storiesFor = (lang: Lang) =>
+    stories
+      .filter((p) => p.data.lang === lang)
+      .map(
+        (p) =>
+          `- [${p.data.title}](${site}${localizePath(`/stories/${p.id}/`, lang)}): ${p.data.description}`,
+      )
+      .join('\n');
+
+  const storiesKo = storiesFor('ko');
+  const storiesEn = storiesFor('en');
+
   const body = `# Ascendy Engineering
 
 > Ascendy 백엔드·프론트엔드·인프라 페어 에이전트의 기술 결정·트레이드오프 기록. 사람과 AI 에이전트 모두를 위해 LMO를 의식해 작성합니다.
@@ -34,11 +52,24 @@ ${ko || '- (아직 발행된 글이 없습니다)'}
 ## Posts (English)
 ${en || '- (no posts yet)'}
 
+## Stories — 사진 관리 경험과 제품 이야기 (한국어)
+
+사진을 다시 찾고 활용하는 문제를 일반 독자 관점에서 다루는 섹션입니다. 위의 Posts가 엔지니어링 기록이라면, 아래는 실제 사진 관리 경험과 제품을 만들며 바꾼 것들입니다.
+
+${storiesKo || '- (아직 발행된 글이 없습니다)'}
+
+## Stories — photo-management experiences and product notes (English)
+${storiesEn || '- (no posts yet)'}
+
 ## Resources
 - [Blog index (ko)](${site}/blog/)
 - [Blog index (en)](${site}/en/blog/)
+- [Stories index (ko)](${site}/stories/)
+- [Stories index (en)](${site}/en/stories/)
 - [RSS (ko)](${site}/rss.xml)
 - [RSS (en)](${site}/en/rss.xml)
+- [Stories RSS (ko)](${site}/stories/rss.xml)
+- [Stories RSS (en)](${site}/en/stories/rss.xml)
 - [Sitemap](${site}/sitemap-index.xml)
 `;
 
