@@ -42,7 +42,7 @@ const posts = allPosts.slice(0, PAGE_SIZE);
         <li style="color:var(--muted)">{t('homeEmpty')}</li>
       )}
     </ul>
-    <Pagination currentPage={1} totalPages={totalPages} basePath="/stories/" lang={lang} />
+    <Pagination currentPage={1} totalPages={totalPages} basePath="/en/stories/" lang={lang} />
     <p class="text-sm u-muted"><a href="/en/stories/rss.xml">{t('storiesFeed')}</a></p>
   </section>
 </BaseLayout>
