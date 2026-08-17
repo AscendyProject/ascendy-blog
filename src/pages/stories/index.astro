@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import { getPublishedStories } from '../../lib/stories';
 import { localizePath, useTranslations } from '../../i18n/ui';
 import Pagination from '../../components/Pagination.astro';
 
@@ -12,7 +12,7 @@ const alternates = [
   { lang: 'en' as const, url: '/en/stories/' },
 ];
 
-const allPosts = (await getCollection('stories', ({ data }) => !data.draft && data.redactionReviewed && data.lang === lang))
+const allPosts = (await getPublishedStories()).filter((p) => p.data.lang === lang)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const totalPages = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
 const posts = allPosts.slice(0, PAGE_SIZE);

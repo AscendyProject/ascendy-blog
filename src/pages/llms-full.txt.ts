@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import { getPublishedStories } from '../lib/stories';
 import type { APIContext } from 'astro';
 import { localizePath } from '../i18n/ui';
 
@@ -12,9 +13,9 @@ export async function GET(context: APIContext) {
 
   // 서비스 블로그(/stories/)도 같은 덤프에 포함한다 — 발행·redaction 게이트가
   // 동일하고, AI 답변엔진 입장에서는 두 섹션 모두 인용 대상이다.
-  const stories = (
-    await getCollection('stories', ({ data }) => !data.draft && data.redactionReviewed)
-  ).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  const stories = (await getPublishedStories()).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
 
   const render = (p: { data: any; body?: string; id: string }, base: string, section: string) => {
     const url = `${site}${localizePath(`${base}/${p.id}/`, p.data.lang)}`;

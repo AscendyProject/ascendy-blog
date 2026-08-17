@@ -1,12 +1,12 @@
 import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
+import { getPublishedStories } from '../../../lib/stories';
 import type { APIContext } from 'astro';
 import { localizePath } from '../../../i18n/ui';
 
 // 서비스 블로그 전용 피드. 기술 블로그 피드(/rss.xml)와 분리돼 있어
 // 엔지니어 구독자에게 사용자용 글이 섞이지 않는다.
 export async function GET(context: APIContext) {
-  const posts = await getCollection('stories', ({ data }) => !data.draft && data.redactionReviewed && data.lang === 'en');
+  const posts = (await getPublishedStories()).filter((p) => p.data.lang === 'en');
 
   return rss({
     title: 'Ascendy — Stories',

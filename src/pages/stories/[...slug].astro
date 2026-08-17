@@ -1,10 +1,11 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { getPublishedStories } from '../../lib/stories';
+import { render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 import { buildStoryAlternates } from '../../i18n/ui';
 
 export async function getStaticPaths() {
-  const published = await getCollection('stories', ({ data }) => !data.draft && data.redactionReviewed);
+  const published = await getPublishedStories();
   return published
     .filter((p) => p.data.lang === 'ko')
     .map((post) => {

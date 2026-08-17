@@ -1,12 +1,28 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+
+// `_` 접두 파일(템플릿 등)은 컬렉션에서 제외한다. 제외하지 않으면 템플릿이
+// 실제 content entry로 로드되어 스키마를 만족해야 하고, `draft: true`인
+// 엔트리가 main에 머지되는 것을 금지하는 hard rule과도 충돌한다.
+const CONTENT_GLOB = ['**/*.{md,mdx}', '!**/_*'];
+
+// sourceIntake 경로 검증 — 형식과 실제 존재를 모두 본다.
+// 배열이 비어 있지 않은지만 보면 존재하지 않는 placeholder 경로가 통과해서
+// "근거 파일 없이는 발행할 수 없다"는 보장이 성립하지 않는다.
+const INTAKE_PATH = /^docs\/intake\/from-[a-z-]+\/[^/]+\.md$/;
+function intakePathsAreValid(paths: string[] | undefined): boolean {
+  if (!paths || paths.length === 0) return false;
+  return paths.every((p) => INTAKE_PATH.test(p) && existsSync(join(process.cwd(), p)));
+}
 
 // 블로그 포스트 Content Collection.
 // frontmatter는 사람이 읽고 Schema.org JSON-LD가 빌드 시 소비한다.
 // 필수 필드는 redaction/저작권/인테이크 추적을 강제하기 위함이며
 // CLAUDE.md "Hard rules"와 docs/editorial-policy.md에 묶여 있다.
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
+  loader: glob({ pattern: CONTENT_GLOB, base: './src/content/blog' }),
   schema: ({ image }) =>
     z.object({
       title: z.string().min(8).max(120),
@@ -63,7 +79,7 @@ const blog = defineCollection({
 // 컬렉션을 분리한 이유: 카테고리 값만 나누면 인덱스·RSS·내비게이션이 그대로
 // 섞인다. 두 독자를 한 목록에 세우지 않으려면 라우트와 피드가 갈려야 한다.
 const stories = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/stories' }),
+  loader: glob({ pattern: CONTENT_GLOB, base: './src/content/stories' }),
   schema: ({ image }) =>
     z
       .object({
@@ -83,7 +99,10 @@ const stories = defineCollection({
         category: z.enum(['real-stories', 'building', 'guides', 'philosophy']),
 
         lang: z.enum(['ko', 'en']).default('ko'),
-        translationKey: z.string().optional(),
+        // 서비스 블로그는 ko/en 쌍 발행이 규약이므로 짝을 맺는 키가 필수다.
+        // 실제로 상대 언어판이 존재하는지는 src/lib/stories.ts가 빌드 시 검사한다
+        // (단일 엔트리 스키마에서는 다른 엔트리를 볼 수 없다).
+        translationKey: z.string().min(1),
 
         // 1차 소스 경로. 아래 refine이 카테고리에 따라 필수로 강제한다.
         sourceIntake: z.array(z.string()).optional(),
@@ -105,9 +124,9 @@ const stories = defineCollection({
       // 그래서 개인 경험·제품 주장이 실리는 세 카테고리는 sourceIntake를
       // **스키마 레벨에서 필수**로 만든다. 인터뷰 정제본이든 제품 변경 기록이든,
       // 근거 파일 없이는 빌드가 실패한다. guides는 정보성이라 면제.
-      .refine((d) => d.category === 'guides' || (d.sourceIntake?.length ?? 0) > 0, {
+      .refine((d) => d.category === 'guides' || intakePathsAreValid(d.sourceIntake), {
         message:
-          'real-stories/building/philosophy 글은 sourceIntake가 필수입니다 — 창업자 경험은 인터뷰 정제본(docs/intake/from-user/…)을 통해서만 들어옵니다. docs/service-blog-policy.md 참조.',
+          'real-stories/building/philosophy 글은 sourceIntake가 필수이며, 각 항목은 docs/intake/from-<team>/<file>.md 형식이고 **실제로 존재하는 파일**이어야 합니다 — 창업자 경험은 인터뷰 정제본을 통해서만 들어옵니다. docs/service-blog-policy.md §5 참조.',
         path: ['sourceIntake'],
       }),
 });

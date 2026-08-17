@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import { getPublishedStories } from '../../../../lib/stories';
 import { localizePath, useTranslations } from '../../../../i18n/ui';
 import Pagination from '../../../../components/Pagination.astro';
 
@@ -8,9 +8,9 @@ const lang = 'en' as const;
 
 export async function getStaticPaths() {
   const PAGE_SIZE = 10;
-  const all = (await getCollection('stories', ({ data }) => !data.draft && data.redactionReviewed && data.lang === 'en'))
+  const all = (await getPublishedStories()).filter((p) => p.data.lang === 'en')
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-  const otherCount = (await getCollection('stories', ({ data }) => !data.draft && data.redactionReviewed && data.lang === 'ko')).length;
+  const otherCount = (await getPublishedStories()).filter((p) => p.data.lang === 'ko').length;
   const totalPages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
   const otherTotal = Math.max(1, Math.ceil(otherCount / PAGE_SIZE));
   const paths = [];

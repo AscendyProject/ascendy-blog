@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import { getPublishedStories } from '../lib/stories';
 import type { APIContext } from 'astro';
 import { localizePath, type Lang } from '../i18n/ui';
 
@@ -23,9 +24,9 @@ export async function GET(context: APIContext) {
   const en = listFor('en');
 
   // 서비스 블로그(/stories/) — 독자와 목적이 다르므로 별도 섹션으로 색인한다.
-  const stories = (
-    await getCollection('stories', ({ data }) => !data.draft && data.redactionReviewed)
-  ).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  const stories = (await getPublishedStories()).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
 
   const storiesFor = (lang: Lang) =>
     stories
