@@ -10,6 +10,31 @@
 워크스페이스(인프라)의 가이드와 본 파일이 충돌하면 — `ascendy-blog/`
 경로 안의 일은 본 파일이 우선, 경로 바깥의 일은 상위 가이드가 우선.
 
+## 두 개의 블로그
+
+이 저장소는 **독자와 목적이 다른 두 블로그**를 한 사이트에서 운영한다.
+
+| | 기술 블로그 | 서비스 블로그 |
+|---|---|---|
+| 경로 | `/blog/` · `/en/blog/` | `/stories/` · `/en/stories/` |
+| 컬렉션 | `blog` | `stories` |
+| RSS | `/rss.xml` · `/en/rss.xml` | `/stories/rss.xml` · `/en/stories/rss.xml` |
+| 독자 | 개발자·엔지니어 | 사진을 많이 찍는 일반 사용자·가족 |
+| 화자 | "우리"(팀) | "나"(창업자 1인칭) |
+| 구속 문서 | `docs/editorial-policy.md` | **`docs/service-blog-policy.md`** |
+
+**세션을 분리해 운영한다.** 저장소·배포·인테이크 파이프라인·`/redteam:review`는
+공유하되, 서비스 블로그 작업은 별도 세션에서 한다 — 목소리와 독자가 다르고 기술
+블로그 맥락이 프레이밍을 끌기 때문이다.
+
+카테고리 값만 나누지 않고 컬렉션·라우트·피드를 갈랐다. 값만 나누면 인덱스·RSS·
+내비게이션에서 두 독자가 한 목록에 섞인다.
+
+**서비스 블로그의 날조 방지 게이트(빌드타임).** `stories` 컬렉션의
+`real-stories`·`building`·`philosophy` 카테고리는 `sourceIntake`가 **스키마
+레벨에서 필수**다. 창업자의 1인칭 경험은 인터뷰 정제본을 통해서만 글에 들어오며,
+근거 파일이 없으면 빌드가 실패한다. 자세한 것은 `docs/service-blog-policy.md` §5.
+
 ## Operating model
 
 블로그팀은 **편집국**이다. 직접 결정/구현을 만들어내지 않는다.
@@ -143,7 +168,8 @@ cp src/content/blog/_template.md src/content/blog/<slug>.md
   스키마 없는 컬렉션 금지.
 - 모든 포스트 페이지는 `SchemaOrg.astro`를 통해 JSON-LD 주입. 페이지가
   schema 없이 빌드되면 리뷰 차단.
-- 게시물은 `src/content/blog/`에만. `src/pages/posts/`나 임의 위치 금지.
+- 게시물은 컬렉션 디렉토리에만 둔다 — 기술 블로그는 `src/content/blog/`,
+  서비스 블로그는 `src/content/stories/`. `src/pages/posts/`나 임의 위치 금지.
 - raw 인테이크 원본은 제안 팀 private repo의 `docs/blog-intake/`에 있고,
   `docs/intake/from-<team>/`에는 redaction 통과한 **정제본**만 둔다
   (`sourceIntake:`가 가리키는 경로). 다른 곳에 옮기지 말 것.
@@ -296,7 +322,8 @@ git에 남긴다.
 
 - [`README.md`](./README.md)
 - [`AGENTS.md`](./AGENTS.md) — Codex의 짝 가이드
-- [`docs/editorial-policy.md`](./docs/editorial-policy.md)
+- [`docs/editorial-policy.md`](./docs/editorial-policy.md) — 기술 블로그
+- [`docs/service-blog-policy.md`](./docs/service-blog-policy.md) — 서비스 블로그(`/stories/`)
 - [`docs/redaction-checklist.md`](./docs/redaction-checklist.md)
 - [`docs/intake-template.md`](./docs/intake-template.md)
 - 상위: `../CLAUDE.md`, `../AGENTS.md`, `../docs/agent-os/risk-policy.md`
