@@ -9,6 +9,8 @@ import { getCollection, type CollectionEntry } from 'astro:content';
  * 검사하고, 모든 stories 라우트·피드·LLM 덤프가 이 함수를 거치게 한다.
  *
  * 한쪽만 발행 상태면 빌드를 실패시킨다 — 조용히 한 언어만 나가는 것보다 낫다.
+ * draft는 위에서 먼저 걸러지므로, en이 아직 draft면 "ko 1편, en 0편"으로 실패한다.
+ * 이건 의도된 동작이다: 번역이 끝날 때까지 **양쪽 모두** draft로 둔다.
  */
 export async function getPublishedStories(): Promise<CollectionEntry<'stories'>[]> {
   const published = await getCollection(
@@ -34,7 +36,8 @@ export async function getPublishedStories(): Promise<CollectionEntry<'stories'>[
     throw new Error(
       `[stories] translationKey마다 ko 1편 + en 1편이어야 합니다: ${problems.join(' / ')}\n` +
         '서비스 블로그는 ko 원문과 en 판을 함께 냅니다(docs/service-blog-policy.md §10).\n' +
-        '아직 번역 전이라면 한쪽을 draft: true로, 키가 겹쳤다면 translationKey를 고치세요.',
+        '번역이 아직이면 **ko/en 양쪽 모두** draft: true로 두세요(한쪽만 draft면 여기서 실패합니다).\n' +
+        '키가 겹쳤다면 translationKey를 고치세요.',
     );
   }
 
