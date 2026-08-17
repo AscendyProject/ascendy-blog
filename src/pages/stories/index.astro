@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { localizePath, useTranslations } from '../../i18n/ui';
+import Pagination from '../../components/Pagination.astro';
+
+const PAGE_SIZE = 10;
+const lang = 'ko' as const;
+const t = useTranslations(lang);
+const alternates = [
+  { lang: 'ko' as const, url: '/stories/' },
+  { lang: 'en' as const, url: '/en/stories/' },
+];
+
+const allPosts = (await getCollection('stories', ({ data }) => !data.draft && data.redactionReviewed && data.lang === lang))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const totalPages = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
+const posts = allPosts.slice(0, PAGE_SIZE);
+---
+
+<BaseLayout
+  title="이야기 — Ascendy"
+  description="사진을 다시 찾고 활용하는 문제에 대한 기록. 실제 사진 관리 경험, 제품을 만들며 겪은 일, 그리고 사진 정리에 도움이 되는 안내."
+  schemaType="CollectionPage"
+  lang={lang}
+  alternates={alternates}
+>
+  <section class="prose-ascendy">
+    <h1>{t('storiesTitle')}</h1>
+    <p>{t('storiesLead')}</p>
+    <ul class="post-list space-y-2">
+      {posts.map((post) => (
+        <li>
+          <a href={localizePath(`/stories/${post.id}/`, lang)} class="post-card">
+            <span class="pc-meta">{post.data.category} · {post.data.pubDate.toISOString().slice(0, 10)}</span>
+            <span class="pc-title">{post.data.title}</span>
+            <span class="pc-desc">{post.data.description}</span>
+          </a>
+        </li>
+      ))}
+      {posts.length === 0 && (
+        <li style="color:var(--muted)">{t('homeEmpty')}</li>
+      )}
+    </ul>
+    <Pagination currentPage={1} totalPages={totalPages} basePath="/stories/" lang={lang} />
+    <p class="text-sm u-muted"><a href="/stories/rss.xml">{t('storiesFeed')}</a></p>
+  </section>
+</BaseLayout>

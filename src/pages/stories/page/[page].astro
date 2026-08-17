@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { localizePath, useTranslations } from '../../../i18n/ui';
+import Pagination from '../../../components/Pagination.astro';
+
+const lang = 'ko' as const;
+
+export async function getStaticPaths() {
+  const PAGE_SIZE = 10;
+  const all = (await getCollection('stories', ({ data }) => !data.draft && data.redactionReviewed && data.lang === 'ko'))
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  const otherCount = (await getCollection('stories', ({ data }) => !data.draft && data.redactionReviewed && data.lang === 'en')).length;
+  const totalPages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
+  const otherTotal = Math.max(1, Math.ceil(otherCount / PAGE_SIZE));
+  const paths = [];
+  // 1페이지는 index.astro가 담당. 여기선 2페이지부터.
+  for (let p = 2; p <= totalPages; p++) {
+    // counterpart 페이지가 존재할 때만 hreflang을 건다 (페이지 수 불일치 대비).
+    const alternates: { lang: 'ko' | 'en'; url: string }[] = [{ lang: 'ko', url: `/stories/page/${p}/` }];
+    if (p <= otherTotal) alternates.push({ lang: 'en', url: `/en/stories/page/${p}/` });
+    paths.push({
+      params: { page: String(p) },
+      props: { posts: all.slice((p - 1) * PAGE_SIZE, p * PAGE_SIZE), currentPage: p, totalPages, alternates },
+    });
+  }
+  return paths;
+}
+
+const { posts, currentPage, totalPages, alternates } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`${t('storiesTitle')} (${currentPage}/${totalPages}) — Ascendy`}
+  description={t('storiesLead')}
+  schemaType="CollectionPage"
+  lang={lang}
+  alternates={alternates}
+>
+  <section class="prose-ascendy">
+    <h1>{t('storiesTitle')}</h1>
+    <ul class="post-list space-y-2">
+      {posts.map((post) => (
+        <li>
+          <a href={localizePath(`/stories/${post.id}/`, lang)} class="post-card">
+            <span class="pc-meta">{post.data.category} · {post.data.pubDate.toISOString().slice(0, 10)}</span>
+            <span class="pc-title">{post.data.title}</span>
+            <span class="pc-desc">{post.data.description}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/stories/" lang={lang} />
+  </section>
+</BaseLayout>

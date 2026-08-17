@@ -1,0 +1,40 @@
+---
+import { getCollection, render } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+import { buildStoryAlternates } from '../../i18n/ui';
+
+export async function getStaticPaths() {
+  const published = await getCollection('stories', ({ data }) => !data.draft && data.redactionReviewed);
+  return published
+    .filter((p) => p.data.lang === 'ko')
+    .map((post) => {
+      const versions = post.data.translationKey
+        ? published
+            .filter((p) => p.data.translationKey === post.data.translationKey)
+            .map((p) => ({ id: p.id, lang: p.data.lang }))
+        : [];
+      return {
+        params: { slug: post.id },
+        props: { post, alternates: buildStoryAlternates(versions) },
+      };
+    });
+}
+
+const { post, alternates } = Astro.props;
+const { Content } = await render(post);
+---
+
+<PostLayout
+  title={post.data.title}
+  description={post.data.description}
+  pubDate={post.data.pubDate}
+  updatedDate={post.data.updatedDate}
+  author={post.data.author}
+  tags={post.data.tags}
+  category={post.data.category}
+  canonical={post.data.canonical}
+  lang={post.data.lang}
+  alternates={alternates}
+>
+  <Content />
+</PostLayout>

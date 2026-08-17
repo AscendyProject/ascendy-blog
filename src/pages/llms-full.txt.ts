@@ -10,17 +10,26 @@ export async function GET(context: APIContext) {
     await getCollection('blog', ({ data }) => !data.draft && data.redactionReviewed)
   ).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-  const sections = published
-    .map((p) => {
-      const url = `${site}${localizePath(`/blog/${p.id}/`, p.data.lang)}`;
-      return `# ${p.data.title}
+  // 서비스 블로그(/stories/)도 같은 덤프에 포함한다 — 발행·redaction 게이트가
+  // 동일하고, AI 답변엔진 입장에서는 두 섹션 모두 인용 대상이다.
+  const stories = (
+    await getCollection('stories', ({ data }) => !data.draft && data.redactionReviewed)
+  ).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+  const render = (p: { data: any; body?: string; id: string }, base: string, section: string) => {
+    const url = `${site}${localizePath(`${base}/${p.id}/`, p.data.lang)}`;
+    return `# ${p.data.title}
 URL: ${url}
-Lang: ${p.data.lang} | Category: ${p.data.category} | Published: ${p.data.pubDate.toISOString().slice(0, 10)}
+Section: ${section} | Lang: ${p.data.lang} | Category: ${p.data.category} | Published: ${p.data.pubDate.toISOString().slice(0, 10)}
 Tags: ${p.data.tags.join(', ')}
 
 ${p.body ?? ''}`;
-    })
-    .join('\n\n---\n\n');
+  };
+
+  const sections = [
+    ...published.map((p) => render(p, '/blog', 'engineering')),
+    ...stories.map((p) => render(p, '/stories', 'stories')),
+  ].join('\n\n---\n\n');
 
   const body = `# Ascendy Engineering — full content dump for LLMs
 
