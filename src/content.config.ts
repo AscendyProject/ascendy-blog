@@ -1,20 +1,38 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { lstatSync, realpathSync } from 'node:fs';
+import { join, sep } from 'node:path';
 
 // `_` 접두 파일(템플릿 등)은 컬렉션에서 제외한다. 제외하지 않으면 템플릿이
 // 실제 content entry로 로드되어 스키마를 만족해야 하고, `draft: true`인
 // 엔트리가 main에 머지되는 것을 금지하는 hard rule과도 충돌한다.
 const CONTENT_GLOB = ['**/*.{md,mdx}', '!**/_*'];
 
-// sourceIntake 경로 검증 — 형식과 실제 존재를 모두 본다.
+// sourceIntake 경로 검증 — 형식과 "실제 파일인지"를 모두 본다.
+//
 // 배열이 비어 있지 않은지만 보면 존재하지 않는 placeholder 경로가 통과해서
-// "근거 파일 없이는 발행할 수 없다"는 보장이 성립하지 않는다.
+// "근거 파일 없이는 발행할 수 없다"는 보장이 성립하지 않는다. 그리고 존재
+// 확인도 existsSync로는 부족하다 — 디렉토리와 심링크도 참이 되므로
+// `.../evidence.md/`라는 빈 디렉토리나 저장소 밖을 가리키는 심링크가 통과한다.
+//
+// 그래서 lstat으로 **일반 파일**인지 보고(심링크는 lstat이 따라가지 않으므로
+// 여기서 걸린다), realpath가 저장소 안에 있는지까지 확인한다.
+// git 추적 여부까지는 보지 않는다 — 설정 로드 시점에 git을 부르는 비용/취약함에
+// 비해 얻는 게 적고, 위 두 검사로 현실적인 우회는 막힌다.
 const INTAKE_PATH = /^docs\/intake\/from-[a-z-]+\/[^/]+\.md$/;
 function intakePathsAreValid(paths: string[] | undefined): boolean {
   if (!paths || paths.length === 0) return false;
-  return paths.every((p) => INTAKE_PATH.test(p) && existsSync(join(process.cwd(), p)));
+  const root = process.cwd();
+  return paths.every((p) => {
+    if (!INTAKE_PATH.test(p)) return false;
+    const abs = join(root, p);
+    try {
+      if (!lstatSync(abs).isFile()) return false;
+      return realpathSync(abs).startsWith(root + sep);
+    } catch {
+      return false;
+    }
+  });
 }
 
 // 블로그 포스트 Content Collection.

@@ -16,22 +16,25 @@ export async function getPublishedStories(): Promise<CollectionEntry<'stories'>[
     ({ data }) => !data.draft && data.redactionReviewed,
   );
 
-  const byKey = new Map<string, Set<'ko' | 'en'>>();
+  // 언어 집합(Set)만 보면 "ko 2편 + en 1편"이 통과한다. 그러면 두 ko 글이 같은
+  // en 판을 alternate로 물어 hreflang이 중복·모호해진다. 그래서 키마다 언어별
+  // **개수**를 세고, 정확히 ko 1편 + en 1편일 때만 통과시킨다.
+  const counts = new Map<string, { ko: number; en: number }>();
   for (const post of published) {
-    const langs = byKey.get(post.data.translationKey) ?? new Set<'ko' | 'en'>();
-    langs.add(post.data.lang);
-    byKey.set(post.data.translationKey, langs);
+    const c = counts.get(post.data.translationKey) ?? { ko: 0, en: 0 };
+    c[post.data.lang] += 1;
+    counts.set(post.data.translationKey, c);
   }
 
-  const unpaired = [...byKey.entries()]
-    .filter(([, langs]) => langs.size < 2)
-    .map(([key, langs]) => `${key} (${[...langs].join(', ')}만 발행됨)`);
+  const problems = [...counts.entries()]
+    .filter(([, c]) => c.ko !== 1 || c.en !== 1)
+    .map(([key, c]) => `${key} (ko ${c.ko}편, en ${c.en}편)`);
 
-  if (unpaired.length > 0) {
+  if (problems.length > 0) {
     throw new Error(
-      `[stories] ko/en 짝이 없는 발행 글이 있습니다: ${unpaired.join(' / ')}\n` +
+      `[stories] translationKey마다 ko 1편 + en 1편이어야 합니다: ${problems.join(' / ')}\n` +
         '서비스 블로그는 ko 원문과 en 판을 함께 냅니다(docs/service-blog-policy.md §10).\n' +
-        '아직 번역 전이라면 한쪽을 draft: true로 두세요.',
+        '아직 번역 전이라면 한쪽을 draft: true로, 키가 겹쳤다면 translationKey를 고치세요.',
     );
   }
 
