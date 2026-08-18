@@ -63,7 +63,7 @@ tags. It worked.
 
 But the moment a question got even slightly complex, it fell apart.
 
-> "We took the baby to Phuket this year — when was that?"
+> "We took the baby on a trip this year — when was that?"
 >
 > "Out of the beach photos with the baby, show me only the good ones."
 
@@ -78,10 +78,9 @@ easy to build, and once you've built it, nothing has changed.
 ## So I changed direction
 
 I rebuilt it around what AI is actually good at. Then I fixed, one at a time, whatever my
-wife said was annoying. That loop kept adding to the project. Uploading, organizing
-itself, finding things by just saying what you want, sharing with family. And once you're
-holding on to someone else's photos, security is something you have to think about too.
-Building alone, I looked up one day and I was building a photo cloud.
+wife said was annoying. That loop kept adding to the project. And once you're holding on
+to someone else's photos, security is something you have to think about too. Building
+alone, I looked up one day and I was building a photo cloud.
 
 ## Where it is now
 
@@ -90,8 +89,8 @@ I'm looking for.
 
 But I have to say this carefully. I'm someone who never had many photos to organize in the
 first place. **My library is an easy problem for this service.** My wife seems to be
-getting along with it too, but that's as far as it goes. The only ways of organizing
-photos this service has really seen belong to two people.
+getting along with it too, but that's as far as it goes. So far this service has
+essentially been shaped around how my wife and I use it.
 
 People shoot different kinds of photos, and they want to sort them by different things.
 Someone will want to group by person, someone else by trip, and someone else will want
