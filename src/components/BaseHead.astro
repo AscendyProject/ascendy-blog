@@ -59,6 +59,11 @@ const xDefault = alternates.find((a) => a.lang === defaultLang);
 ))}
 {xDefault && <link rel="alternate" hreflang="x-default" href={xDefault.url} />}
 
+{/* 검색엔진 소유확인 토큰. 설계상 페이지 소스에 공개되는 값이고(그래야
+    크롤러가 읽는다), 도메인 제어권 없이는 아무 권한도 주지 않으므로
+    크레덴셜이 아니다. 구글은 public/google*.html 파일 방식을 쓰고 있다. */}
+<meta name="naver-site-verification" content="70b3f10c8d0f4399e43d10dc44021552be2a9964" />
+
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
