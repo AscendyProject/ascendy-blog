@@ -40,9 +40,12 @@ What search handles well:
 - **Place names** — for photos that kept their location data
 
 One thing worth knowing. **Searching in full sentences (like "cat in the garden") requires
-Apple Intelligence, which needs an iPhone 15 Pro, an iPhone 16, or later.** Without that,
-you're working with the keyword search described above. If search behaves differently than
-you expected, this is the first thing to check.
+Apple Intelligence.** That comes with conditions: an iPhone 15 Pro or 15 Pro Max, or an
+iPhone 16 or later; iOS 18.1 or newer; Apple Intelligence switched on in Settings; and your
+device and Siri language set to a supported language.
+
+Without that, you're working with the keyword search described above. If search behaves
+differently than you expected, this is the first thing to check.
 
 ## If you only remember where — the map
 
