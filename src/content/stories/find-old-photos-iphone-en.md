@@ -74,16 +74,16 @@ The **Collections** tab holds groupings the phone builds on its own: Trips, Memo
 People & Pets, Recent Days. "That trip three years ago" is often already bundled as one
 thing, so you can open the whole trip at once.
 
-## Four cases where none of this works
+## Four cases where I end up doing it by hand
 
-That's as far as the phone takes you. The next four aren't about not knowing the trick.
-They're things the current structure doesn't do well.
+Even knowing everything above, these four are where I stop searching and start working by
+hand. How much they bite depends on your device, your settings, and the photos themselves.
 
 **1. When conditions stack and one of them is subjective.** "Out of the beach photos with
 the baby, only the good ones." On a device with Apple Intelligence you can ask for the
 first part in a sentence. What catches is **"good ones"** — not blurry, eyes open, a decent
-expression. That's my standard, not a property attached to the photo. This is the point
-where I always end up scrolling the results and picking by hand.
+expression. That's my standard, not a property attached to the photo. This is where I end up
+scrolling the results and picking by hand.
 
 **2. When the memory is vague.** "Some beach, summer, two years ago?" If you're not sure of
 the year, the Years view loses its advantage and you're scrolling again.
