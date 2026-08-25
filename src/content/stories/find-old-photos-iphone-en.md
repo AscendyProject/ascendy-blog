@@ -111,8 +111,8 @@ photo** instead of by date.
 
 ---
 
-The first of those four — requests where conditions stack — was the first wall we hit
-building a photo organizing service. The first version attached tags to photos and let you
+The first of those four — requests where conditions stack — was the first wall I hit
+building a photo organizing service. My first version attached tags to photos and let you
 search them, and it fell apart as soon as a request got slightly complex. I wrote about
 that [separately](/en/stories/why-i-started-ascendy-en/).
 
