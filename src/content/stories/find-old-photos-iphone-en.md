@@ -128,7 +128,7 @@ instead of by date.
 | The place | Library → menu → Show Map |
 | Text in the photo | Search in Photos, or swipe down on the Home Screen |
 | That it was a trip | Trips and Memories in Collections |
-| Nothing for certain | Start with the map. The date may be wrong |
+| Nothing for certain | Browse Collections to jog the memory, then narrow with Years |
 
 ---
 
