@@ -7,6 +7,8 @@ tags: ["photo-management", "iphone", "photo-search", "family-photos"]
 category: "guides"
 lang: "en"
 translationKey: "find-old-photos-iphone"
+sourceIntake:
+  - "docs/intake/from-user/2026-08-18-why-i-started-ascendy.md"
 draft: false
 redactionReviewed: true
 ---
@@ -22,9 +24,9 @@ This is the fastest one.
 
 1. Open Photos and go to **Library**
 2. Scroll the photo grid and buttons appear to switch to **Years** and **Months**
-3. Switch to **Years**. Every year fits on one screen. Tap the year, tap the month, tap the day
+3. Switch to **Years** to browse year by year. Tap the year, tap the month, tap the day
 
-"Sometime in the summer of 2023" is three taps away. That's a completely different route
+"Sometime in the summer of 2023" is a few taps away. That's a completely different route
 from dragging years of photos past your thumb.
 
 ## If you don't know when — Search
@@ -44,18 +46,19 @@ you expected.
 
 ## If you only remember where — the map
 
-"I know where we were, I just don't know when" is the most common version of this problem.
+"I know where we were, I just don't know when" is a common version of this problem.
 For that, the map beats the calendar.
 
 Inside the **Collections** tab there's a view that pins your photos on a map. Zoom into the
-area and you get only the photos taken there. For travel photos this method almost always
-wins.
+area and you get only the photos taken there. For travel photos this route is usually
+the fastest.
 
 ## If there was text in the photo — search from the Home Screen
 
 Receipts, signs, tickets, screenshots — if the photo has **text in it**, you can find it by
-that text. Not from inside Photos: **swipe down on the Home Screen** to open search, and
-type a word you remember. Photos containing that text come up.
+that text. The most reliable route is to **swipe down on the Home Screen** to open search
+and type a word you remember; photos containing that text come up. It sometimes works from
+Search inside Photos too, so both are worth trying.
 
 If you're the kind of person who screenshots tickets and booking confirmations before a
 trip, this is the most useful method on this list. Same for the photo you took of where you
@@ -82,12 +85,11 @@ the year, the Years view loses its advantage and you're scrolling again.
 **3. When you find them and there are too many.** Search your child's name and 3,000 photos
 come back. That isn't finding. The picking is still yours to do.
 
-**4. When the photo's date is wrong.** This one happens constantly and few people know why.
-Photos received through messaging apps, moved over by AirDrop, or transferred from an old
-Android phone **sometimes arrive with the original capture date stripped out.** Photos then
-sorts them by the day you received them. A photo taken in 2020 sits in 2024, so the Years
-view will never surface it. For those, search by **place or by text in the photo** instead
-of by date.
+**4. When the photo's date is wrong.** This one is hard to diagnose, so it eats time.
+Photos received through messaging apps, or transferred from a phone you used before,
+**sometimes arrive without their original capture date.** Those can end up sorted under the
+day you received them. If a photo taken in 2020 sits in 2024, the Years view won't turn it
+up. For those, search by **place or by text in the photo** instead of by date.
 
 ## Summary
 
@@ -103,8 +105,9 @@ of by date.
 ---
 
 Those last four — overlapping conditions, vague memories, too many results, wrong dates —
-are what we've spent the longest on while building a photo organizing service. The first
-version attached tags and let you search them, and it fell apart on exactly those four.
+are what we keep coming back to while building a photo organizing service. The first
+version attached tags and let you search them, and it fell apart as soon as a request got
+slightly complex.
 I wrote about that [separately](/en/stories/why-i-started-ascendy-en/).
 
 At [Ascendy](https://ascendy.ai) we're building toward asking for all of those conditions
