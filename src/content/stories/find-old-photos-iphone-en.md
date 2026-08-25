@@ -36,8 +36,8 @@ Open **Library** in Photos and scroll the grid. Buttons appear to switch to **Ye
 day.
 
 "Sometime in the summer of 2023" is a few taps away. That's an entirely different route
-from dragging years of photos past your thumb, and knowing just this one thing ends most
-"where did that photo go" moments.
+from dragging years of photos past your thumb. If you remember even roughly when, this is
+the shortest way in.
 
 ## "No idea when. I just want that photo." — Search
 
@@ -70,8 +70,8 @@ choose **Show Map**. Your photos appear spread across a map; zoom into the area 
 only the ones taken there. Worth knowing: only photos that kept their location data show
 up.
 
-For travel photos this route is usually the fastest. You may not remember the date, but you
-always remember where you went.
+For travel photos this route is usually the fastest. The place tends to outlast the date in
+memory.
 
 ## "There was text in it" — receipts, tickets, screenshots
 
@@ -91,10 +91,10 @@ The **Collections** tab holds groupings the phone builds on its own: Trips, Memo
 People & Pets, Recent Days. "That trip three years ago" is often already bundled as one
 thing, so you can open the whole trip at once.
 
-## Four cases where I end up doing it by hand
+## Four cases where you'll still end up doing it by hand
 
-Even knowing everything above, these four are where I stop searching and start working by
-hand. How much they bite depends on your device, your settings, and the photos themselves.
+Even knowing everything above, these four are where searching stops and hand-work starts.
+How much they bite depends on your device, your settings, and the photos themselves.
 
 **One. Conditions stack, and one of them lives in your head.** "Out of the beach photos
 with the baby, only the good ones." On a device with Apple Intelligence you can ask for the
