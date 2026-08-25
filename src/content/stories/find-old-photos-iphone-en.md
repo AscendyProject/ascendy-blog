@@ -49,9 +49,10 @@ you expected, this is the first thing to check.
 "I know where we were, I just don't know when" is a common version of this problem.
 For that, the map beats the calendar.
 
-Inside the **Collections** tab there's a view that pins your photos on a map. Zoom into the
-area and you get only the photos taken there. For travel photos this route is usually
-the fastest.
+In **Library**, tap the menu button and choose **Show Map**. Your photos appear spread
+across a map; zoom into the area and you get only the ones taken there. Note that only
+photos that kept their location data show up. For travel photos this route is usually the
+fastest.
 
 ## If there was text in the photo — search from the Home Screen
 
@@ -90,7 +91,12 @@ every photo you've ever taken of them. That isn't finding. The picking is still 
 Photos received through messaging apps, or transferred from a phone you used before,
 **sometimes arrive without their original capture date.** Those can end up sorted under the
 day you received them. If a photo taken in 2020 sits in 2024, the Years view won't turn it
-up. For those, search by **place or by text in the photo** instead of by date.
+up.
+
+The first thing to try is the sort order. iOS 26 lets you sort the library by **date added**
+or by **date taken** (Sort and Filter). If the capture date survived, switching that alone
+puts the photo back where it belongs. If it didn't, search by **place or by text in the
+photo** instead of by date.
 
 ## Summary
 
@@ -98,18 +104,17 @@ up. For those, search by **place or by text in the photo** instead of by date.
 |---|---|
 | Roughly the date | Library → Years → Months |
 | A person or an object | Search |
-| The place | The map inside Collections |
+| The place | Library → menu → Show Map |
 | Text in the photo | Swipe down on the Home Screen |
 | That it was a trip | Trips and Memories in Collections |
 | Nothing for certain | Start with the map. The date may be wrong |
 
 ---
 
-Those last four — overlapping conditions, vague memories, too many results, wrong dates —
-are what we keep coming back to while building a photo organizing service. The first
-version attached tags and let you search them, and it fell apart as soon as a request got
-slightly complex.
-I wrote about that [separately](/en/stories/why-i-started-ascendy-en/).
+The first of those four — requests where conditions stack — was the first wall we hit
+building a photo organizing service. The first version attached tags to photos and let you
+search them, and it fell apart as soon as a request got slightly complex. I wrote about
+that [separately](/en/stories/why-i-started-ascendy-en/).
 
-At [Ascendy](https://ascendy.ai) we're building toward asking for all of those conditions
-at once, in plain words. It doesn't all work yet.
+That's why [Ascendy](https://ascendy.ai) went the route of taking those requests in plain
+words instead. It doesn't all work yet.
