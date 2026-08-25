@@ -40,9 +40,9 @@ What search handles well:
 - **Place names** — for photos that kept their location data
 
 One thing worth knowing. **Searching in full sentences (like "cat in the garden") requires
-Apple Intelligence, which needs an iPhone 15 Pro, an iPhone 16, or later.** On older
-devices you get keyword search only. That's usually the reason search feels weaker than
-you expected.
+Apple Intelligence, which needs an iPhone 15 Pro, an iPhone 16, or later.** Without that,
+you're working with the keyword search described above. If search behaves differently than
+you expected, this is the first thing to check.
 
 ## If you only remember where — the map
 
@@ -75,15 +75,16 @@ thing, so you can open the whole trip at once.
 That's as far as the phone takes you. The next four aren't about not knowing the trick.
 They're things the current structure doesn't do well.
 
-**1. When two conditions overlap.** "Out of the beach photos with the baby, only the good
-ones." You can filter by person, and you can filter by place, but stacking them to narrow
-down is hard. And "good ones" isn't a search term at all.
+**1. When conditions stack and one of them is subjective.** "Out of the beach photos with
+the baby, only the good ones." On a device with Apple Intelligence you can ask for the
+first part in a sentence. The part that breaks is **"good ones"** — not blurry, eyes open,
+a decent expression. That isn't a search term, so the picking comes back to you.
 
 **2. When the memory is vague.** "Some beach, summer, two years ago?" If you're not sure of
 the year, the Years view loses its advantage and you're scrolling again.
 
-**3. When you find them and there are too many.** Search your child's name and 3,000 photos
-come back. That isn't finding. The picking is still yours to do.
+**3. When you find them and there are too many.** Search your child's name and you get
+every photo you've ever taken of them. That isn't finding. The picking is still yours.
 
 **4. When the photo's date is wrong.** This one is hard to diagnose, so it eats time.
 Photos received through messaging apps, or transferred from a phone you used before,
