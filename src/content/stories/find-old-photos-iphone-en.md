@@ -87,8 +87,8 @@ a decent expression. That isn't a search term, so the picking comes back to you.
 **2. When the memory is vague.** "Some beach, summer, two years ago?" If you're not sure of
 the year, the Years view loses its advantage and you're scrolling again.
 
-**3. When you find them and there are too many.** Search your child's name and you get
-every photo you've ever taken of them. That isn't finding. The picking is still yours.
+**3. When you find them and there are too many.** Search your child's name and years of
+photos come back at once. That isn't finding. The picking is still yours.
 
 **4. When the photo's date is wrong.** This one is hard to diagnose, so it eats time.
 Photos received through messaging apps, or transferred from a phone you used before,
