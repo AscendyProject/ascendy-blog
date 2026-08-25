@@ -60,9 +60,9 @@ fastest.
 ## If there was text in the photo — search from the Home Screen
 
 Receipts, signs, tickets, screenshots — if the photo has **text in it**, you can find it by
-that text. The most reliable route is to **swipe down on the Home Screen** to open search
-and type a word you remember; photos containing that text come up. It sometimes works from
-Search inside Photos too, so both are worth trying.
+that text. There are two routes: type the word into **Search** inside Photos, or **swipe
+down on the Home Screen** and type it there. Both are meant to find text inside images, so
+if one comes up empty, try the other.
 
 If you're the kind of person who screenshots tickets and booking confirmations before a
 trip, this is the most useful method on this list. Same for the photo you took of where you
@@ -81,8 +81,9 @@ They're things the current structure doesn't do well.
 
 **1. When conditions stack and one of them is subjective.** "Out of the beach photos with
 the baby, only the good ones." On a device with Apple Intelligence you can ask for the
-first part in a sentence. The part that breaks is **"good ones"** — not blurry, eyes open,
-a decent expression. That isn't a search term, so the picking comes back to you.
+first part in a sentence. What catches is **"good ones"** — not blurry, eyes open, a decent
+expression. That's my standard, not a property attached to the photo. This is the point
+where I always end up scrolling the results and picking by hand.
 
 **2. When the memory is vague.** "Some beach, summer, two years ago?" If you're not sure of
 the year, the Years view loses its advantage and you're scrolling again.
