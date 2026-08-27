@@ -1,5 +1,5 @@
 ---
-title: "I deleted a hundred photos and my iPhone storage didn't move"
+title: "You deleted a hundred photos and your iPhone storage didn't move"
 description: "You delete a hundred photos and the number barely changes. There are usually two reasons, and each takes about thirty seconds to check. Then there's the pile that's left at the end."
 pubDate: 2026-08-28
 author: "Ascendy"
@@ -130,10 +130,11 @@ judgment lands on exactly the photos you least want to delete.
 
 ---
 
-That usually clears "iPhone Storage Almost Full." The row I keep getting stuck on is the
-last one.
+That usually clears "iPhone Storage Almost Full." What the iPhone will do for you ends
+there.
 
-The first thing I built for this service tagged photos so you could search the tags. It
+What comes after it is what I kept running into while building a photo organizing service.
+The first thing I built tagged photos so you could search the tags. It
 worked, and it fell apart on requests like "just show me the ones that came out well." A
 person still had to look at every photo. I wrote about that
 [separately](/en/stories/why-i-started-ascendy-en/).
