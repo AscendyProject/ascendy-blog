@@ -60,13 +60,19 @@ In Settings, tap your name at the top, go to **iCloud → Photos**, and you'll f
 **Optimize iPhone Storage** (on some versions it sits under Settings → Photos). When it's
 on, the originals live in iCloud and your phone keeps small copies.
 
-So when you delete photos in this state, what you're deleting is the small copy. You can
-remove a hundred and free up far less phone storage than you expected.
+So in this state you can delete a hundred photos and free up far less phone storage than you
+expected, because what left the phone was the small copy.
 
-One more thing: this option **doesn't reduce your iCloud storage.** The originals are still
-sitting in iCloud. Phone storage and iCloud storage are two separate buckets, and the first
-step is working out which one the warning is about. Phone: Settings → General → **iPhone
-Storage**. iCloud: Settings → your name → **iCloud**.
+**That does not mean the original survives.** Deleting a photo deletes the original in iCloud
+too. Once Recently Deleted is emptied, or 30 days pass, the full-resolution original is gone
+as well. "I only deleted it to free up my phone, so the original must still be there" isn't
+how it works.
+
+One more thing: **turning Optimize iPhone Storage on doesn't reduce your iCloud storage.**
+The originals are still sitting in iCloud. Phone storage and iCloud storage are two separate
+buckets, and the first step is working out which one the warning is
+about. Phone: Settings → General → **iPhone Storage**. iCloud: Settings → your name →
+**iCloud**.
 
 And turning the option on now won't free space immediately. The iPhone swaps originals out
 **when it needs the room.**
@@ -91,10 +97,9 @@ amount of video, so don't worry if it isn't there. In that case go to Photos →
 Deleting is hard because of the judgment, not the storage. So start where there's no
 judgment to make.
 
-**Collections → Utilities → Duplicates.** If the same photo exists more than once, it
-collects here — something you were sent twice, a copy made while editing. Tap Merge and the
-best-quality version stays while the rest go to Recently Deleted. When you merge, you can
-choose whether to combine exact copies only or include the ones that differ slightly.
+**Collections → Utilities → Duplicates.** The duplicates Photos has found collect here —
+photos you ended up saving twice, sent to you twice, or copied over from another device. Tap
+Merge and the best-quality version stays while the rest go to Recently Deleted.
 
 This is the easy stretch. It's the same photo, so there's nothing to decide.
 
