@@ -9,6 +9,7 @@ lang: "en"
 translationKey: "why-i-started-ascendy"
 sourceIntake:
   - "docs/intake/from-user/2026-08-18-why-i-started-ascendy.md"
+  - "docs/intake/from-user/2026-08-29-product-surface-public-check.md"
 draft: false
 redactionReviewed: true
 ---
@@ -102,8 +103,13 @@ wife's complaints carried this service this far. Other people are next.
 
 ---
 
-If you're curious, you can see it at [ascendy.ai](https://ascendy.ai). If something
-annoys you while using it, tell me — that's the information I need most right now.
+You can see it at [ascendy.ai](https://ascendy.ai). Photos you put in get organized by
+time, place, and person, and you ask for what you want in plain words. It runs in the
+browser. The signup screen asks for an email and a password, and the pricing page has a
+free plan. There's no app yet.
+
+If something annoys you while using it, tell me — that's the information I need most
+right now.
 
 There's a separate piece on the same starting point from an engineering angle:
 [Photo clouds solved storage, not finding](/en/blog/why-we-built-ascendy-en/).

@@ -9,6 +9,7 @@ lang: "ko"
 translationKey: "find-old-photos-iphone"
 sourceIntake:
   - "docs/intake/from-user/2026-08-18-why-i-started-ascendy.md"
+  - "docs/intake/from-user/2026-08-29-product-surface-public-check.md"
 draft: false
 redactionReviewed: true
 ---
@@ -130,6 +131,10 @@ redactionReviewed: true
 조금만 복잡한 요청이 오면 무너졌습니다. 그 이야기는
 [따로 썼습니다](/stories/why-i-started-ascendy/).
 
-그래서 [Ascendy](https://ascendy.ai)는 그런 요청을 말로 받는 쪽으로 갔습니다. 아직 다
-되는 건 아닙니다. 다만 "그 사진 어디 갔지"에서 엄지로 밀어 올리기까지 가는 그 거리를,
-조금 줄이려고 만들고 있습니다.
+그래서 [Ascendy](https://ascendy.ai/ko)는 그런 요청을 말로 받는 쪽으로 갔습니다.
+사진은 시간·장소·인물로 정리해두고, 찾는 건 문장으로 묻습니다. 아직 다 되는 건 아닙니다.
+
+웹에서 씁니다. 가입 화면은 이메일과 비밀번호를 받고, 요금제에 무료 플랜이 있습니다. 앱은
+아직 없습니다. "그 사진 어디 갔지"에서
+엄지로 밀어 올리기까지 가는 거리를 줄이는 게 목표라, 안 줄어들면 그게 제일 듣고 싶은
+얘기입니다.
