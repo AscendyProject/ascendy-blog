@@ -9,6 +9,7 @@ lang: "ko"
 translationKey: "iphone-photo-storage"
 sourceIntake:
   - "docs/intake/from-user/2026-08-18-why-i-started-ascendy.md"
+  - "docs/intake/from-user/2026-08-29-product-surface-public-check.md"
 draft: false
 redactionReviewed: true
 ---
@@ -132,8 +133,12 @@ iCloud에 그대로 있으니까요. 폰 용량과 iCloud 용량은 서로 다�
 앞에서 무너졌습니다. 결국 사람이 하나씩 다 봐야 했습니다. 그 이야기는
 [따로 썼습니다](/stories/why-i-started-ascendy/).
 
-[Ascendy](https://ascendy.ai)를 만들면서 붙잡고 있는 게 그 대목입니다. 비슷한 사진 열 장
-앞에서 사람이 하던 판단을 얼마나 대신할 수 있는지. 아직 다 되지는 않습니다.
+[Ascendy](https://ascendy.ai/ko)는 그 요청을 말로 받는 쪽으로 만들고 있습니다. 올려둔
+사진은 시간·장소·인물로 정리되고, 찾는 건 문장으로 묻습니다. 아직 다 되지는 않습니다.
+
+웹에서 씁니다. 가입 화면은 이메일과 비밀번호를 받고, 요금제에 무료 플랜이 있습니다. 앱은
+아직 없습니다. 열 장 앞에서
+여전히 멈추게 되면 알려주세요. 그게 지금 제일 필요한 정보입니다.
 
 찾는 쪽이 문제라면 이쪽 글이 더 맞습니다:
 [아이폰에서 3년 전 사진 찾기](/stories/find-old-photos-iphone/).

@@ -9,6 +9,7 @@ lang: "en"
 translationKey: "find-old-photos-iphone"
 sourceIntake:
   - "docs/intake/from-user/2026-08-18-why-i-started-ascendy.md"
+  - "docs/intake/from-user/2026-08-29-product-surface-public-check.md"
 draft: false
 redactionReviewed: true
 ---
@@ -138,5 +139,10 @@ search them. It worked, and it fell apart as soon as a request got slightly comp
 wrote about that [separately](/en/stories/why-i-started-ascendy-en/).
 
 That's why [Ascendy](https://ascendy.ai) went the route of taking those requests in plain
-words instead. It doesn't all work yet. What it's trying to shorten is the distance between
-"where did that photo go" and reaching for your thumb.
+words instead. Photos get organized by time, place, and person, and you ask for what you
+want in a sentence. It doesn't all work yet.
+
+It runs in the browser; the signup screen asks for an email and a password, and the pricing
+page has a free plan. There's no app yet. What it's trying to shorten
+is the distance between "where did that photo go" and reaching for your thumb — so if it
+isn't shorter for you, that's what I most want to hear.

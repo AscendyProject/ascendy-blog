@@ -9,6 +9,7 @@ lang: "ko"
 translationKey: "why-i-started-ascendy"
 sourceIntake:
   - "docs/intake/from-user/2026-08-18-why-i-started-ascendy.md"
+  - "docs/intake/from-user/2026-08-29-product-surface-public-check.md"
 draft: false
 redactionReviewed: true
 ---
@@ -95,8 +96,11 @@ AI가 실제로 잘하는 쪽으로 다시 붙였습니다. 그리고 아내가 
 
 ---
 
-궁금하시면 [ascendy.ai](https://ascendy.ai)에서 직접 볼 수 있습니다. 써보고 불편한 게
-있으면 말해 주세요. 그게 지금 저한테 제일 필요한 정보입니다.
+[ascendy.ai](https://ascendy.ai/ko)에서 직접 볼 수 있습니다. 올려둔 사진이 시간·장소·
+인물로 정리되고, 찾고 싶은 건 말로 요청합니다. 웹에서 씁니다. 가입 화면은 이메일과
+비밀번호를 받고, 요금제에 무료 플랜이 있습니다. 앱은 아직 없습니다.
+
+써보시고 불편한 게 있으면 말해 주세요. 그게 지금 저한테 제일 필요한 정보입니다.
 
 같은 시작점을 엔지니어 관점에서 쓴 글은 따로 있습니다:
 [사진은 저장이 아니라 '못 찾는 것'이 문제였다](/blog/why-we-built-ascendy/).

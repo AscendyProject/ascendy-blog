@@ -9,6 +9,7 @@ lang: "en"
 translationKey: "iphone-photo-storage"
 sourceIntake:
   - "docs/intake/from-user/2026-08-18-why-i-started-ascendy.md"
+  - "docs/intake/from-user/2026-08-29-product-surface-public-check.md"
 draft: false
 redactionReviewed: true
 ---
@@ -139,9 +140,13 @@ worked, and it fell apart on requests like "just show me the ones that came out 
 person still had to look at every photo. I wrote about that
 [separately](/en/stories/why-i-started-ascendy-en/).
 
-That's the part I'm holding onto while building [Ascendy](https://ascendy.ai) — how much of
-the judgment you make in front of ten near-identical photos can be done for you. It isn't
-all there yet.
+[Ascendy](https://ascendy.ai) is being built to take that request in plain words. Photos
+you put in get organized by time, place, and person, and you ask for what you're looking
+for in a sentence. It isn't all there yet.
+
+It runs in the browser; the signup screen asks for an email and a password, and the pricing
+page has a free plan. There's no app yet. If you still stall in front of those ten photos,
+tell me. That's the information I need most.
 
 If finding is your problem rather than space, this one fits better:
 [Finding a photo from three years ago on your iPhone](/en/stories/find-old-photos-iphone-en/).
